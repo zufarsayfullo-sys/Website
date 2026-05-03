@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CEFR – Under construction</title>
+    <title>English Flow | Free English Learning</title>
     <style>
         * {
             margin: 0;
@@ -12,59 +12,233 @@
         }
         body {
             background: white;
-            font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            color: #1a1a1a;
+            line-height: 1.5;
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+            flex: 1;
+        }
+        .hero {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .hero h1 {
+            font-size: 2.4rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1e3c4c, #2b5f8a);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .tagline {
+            font-size: 1rem;
+            color: #2c5a7a;
+            background: #f2f6fa;
+            display: inline-block;
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+        }
+        .mission {
+            background: #f8fafc;
+            border-left: 5px solid #2c6e9e;
+            padding: 1rem 1.5rem;
+            border-radius: 20px;
+            margin: 2rem auto;
+            max-width: 700px;
+            text-align: center;
+        }
+        .mission p {
+            font-size: 1rem;
+            color: #1e2f3c;
+        }
+        .options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            justify-content: center;
+            margin: 2.5rem 0;
+        }
+        .card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 28px;
+            padding: 1.8rem;
+            width: 260px;
+            text-align: center;
+            transition: 0.2s;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            cursor: pointer;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: #cbdde9;
+            box-shadow: 0 15px 25px -10px rgba(0,0,0,0.1);
+        }
+        .card-icon {
+            font-size: 2.8rem;
+            margin-bottom: 0.8rem;
+        }
+        .card h2 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+        .card p {
+            color: #4a5c6c;
+            font-size: 0.9rem;
+        }
+        .divider {
+            text-align: center;
+            margin: 1rem auto;
+            font-size: 0.8rem;
+            color: #8aa0b0;
+        }
+        .login-note {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #4b6a84;
+            background: #f2f6f9;
+            padding: 0.5rem 1rem;
+            border-radius: 60px;
+            display: inline-block;
+            width: auto;
+            margin: 1rem auto 0;
+        }
+        footer {
+            text-align: center;
+            font-size: 0.75rem;
+            color: #6c868e;
+            border-top: 1px solid #eef2f6;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+
+        /* Overlay / modal for "working on it" */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
             align-items: center;
             justify-content: center;
-            padding: 1rem;
+            z-index: 1000;
         }
-        .message-box {
-            text-align: center;
+        .modal {
+            background: white;
             max-width: 500px;
-            background: #fafcff;
+            width: 90%;
             padding: 2rem;
             border-radius: 28px;
+            text-align: center;
+            box-shadow: 0 20px 35px -10px rgba(0,0,0,0.2);
             border: 1px solid #e2e8f0;
-            box-shadow: 0 10px 20px -5px rgba(0,0,0,0.05);
         }
-        h1 {
+        .modal h1 {
             font-size: 2rem;
             color: #1e3c4c;
             margin-bottom: 0.5rem;
         }
-        p {
-            font-size: 1.2rem;
+        .modal p {
+            font-size: 1.1rem;
             margin: 1rem 0;
             color: #2c5a7a;
         }
-        .back-home {
+        .close-modal {
             display: inline-block;
-            margin-top: 1.5rem;
+            margin-top: 1rem;
             background: #2c3e50;
             color: white;
-            text-decoration: none;
+            border: none;
             padding: 0.6rem 1.5rem;
             border-radius: 40px;
             font-weight: 500;
-            transition: 0.2s;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.9rem;
         }
-        .back-home:hover {
+        .close-modal:hover {
             background: #1a2a3a;
         }
-        .emoji {
+        .emoji-big {
             font-size: 3rem;
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
         }
     </style>
 </head>
 <body>
-<div class="message-box">
-    <div class="emoji">🚧📚</div>
-    <h1>We are working on it</h1>
-    <p>CEFR multilevel content (A1 → B2 → C1) is being prepared.<br>
-    Please check back soon.</p>
-    <a href="index.html" class="back-home">← Back to homepage</a>
+<div class="container">
+    <div class="hero">
+        <h1>📘 English Flow</h1>
+        <div class="tagline">free · open · student‑first</div>
+    </div>
+    <div class="mission">
+        <p>📌 <strong>This website is created for students to share free content.</strong><br>
+        No paywalls — just real exercises, reading & listening, and step‑by‑step progress toward B2 / C1.</p>
+    </div>
+    <div class="options">
+        <div class="card" id="ielts-card">
+            <div class="card-icon">🎯</div>
+            <h2>IELTS help</h2>
+            <p>Academic & General Training – task bank, model answers, speaking practice</p>
+        </div>
+        <div class="card" id="cefr-card">
+            <div class="card-icon">🌱</div>
+            <h2>CEFR multilevel</h2>
+            <p>A1 → B2 → C1<br>Grammar, vocabulary, listening & reading</p>
+        </div>
+    </div>
+    <div class="divider">✨ choose your path ✨</div>
+    <div class="login-note">
+        🔐 <strong>No login needed yet</strong> – explore all content for free.
+    </div>
 </div>
+<footer>
+    <p>📖 Free learning community · built for students, by learners · 2025</p>
+</footer>
+
+<!-- Modal for "working on it" message (CEFR) -->
+<div id="workModal" class="overlay">
+    <div class="modal">
+        <div class="emoji-big">🚧📚</div>
+        <h1>We are working on it</h1>
+        <p>CEFR multilevel content (A1 → B2 → C1) is being prepared.<br>Please check back soon.</p>
+        <button class="close-modal" onclick="closeModal()">← Back to homepage</button>
+    </div>
+</div>
+
+<script>
+    const modal = document.getElementById('workModal');
+
+    // CEFR card: show modal
+    document.getElementById('cefr-card').onclick = () => {
+        modal.style.display = 'flex';
+    };
+
+    // IELTS card: simple alert (but you can also make a modal)
+    document.getElementById('ielts-card').onclick = () => {
+        alert('🚧 IELTS section coming soon. We are working on it!');
+    };
+
+    // Close modal when clicking outside or on the back button
+    function closeModal() {
+        modal.style.display = 'none';
+    }
+    // Also close if user clicks on the overlay background
+    modal.onclick = (e) => {
+        if (e.target === modal) closeModal();
+    };
+</script>
 </body>
 </html>
