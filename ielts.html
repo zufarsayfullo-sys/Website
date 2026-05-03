@@ -49,6 +49,7 @@
             flex-wrap: wrap;
             border-bottom: 1px solid rgba(0,0,0,0.1);
             padding-bottom: 1rem;
+            position: relative;
         }
         .top-item {
             background: rgba(255,255,255,0.6);
@@ -65,6 +66,37 @@
         .top-item:hover {
             background: rgba(255,255,255,0.9);
             transform: translateY(-2px);
+        }
+        /* Notification bubble */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #a3d9a5;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 60px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1500;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.3);
+            animation: slideIn 0.3s ease;
+            cursor: pointer;
+        }
+        .notification button {
+            background: none;
+            border: none;
+            color: white;
+            margin-left: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
         .page-title {
             text-align: center;
@@ -139,9 +171,9 @@
             padding-top: 1rem;
             border-top: 1px solid rgba(100,100,100,0.2);
         }
-        /* Authentication modal */
-        .auth-overlay {
-            display: flex;
+        /* Modal styles */
+        .overlay {
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
@@ -153,55 +185,52 @@
             justify-content: center;
             z-index: 2000;
         }
-        .auth-modal, .contact-modal {
+        .modal-card {
             background: rgba(255, 255, 255, 0.98);
             border-radius: 48px;
-            max-width: 450px;
+            max-width: 500px;
             width: 90%;
-            padding: 2.2rem;
+            padding: 2rem;
             text-align: center;
             box-shadow: 0 40px 60px -20px rgba(0,0,0,0.4);
             border: 1px solid rgba(255,255,255,0.8);
             animation: fadeInScale 0.25s ease;
         }
-        .auth-modal h2 { font-size: 1.8rem; color: #1e3c4c; margin-bottom: 1rem; }
-        .auth-modal p { color: #2c5a7a; margin-bottom: 1.5rem; }
-        .auth-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
-        .auth-btn {
+        .modal-card h2 { font-size: 1.8rem; color: #1e3c4c; margin-bottom: 1rem; }
+        .modal-card p { color: #2c5a7a; margin-bottom: 1.5rem; }
+        textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 24px;
+            border: 1px solid #cbdde9;
+            font-family: inherit;
+            font-size: 0.9rem;
+            margin: 1rem 0;
+            resize: vertical;
+        }
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn {
             background: #2c3e50;
             color: white;
             border: none;
-            padding: 0.7rem 1.8rem;
+            padding: 0.6rem 1.5rem;
             border-radius: 40px;
-            font-weight: 600;
+            font-weight: 500;
             cursor: pointer;
             transition: 0.2s;
         }
-        .auth-btn:hover { background: #1a2a3a; transform: scale(0.98); }
-        .close-auth { background: transparent; color: #2c5a7a; border: 1px solid #2c5a7a; }
-        .close-auth:hover { background: #eef2f6; }
-        .contact-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: #f0f4f8;
-            padding: 0.6rem 1.2rem;
-            border-radius: 60px;
-            text-decoration: none;
-            color: #1e3c4c;
-            margin: 0.5rem;
-            transition: 0.2s;
+        .btn:hover { background: #1a2a3a; transform: scale(0.98); }
+        .btn-outline {
+            background: transparent;
+            color: #2c5a7a;
+            border: 1px solid #2c5a7a;
         }
-        .contact-link:hover { background: #e2e8f0; }
-        .close-contact {
-            margin-top: 1rem;
-            background: #2c3e50;
-            color: white;
-            border: none;
-            padding: 0.5rem 1.2rem;
-            border-radius: 40px;
-            cursor: pointer;
-        }
+        .btn-outline:hover { background: #eef2f6; }
         @keyframes fadeInScale {
             from { opacity: 0; transform: scale(0.96); }
             to { opacity: 1; transform: scale(1); }
@@ -217,29 +246,29 @@
 <div class="container">
     <div class="top-bar">
         <div class="top-item" id="contactBtn">📞 Contact details</div>
-        <div class="top-item" id="commentsBtn">💬 Comments (will add later)</div>
+        <div class="top-item" id="commentsBtn">💬 Comments</div>
     </div>
     <div class="page-title">
         <h1>🎯 IELTS Preparation</h1>
         <p>Master the 4 skills – Academic & General Training</p>
     </div>
     <div class="skills-grid">
-        <a href="ielts/listening.html" class="skill-card" id="listening">
+        <a href="ielts/listening.html" class="skill-card">
             <div class="skill-icon">🎧</div>
             <h3>Listening</h3>
             <p>Practice with real exam tasks, multiple accents, and time management</p>
         </a>
-        <a href="ielts/reading.html" class="skill-card" id="reading">
+        <a href="ielts/reading.html" class="skill-card">
             <div class="skill-icon">📖</div>
             <h3>Reading</h3>
             <p>Academic & General passages, question types, skimming techniques</p>
         </a>
-        <a href="ielts/writing.html" class="skill-card" id="writing">
+        <a href="ielts/writing.html" class="skill-card">
             <div class="skill-icon">✍️</div>
             <h3>Writing</h3>
             <p>Task 1 (graphs/letters) & Task 2 (essays) with model answers</p>
         </a>
-        <a href="ielts/speaking.html" class="skill-card" id="speaking">
+        <a href="ielts/speaking.html" class="skill-card">
             <div class="skill-icon">🗣️</div>
             <h3>Speaking</h3>
             <p>Part 1,2,3 practice, fluency tips, and sample topics</p>
@@ -253,48 +282,121 @@
     </footer>
 </div>
 
-<!-- Authentication modal on load -->
-<div id="authModal" class="auth-overlay">
-    <div class="auth-modal">
+<!-- Authentication modal (appears on load) -->
+<div id="authModal" class="overlay">
+    <div class="modal-card">
         <div style="font-size: 3rem;">🔐</div>
         <h2>Sign in for full experience</h2>
         <p>Create a free account or log in to track your progress, save answers, and access all IELTS materials.</p>
-        <div class="auth-buttons">
-            <button class="auth-btn" id="signupBtn">Sign up</button>
-            <button class="auth-btn" id="loginBtn">Log in</button>
-            <button class="auth-btn close-auth" id="closeAuthBtn">Maybe later</button>
+        <div class="modal-buttons">
+            <button class="btn" id="signupBtn">Sign up</button>
+            <button class="btn" id="loginBtn">Log in</button>
+            <button class="btn btn-outline" id="closeAuthBtn">Maybe later</button>
         </div>
     </div>
 </div>
 
 <!-- Contact modal -->
-<div id="contactModal" class="auth-overlay" style="display: none;">
-    <div class="contact-modal">
+<div id="contactModal" class="overlay">
+    <div class="modal-card">
         <h3>📬 Reach me on</h3>
-        <div>
-            <a href="https://t.me/SAYFULLAEV_ZUFAR" target="_blank" class="contact-link">📱 Telegram</a>
-            <a href="https://www.instagram.com/sayfullaev.zufar/" target="_blank" class="contact-link">📸 Instagram</a>
+        <div style="margin: 1rem 0;">
+            <a href="https://t.me/SAYFULLAEV_ZUFAR" target="_blank" class="btn" style="display:inline-block; margin:5px;">📱 Telegram</a>
+            <a href="https://www.instagram.com/sayfullaev.zufar/" target="_blank" class="btn" style="display:inline-block; margin:5px;">📸 Instagram</a>
         </div>
-        <button class="close-contact" id="closeContactBtn">Close</button>
+        <button class="btn btn-outline" id="closeContactBtn">Close</button>
+    </div>
+</div>
+
+<!-- Comments modal (sends comment + timestamp to Google Sheet) -->
+<div id="commentsModal" class="overlay">
+    <div class="modal-card">
+        <div style="font-size: 2rem;">💬</div>
+        <h2>Help us improve</h2>
+        <p>Leave your comments about the website – suggestions, bugs, or anything else. We read every message.</p>
+        <textarea id="commentText" rows="4" placeholder="Write your comments here..."></textarea>
+        <div class="modal-buttons">
+            <button class="btn" id="submitCommentBtn">Submit comment</button>
+            <button class="btn btn-outline" id="closeCommentsBtn">Cancel</button>
+        </div>
     </div>
 </div>
 
 <script>
-    // Auth modal
+    // ---------- Notification bubble (on page load) ----------
+    function createNotification() {
+        const notif = document.createElement('div');
+        notif.className = 'notification';
+        notif.innerHTML = '💬 Help us improve with your comments <button id="closeNotif">✕</button>';
+        document.body.appendChild(notif);
+        document.getElementById('closeNotif').onclick = () => notif.remove();
+        setTimeout(() => { if (notif.parentNode) notif.remove(); }, 5000);
+    }
+    createNotification();
+
+    // ---------- Auth modal ----------
     const authModal = document.getElementById('authModal');
     const closeAuth = () => { authModal.style.display = 'none'; };
     document.getElementById('closeAuthBtn').onclick = closeAuth;
     document.getElementById('signupBtn').onclick = () => { alert('🚧 Sign up page coming soon.'); closeAuth(); };
     document.getElementById('loginBtn').onclick = () => { alert('🚧 Log in page coming soon.'); closeAuth(); };
 
-    // Contact modal
+    // ---------- Contact modal ----------
     const contactModal = document.getElementById('contactModal');
     document.getElementById('contactBtn').onclick = () => { contactModal.style.display = 'flex'; };
     document.getElementById('closeContactBtn').onclick = () => { contactModal.style.display = 'none'; };
     contactModal.onclick = (e) => { if (e.target === contactModal) contactModal.style.display = 'none'; };
 
-    // Comments placeholder
-    document.getElementById('commentsBtn').onclick = () => alert('Comments section coming soon.');
+    // ---------- Comments modal with Google Sheet integration ----------
+    const commentsModal = document.getElementById('commentsModal');
+    const commentText = document.getElementById('commentText');
+    const closeComments = () => {
+        commentsModal.style.display = 'none';
+        commentText.value = '';
+    };
+    document.getElementById('closeCommentsBtn').onclick = closeComments;
+    document.getElementById('commentsBtn').onclick = () => {
+        commentsModal.style.display = 'flex';
+    };
+    commentsModal.onclick = (e) => { if (e.target === commentsModal) closeComments(); };
+
+    // Submit comment to Google Apps Script Web App
+    const submitBtn = document.getElementById('submitCommentBtn');
+    submitBtn.onclick = async () => {
+        const comment = commentText.value.trim();
+        if (!comment) {
+            alert('✏️ Please write something before submitting.');
+            return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.innerText = '💾 Saving...';
+
+        const payload = {
+            comment: comment,
+            timestamp: new Date().toISOString()
+        };
+
+        const webAppUrl = 'https://script.google.com/macros/s/AKfycbzk6Gc3zChyWlNiddurhNNUppSmAN7oNvZMW23o13ruTeiz0w7tOv8gwrux5Quzk2k/exec';
+
+        try {
+            await fetch(webAppUrl, {
+                method: 'POST',
+                mode: 'no-cors',        // Handles CORS for Google Scripts
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            // With 'no-cors', we cannot read the response but request is sent.
+            alert(`✅ Thank you for your feedback!\n\n"${comment}"\n\nWe'll use it to improve the website.`);
+            closeComments();
+        } catch (error) {
+            console.error('Error sending comment:', error);
+            alert('❌ Sorry, an error occurred. Please try again later.');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerText = 'Submit comment';
+        }
+    };
 </script>
 </body>
 </html>
