@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CEFR section – Under construction</title>
+    <title>CEFR – Under construction</title>
     <style>
         * {
             margin: 0;
@@ -11,75 +11,32 @@
             box-sizing: border-box;
         }
         body {
-            background: #fef9e8; /* warm construction paper feel */
-            font-family: monospace, 'Courier New', system-ui;
+            background: white;
+            font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 1.5rem;
-            position: relative;
+            padding: 1rem;
         }
-        /* Striped caution border */
-        body::before {
-            content: "";
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 12px;
-            background: repeating-linear-gradient(45deg, #f1c40f, #f1c40f 20px, #e67e22 20px, #e67e22 40px);
-            z-index: 10;
-        }
-        .construction-card {
-            background: white;
-            max-width: 600px;
-            width: 100%;
-            padding: 2.5rem 2rem;
-            border-radius: 32px;
-            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.2);
+        .message-box {
             text-align: center;
-            border: 1px solid #ffe0a3;
-            position: relative;
-        }
-        .emoji-big {
-            font-size: 5rem;
-            margin-bottom: 1rem;
-            display: inline-block;
-            animation: bounce 1s infinite alternate;
-        }
-        @keyframes bounce {
-            from { transform: translateY(0px); }
-            to { transform: translateY(-10px); }
+            max-width: 500px;
+            background: #fafcff;
+            padding: 2rem;
+            border-radius: 28px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 10px 20px -5px rgba(0,0,0,0.05);
         }
         h1 {
-            font-size: 2.2rem;
-            color: #c0392b;
-            margin-bottom: 0.5rem;
-            letter-spacing: -0.01em;
-        }
-        .sub {
-            font-size: 1.2rem;
-            color: #e67e22;
-            font-weight: bold;
-            margin-bottom: 1.5rem;
-            border-bottom: 2px dashed #f1c40f;
-            display: inline-block;
-            padding-bottom: 5px;
-        }
-        .message {
-            background: #fff3e0;
-            padding: 1.2rem;
-            border-radius: 24px;
-            margin: 1.5rem 0;
-            font-size: 1.1rem;
-            color: #2c3e50;
-            font-family: system-ui;
-        }
-        .construction-icons {
             font-size: 2rem;
-            letter-spacing: 8px;
+            color: #1e3c4c;
+            margin-bottom: 0.5rem;
+        }
+        p {
+            font-size: 1.2rem;
             margin: 1rem 0;
+            color: #2c5a7a;
         }
         .back-home {
             display: inline-block;
@@ -87,40 +44,27 @@
             background: #2c3e50;
             color: white;
             text-decoration: none;
-            padding: 0.8rem 2rem;
-            border-radius: 48px;
+            padding: 0.6rem 1.5rem;
+            border-radius: 40px;
             font-weight: 500;
             transition: 0.2s;
-            font-family: system-ui;
         }
         .back-home:hover {
             background: #1a2a3a;
-            transform: scale(1.02);
         }
-        footer {
-            margin-top: 2rem;
-            font-size: 0.7rem;
-            color: #aaa;
-        }
-        @media (max-width: 500px) {
-            h1 { font-size: 1.6rem; }
-            .construction-card { padding: 1.8rem; }
+        .emoji {
+            font-size: 3rem;
+            margin-bottom: 1rem;
         }
     </style>
 </head>
 <body>
-<div class="construction-card">
-    <div class="emoji-big">🚧🛠️👷</div>
+<div class="message-box">
+    <div class="emoji">🚧📚</div>
     <h1>We are working on it</h1>
-    <div class="sub">CEFR multilevel experience</div>
-    <div class="construction-icons">⚠️ 🚜 🏗️ ⚠️</div>
-    <div class="message">
-        ✨ Our team is building grammar & vocabulary journeys from A1 to C2.<br>
-        <strong>Background construction work</strong> is in progress.<br>
-        Check back soon for interactive tasks, level tests, and personalized paths.
-    </div>
+    <p>CEFR multilevel content (A1 → B2 → C1) is being prepared.<br>
+    Please check back soon.</p>
     <a href="index.html" class="back-home">← Back to homepage</a>
-    <footer>English Flow – free forever</footer>
 </div>
 </body>
 </html>
