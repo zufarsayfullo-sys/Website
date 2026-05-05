@@ -52,7 +52,6 @@
             border: 1px solid rgba(255, 255, 255, 0.6);
         }
 
-        /* Top bar */
         .top-bar {
             display: flex;
             justify-content: flex-end;
@@ -79,7 +78,6 @@
             transform: translateY(-2px);
         }
 
-        /* Main title */
         .page-title {
             text-align: center;
             margin-bottom: 2rem;
@@ -97,7 +95,6 @@
             margin-top: 0.5rem;
         }
 
-        /* Skill cards */
         .skills-grid {
             display: flex;
             flex-wrap: wrap;
@@ -142,7 +139,6 @@
             color: #4a5c6c;
         }
 
-        /* Back button and footer */
         .back-home {
             display: inline-block;
             margin-top: 2rem;
@@ -158,6 +154,7 @@
             background: #1a2a3a;
             transform: translateY(-2px);
         }
+
         footer {
             text-align: center;
             font-size: 0.75rem;
@@ -306,6 +303,7 @@
     <div class="top-bar">
         <div class="top-item" id="contactBtn">📞 Contact details</div>
         <div class="top-item" id="commentsBtn">💬 Comments</div>
+        <div class="top-item" id="signinBtn">🔑 Sign in</div>   <!-- New sign-in button -->
     </div>
     <div class="page-title">
         <h1>🎯 IELTS Preparation</h1>
@@ -325,7 +323,7 @@
     </footer>
 </div>
 
-<!-- SIGN-UP MODAL (green theme) -->
+<!-- SIGN-UP MODAL (green theme) – appears on first visit if not logged in -->
 <div id="signupModal" class="overlay signup-modal">
     <div class="modal-card">
         <div style="font-size: 3rem;">📝</div>
@@ -341,16 +339,17 @@
     </div>
 </div>
 
-<!-- LOGIN MODAL -->
-<div id="loginModal" class="overlay">
+<!-- SIGN-IN MODAL (separate, normal theme) -->
+<div id="signinModal" class="overlay">
     <div class="modal-card">
         <div style="font-size: 2.5rem;">🔐</div>
-        <h2>Log in</h2>
-        <input type="tel" id="loginPhone" placeholder="Phone number" required>
-        <input type="password" id="loginPassword" placeholder="Password" required>
+        <h2>Sign in</h2>
+        <p>Use your phone number and password</p>
+        <input type="tel" id="signinPhone" placeholder="Phone number" required>
+        <input type="password" id="signinPassword" placeholder="Password" required>
         <div class="modal-buttons">
-            <button class="btn" id="submitLoginBtn">Log in</button>
-            <button class="btn btn-outline" id="closeLoginBtn">Cancel</button>
+            <button class="btn" id="submitSigninBtn">Sign in</button>
+            <button class="btn btn-outline" id="closeSigninBtn">Cancel</button>
         </div>
     </div>
 </div>
@@ -383,36 +382,33 @@
 
 <script>
     // ========================
-    // 1. SUPABASE INITIALIZATION
+    // 1. SUPABASE INIT
     // ========================
     const SUPABASE_URL = 'https://evhceswvapszaghnvmxl.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGNlc3d2YXBzemFnaG52bXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3OTQwNzMsImV4cCI6MjA5MzM3MDA3M30.yV7tavgR7JKc45uSGtS8Lf6m1ZMuuvQ23hmAb8n6k3A';
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // Helper: convert phone number to a unique email for Supabase
     function phoneToEmail(phone) {
         let clean = phone.replace(/\s/g, '').replace(/\+/g, 'p');
         return `${clean}@phone.local`;
     }
 
     // ========================
-    // 2. CHECK EXISTING SESSION
+    // 2. CHECK SESSION (show sign-up modal only if not logged in)
     // ========================
     async function checkSession() {
         const { data: { session } } = await supabase.auth.getSession();
         if (!session) {
-            // Not logged in → show signup modal after a short delay
+            // No active session → show sign-up modal after a short delay
             setTimeout(() => {
                 document.getElementById('signupModal').style.display = 'flex';
             }, 500);
-        } else {
-            console.log('User already logged in:', session.user.email);
         }
     }
     checkSession();
 
     // ========================
-    // 3. SIGN-UP LOGIC (Phone + password)
+    // 3. SIGN-UP LOGIC
     // ========================
     const signupModal = document.getElementById('signupModal');
     const closeSignup = () => signupModal.style.display = 'none';
@@ -432,26 +428,23 @@
         submitBtn.innerText = 'Creating...';
 
         try {
-            // 1) Create user in Supabase Auth
             const { data: authData, error: authError } = await supabase.auth.signUp({
                 email: email,
                 password: password,
-                options: {
-                    data: { name: name, phone: phone }   // store metadata
-                }
+                options: { data: { name, phone } }
             });
             if (authError) throw authError;
 
-            // 2) Send user data to Google Sheet (name, phone, timestamp)
+            // Send to Google Sheet (sign‑up data)
             const sheetUrl = 'https://script.google.com/macros/s/AKfycbzu5EGex28ZB01TjPhKvRUANTdtgoNvoHrC2LNBEsQF_jtwyBCu6DhpT7qLobF-RcUN/exec';
             await fetch(sheetUrl, {
                 method: 'POST',
                 mode: 'no-cors',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: name, phone: phone, timestamp: new Date().toISOString() })
+                body: JSON.stringify({ name, phone, timestamp: new Date().toISOString() })
             });
 
-            alert(`✅ Account created successfully for ${name}! You can now log in.`);
+            alert(`✅ Account created for ${name}! You are now signed in.`);
             closeSignup();
         } catch (err) {
             console.error(err);
@@ -463,34 +456,35 @@
     };
 
     // ========================
-    // 4. LOGIN LOGIC (Phone + password)
+    // 4. SIGN-IN (LOGIN) LOGIC
     // ========================
-    const loginModal = document.getElementById('loginModal');
-    const closeLogin = () => loginModal.style.display = 'none';
-    document.getElementById('closeLoginBtn').onclick = closeLogin;
+    const signinModal = document.getElementById('signinModal');
+    const closeSignin = () => signinModal.style.display = 'none';
+    document.getElementById('closeSigninBtn').onclick = closeSignin;
+    document.getElementById('signinBtn').onclick = () => signinModal.style.display = 'flex';
 
-    document.getElementById('submitLoginBtn').onclick = async () => {
-        const phone = document.getElementById('loginPhone').value.trim();
-        const password = document.getElementById('loginPassword').value;
+    document.getElementById('submitSigninBtn').onclick = async () => {
+        const phone = document.getElementById('signinPhone').value.trim();
+        const password = document.getElementById('signinPassword').value;
         if (!phone || !password) {
             alert('Please enter your phone number and password.');
             return;
         }
         const email = phoneToEmail(phone);
-        const loginBtn = document.getElementById('submitLoginBtn');
-        loginBtn.disabled = true;
-        loginBtn.innerText = 'Logging...';
+        const btn = document.getElementById('submitSigninBtn');
+        btn.disabled = true;
+        btn.innerText = 'Signing in...';
 
         try {
             const { data, error } = await supabase.auth.signInWithPassword({ email, password });
             if (error) throw error;
-            alert(`✅ Welcome back!`);
-            loginModal.style.display = 'none';
+            alert('✅ Signed in successfully!');
+            signinModal.style.display = 'none';
         } catch (err) {
-            alert('Login failed: ' + err.message);
+            alert('Sign in failed: ' + err.message);
         } finally {
-            loginBtn.disabled = false;
-            loginBtn.innerText = 'Log in';
+            btn.disabled = false;
+            btn.innerText = 'Sign in';
         }
     };
 
@@ -525,13 +519,12 @@
         const submitBtn = document.getElementById('submitCommentBtn');
         submitBtn.disabled = true;
         submitBtn.innerText = 'Saving...';
-
         try {
             await fetch(sheetCommentUrl, {
                 method: 'POST',
                 mode: 'no-cors',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ comment: comment, timestamp: new Date().toISOString() })
+                body: JSON.stringify({ comment, timestamp: new Date().toISOString() })
             });
             alert('✅ Thank you for your feedback!');
             closeComments();
@@ -545,7 +538,7 @@
     };
 
     // ========================
-    // 7. NOTIFICATION BUBBLE (on page load)
+    // 7. NOTIFICATION BUBBLE
     // ========================
     const notification = document.createElement('div');
     notification.className = 'notification';
@@ -553,17 +546,6 @@
     document.body.appendChild(notification);
     document.getElementById('closeNotif').onclick = () => notification.remove();
     setTimeout(() => { if (notification.parentNode) notification.remove(); }, 5000);
-
-    // ========================
-    // 8. ADD LOGIN BUTTON TO TOP BAR (in case user closed signup modal)
-    // ========================
-    const topBar = document.querySelector('.top-bar');
-    const loginItem = document.createElement('div');
-    loginItem.className = 'top-item';
-    loginItem.innerText = '🔑 Login';
-    loginItem.style.order = '1';
-    loginItem.onclick = () => { loginModal.style.display = 'flex'; };
-    topBar.appendChild(loginItem);
 </script>
 </body>
 </html>
