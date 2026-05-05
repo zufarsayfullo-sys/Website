@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "title": "The Solar System",
+    "description": "Learn about planets and their orbits.",
+    "fileName": "passage001.html",
+    "totalQuestions": 10
+  },
+  {
+    "id": 2,
+    "title": "Climate Change Basics",
+    "description": "Understanding global warming effects.",
+    "fileName": "passage002.html",
+    "totalQuestions": 8
+  },
+  {
+    "id": 3,
+    "title": "Artificial Intelligence",
+    "description": "A beginner's guide to AI.",
+    "fileName": "passage003.html",
+    "totalQuestions": 12
+  }
+]
