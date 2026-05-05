@@ -151,7 +151,7 @@
     </div>
 </div>
 <script>
-    // Supabase config
+    // SINGLE DECLARATION – NO DUPLICATES
     const SUPABASE_URL = 'https://evhceswvapszaghnvmxl.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGNlc3d2YXBzemFnaG52bXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3OTQwNzMsImV4cCI6MjA5MzM3MDA3M30.yV7tavgR7JKc45uSGtS8Lf6m1ZMuuvQ23hmAb8n6k3A';
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -171,13 +171,15 @@
         setTimeout(() => { msgDiv.textContent = ''; msgDiv.className = 'message'; }, 5000);
     }
     function closeModal() {
-        if (window.parent) window.parent.postMessage('authCancel', '*');
-        // Also directly try to close the overlay (as backup)
+        if (window.parent && window.parent !== window) {
+            window.parent.postMessage('authCancel', '*');
+        }
+        // Also attempt direct modal hiding (backup)
         let modal = window.parent.document.getElementById('authModal');
         if (modal) modal.style.display = 'none';
     }
 
-    // Sign Up logic
+    // SIGN UP
     document.getElementById('signupBtn').onclick = async () => {
         let name = document.getElementById('signupName').value.trim();
         let phonePartial = document.getElementById('signupPhone').value.trim();
@@ -196,14 +198,15 @@
                 options: { data: { name, phone: fullPhone } }
             });
             if (error) throw error;
+            // Send to Google Sheet (optional, but keep)
             await fetch(SHEET_URL, {
                 method: 'POST', mode: 'no-cors',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name, phone: fullPhone, timestamp: new Date().toISOString() })
             });
             showMessage('signup', '✅ Account created! You are now signed in.', false);
-            if (window.parent) window.parent.postMessage('authSuccess', '*');
-            setTimeout(() => { if (window.parent) window.parent.location.reload(); }, 1000);
+            if (window.parent && window.parent !== window) window.parent.postMessage('authSuccess', '*');
+            setTimeout(() => { if (window.parent && window.parent !== window) window.parent.location.reload(); }, 1000);
         } catch (err) {
             console.error(err);
             showMessage('signup', '❌ ' + err.message, true);
@@ -211,7 +214,8 @@
             btn.disabled = false; btn.textContent = 'Create account';
         }
     };
-    // Sign In logic
+
+    // SIGN IN
     document.getElementById('signinBtn').onclick = async () => {
         let phonePartial = document.getElementById('signinPhone').value.trim();
         let password = document.getElementById('signinPassword').value;
@@ -227,8 +231,8 @@
             const { error } = await supabase.auth.signInWithPassword({ email, password });
             if (error) throw error;
             showMessage('signin', '✅ Signed in successfully!', false);
-            if (window.parent) window.parent.postMessage('authSuccess', '*');
-            setTimeout(() => { if (window.parent) window.parent.location.reload(); }, 1000);
+            if (window.parent && window.parent !== window) window.parent.postMessage('authSuccess', '*');
+            setTimeout(() => { if (window.parent && window.parent !== window) window.parent.location.reload(); }, 1000);
         } catch (err) {
             console.error(err);
             showMessage('signin', '❌ ' + err.message, true);
@@ -236,10 +240,12 @@
             btn.disabled = false; btn.textContent = 'Sign in';
         }
     };
-    // Later buttons
+
+    // LATER BUTTONS
     document.getElementById('laterSignupBtn').onclick = closeModal;
     document.getElementById('laterSigninBtn').onclick = closeModal;
-    // Tab switching
+
+    // TAB SWITCHING
     let tabSignup = document.getElementById('tabSignup');
     let tabSignin = document.getElementById('tabSignin');
     let panelSignup = document.getElementById('signupPanel');
