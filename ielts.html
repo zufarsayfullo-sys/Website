@@ -6,7 +6,6 @@
     <title>IELTS Help | English Flow</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* (copy your existing CSS from the previous working version - unchanged) */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
@@ -134,7 +133,6 @@
             padding-top: 1rem;
             border-top: 1px solid rgba(100,100,100,0.2);
         }
-        /* Modal overlays */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -157,15 +155,13 @@
             text-align: center;
             animation: fadeInScale 0.25s ease;
         }
-        input, .phone-wrapper {
-            width: 100%;
-            margin: 0.5rem 0;
-        }
         input {
+            width: 100%;
             padding: 0.8rem;
             border-radius: 60px;
             border: 1px solid #cbdde9;
             font-size: 1rem;
+            margin: 0.5rem 0;
         }
         .phone-wrapper {
             display: flex;
@@ -174,6 +170,7 @@
             border: 1px solid #cbdde9;
             border-radius: 60px;
             padding: 0 0.5rem;
+            margin: 0.5rem 0;
         }
         .flag { font-size: 1.5rem; margin-right: 0.2rem; }
         .prefix { font-weight: 500; margin-right: 0.2rem; }
@@ -291,7 +288,7 @@
     <footer>📖 English Flow – free IELTS preparation for every learner</footer>
 </div>
 
-<!-- SIGN UP MODAL -->
+<!-- SIGN UP MODAL (green) -->
 <div id="signupModal" class="modal-overlay">
     <div class="modal-card signup-modal">
         <div style="font-size:2rem;">📝</div>
@@ -301,6 +298,7 @@
             <span class="flag">🇺🇿</span><span class="prefix">+998</span>
             <input type="tel" id="signupPhone" class="phone-input" placeholder="90 123 45 67">
         </div>
+        <input type="email" id="signupEmail" placeholder="Email address">
         <input type="password" id="signupPassword" placeholder="Password">
         <button class="btn btn-primary" id="doSignupBtn">Create account</button>
         <button class="btn btn-secondary" id="laterSignupBtn">Maybe later</button>
@@ -308,15 +306,12 @@
     </div>
 </div>
 
-<!-- SIGN IN MODAL -->
+<!-- SIGN IN MODAL (white) -->
 <div id="signinModal" class="modal-overlay">
     <div class="modal-card">
         <div style="font-size:2rem;">🔐</div>
         <h2>Sign in</h2>
-        <div class="phone-wrapper">
-            <span class="flag">🇺🇿</span><span class="prefix">+998</span>
-            <input type="tel" id="signinPhone" class="phone-input" placeholder="90 123 45 67">
-        </div>
+        <input type="email" id="signinEmail" placeholder="Email address">
         <input type="password" id="signinPassword" placeholder="Password">
         <button class="btn" id="doSigninBtn">Sign in</button>
         <button class="btn btn-outline" id="laterSigninBtn">Cancel</button>
@@ -354,10 +349,6 @@
         function getFullPhone(partial) {
             return '+998' + partial.replace(/\D/g, '');
         }
-        function phoneToEmail(phone) {
-            let clean = phone.replace(/\+/g, 'p').replace(/[^a-zA-Z0-9]/g, '');
-            return clean + '@englishflow.auth';
-        }
 
         function showMessage(modal, text, isError) {
             let msgDiv = modal === 'signup' ? document.getElementById('signupMsg') : document.getElementById('signinMsg');
@@ -368,75 +359,53 @@
         function hideModal(id) { document.getElementById(id).style.display = 'none'; }
         function showModal(id) { document.getElementById(id).style.display = 'flex'; }
 
-        // Sign up with rate‑limit handling
-        let signupCooldown = false;
+        // ----- SIGN UP (email+password, phone only to Google Sheet) -----
         document.getElementById('doSignupBtn').onclick = async () => {
-            if (signupCooldown) {
-                showMessage('signup', '⏳ Please wait 30 seconds before trying again.', true);
-                return;
-            }
             const name = document.getElementById('signupName').value.trim();
             const phonePartial = document.getElementById('signupPhone').value.trim();
+            const email = document.getElementById('signupEmail').value.trim();
             const password = document.getElementById('signupPassword').value;
-            if (!name || !phonePartial || !password) {
+            if (!name || !phonePartial || !email || !password) {
                 showMessage('signup', '❌ Please fill all fields', true);
                 return;
             }
             const fullPhone = getFullPhone(phonePartial);
-            const email = phoneToEmail(fullPhone);
             const btn = document.getElementById('doSignupBtn');
-            btn.disabled = true;
-            btn.textContent = 'Creating...';
-            signupCooldown = true;
-            setTimeout(() => { signupCooldown = false; }, 30000);
-
+            btn.disabled = true; btn.textContent = 'Creating...';
             try {
-                const { error } = await supabase.auth.signUp({
+                // Create user in Supabase Auth (email+password only)
+                const { error: authError } = await supabase.auth.signUp({
                     email, password,
-                    options: { data: { name, phone: fullPhone } }
+                    options: { data: { name } } // only name, no phone in Supabase
                 });
-                if (error) {
-                    if (error.status === 429 || error.message.includes('rate limit')) {
-                        throw new Error('Too many sign‑up attempts. Please wait a minute and try again.');
-                    }
-                    throw error;
-                }
+                if (authError) throw authError;
+                // Send name, phone, email to Google Sheet
                 await fetch(SHEET_URL, {
                     method: 'POST', mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, phone: fullPhone, timestamp: new Date().toISOString() })
+                    body: JSON.stringify({ name, phone: fullPhone, email, timestamp: new Date().toISOString() })
                 });
                 showMessage('signup', '✅ Account created! You are now signed in.', false);
                 hideModal('signupModal');
                 setTimeout(() => location.reload(), 1000);
             } catch (err) {
                 console.error(err);
-                let errMsg = err.message;
-                if (errMsg.includes('already registered')) errMsg = 'This phone number is already registered. Please sign in instead.';
-                showMessage('signup', '❌ ' + errMsg, true);
-                // If error is not rate‑limit, enable button again but keep cooldown? Better to keep cooldown for 30s anyway.
-                btn.disabled = false;
-                btn.textContent = 'Create account';
-                signupCooldown = false; // allow immediate retry unless it's a rate limit
-                if (errMsg.includes('Too many')) signupCooldown = true; // keep cooldown for rate limit
+                let msg = err.message;
+                if (msg.includes('already registered')) msg = 'This email is already registered. Please sign in.';
+                showMessage('signup', '❌ ' + msg, true);
             } finally {
-                if (btn.disabled && !signupCooldown) {
-                    btn.disabled = false;
-                    btn.textContent = 'Create account';
-                }
+                btn.disabled = false; btn.textContent = 'Create account';
             }
         };
 
-        // Sign in
+        // ----- SIGN IN (email+password) -----
         document.getElementById('doSigninBtn').onclick = async () => {
-            const phonePartial = document.getElementById('signinPhone').value.trim();
+            const email = document.getElementById('signinEmail').value.trim();
             const password = document.getElementById('signinPassword').value;
-            if (!phonePartial || !password) {
-                showMessage('signin', '❌ Please enter phone and password', true);
+            if (!email || !password) {
+                showMessage('signin', '❌ Please enter email and password', true);
                 return;
             }
-            const fullPhone = getFullPhone(phonePartial);
-            const email = phoneToEmail(fullPhone);
             const btn = document.getElementById('doSigninBtn');
             btn.disabled = true; btn.textContent = 'Signing in...';
             try {
@@ -453,6 +422,7 @@
             }
         };
 
+        // Later / Cancel buttons
         document.getElementById('laterSignupBtn').onclick = () => hideModal('signupModal');
         document.getElementById('laterSigninBtn').onclick = () => hideModal('signinModal');
         document.getElementById('signupBtnTop').onclick = () => showModal('signupModal');
@@ -485,7 +455,7 @@
             finally { btn.disabled = false; btn.innerText = 'Submit'; }
         };
 
-        // Session check
+        // Session check: if not logged in, show signup modal after delay
         supabase.auth.getSession().then(({ data: { session } }) => {
             if (!session) setTimeout(() => showModal('signupModal'), 500);
         }).catch(console.error);
