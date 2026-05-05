@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Reading | English Flow</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        /* Copy your IELTS menu styles here (or link to a shared CSS) */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'DM Sans', sans-serif; background: #f9f7f4; color: #1a2744; line-height: 1.6; }
+        .hero { background: linear-gradient(135deg, #1a2744 0%, #243358 100%); }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; border-bottom: 1px solid rgba(255,255,255,0.1); flex-wrap: wrap; gap: 1rem; }
+        .logo { font-family: 'DM Serif Display', serif; color: white; font-size: 1.4rem; }
+        .logo-dot { color: #c9922a; }
+        .auth-buttons { display: flex; gap: 0.5rem; }
+        .btn-auth { padding: 0.45rem 1.1rem; border-radius: 40px; font-weight: 500; cursor: pointer; background: transparent; color: rgba(255,255,255,0.85); border: 1px solid rgba(255,255,255,0.3); }
+        .btn-signup { background: #c9922a; color: white; border: none; }
+        .user-badge { background: rgba(255,255,255,0.15); color: white; padding: 0.4rem 1rem; border-radius: 40px; display: inline-flex; align-items: center; gap: 0.5rem; }
+        .hero-banner { background: rgba(255,255,255,0.06); padding: 0.65rem 2rem; text-align: center; }
+        .hero-content { padding: 2rem 2rem 1.5rem; }
+        .hero-title { font-family: 'DM Serif Display', serif; font-size: clamp(2rem, 4vw, 3rem); color: white; }
+        .hero-subtitle { color: rgba(255,255,255,0.65); max-width: 600px; margin-top: 0.5rem; }
+        .quick-links { background: white; border-bottom: 1px solid rgba(26,39,68,0.1); padding: 0.75rem 2rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        .quick-link { padding: 0.4rem 0.9rem; border-radius: 40px; font-size: 0.82rem; font-weight: 500; text-decoration: none; color: #5a6a8a; border: 1px solid rgba(26,39,68,0.1); background: #f9f7f4; }
+        .quick-link.active { background: #1a2744; color: white; }
+        .main { max-width: 1280px; margin: 2rem auto; padding: 0 2rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
+        .passage-card { background: white; border-radius: 16px; border: 1px solid rgba(26,39,68,0.1); overflow: hidden; transition: all 0.2s; text-decoration: none; color: inherit; display: block; }
+        .passage-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,0.1); }
+        .card-body { padding: 1.25rem; }
+        .card-title { font-family: 'DM Serif Display', serif; font-size: 1.2rem; margin-bottom: 0.3rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+        .score-badge { background: #e8f5ee; color: #1e6e4e; padding: 0.2rem 0.6rem; border-radius: 40px; font-size: 0.7rem; font-weight: 600; white-space: nowrap; }
+        .score-badge.locked { background: #fef2f2; color: #b91c1c; }
+        .card-desc { font-size: 0.85rem; color: #5a6a8a; margin: 0.5rem 0; }
+        .card-footer { border-top: 1px solid rgba(26,39,68,0.05); padding: 0.75rem 1.25rem; background: #faf9f8; font-size: 0.75rem; color: #5a6a8a; display: flex; justify-content: space-between; }
+        .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #1a2744; color: white; padding: 0.7rem 1.5rem; border-radius: 40px; opacity: 0; transition: 0.3s; z-index: 3000; }
+        .toast.show { opacity: 1; }
+        @media (max-width: 640px) { .main { padding: 0 1rem; } .top-bar { padding: 0.75rem 1rem; } }
+    </style>
+</head>
+<body>
+
+<div class="hero">
+    <div class="top-bar">
+        <div class="logo">English<span class="logo-dot">Flow</span></div>
+        <div class="auth-buttons" id="authZone">
+            <button class="btn-auth btn-signin" id="signinBtn">Sign in</button>
+            <button class="btn-auth btn-signup" id="signupBtn">Sign up free</button>
+        </div>
+    </div>
+    <div class="hero-banner">
+        <p><span>Free Reading</span> — Improve your comprehension with real‑world passages. Your progress is saved when you sign in.</p>
+    </div>
+    <div class="hero-content">
+        <div class="hero-title">📚 Free Reading Library</div>
+        <div class="hero-subtitle">Build your reading skills with graded passages. Scores are saved when you sign in.</div>
+    </div>
+</div>
+
+<div class="quick-links">
+    <a href="index.html" class="quick-link">← Home</a>
+    <a href="free-reading.html" class="quick-link active">Free Reading</a>
+    <a href="ielts/listening.html" class="quick-link">Listening</a>
+    <a href="ielts/writing.html" class="quick-link">Writing</a>
+    <a href="ielts/speaking.html" class="quick-link">Speaking</a>
+</div>
+
+<div class="main" id="passagesContainer">
+    <div style="text-align: center; grid-column: 1/-1;">Loading passages...</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+    const SUPABASE_URL = 'https://evhceswvapszaghnvmxl.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGNlc3d2YXBzemFnaG52bXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3OTQwNzMsImV4cCI6MjA5MzM3MDA3M30.yV7tavgR7JKc45uSGtS8Lf6m1ZMuuvQ23hmAb8n6k3A';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    function toast(msg, isError = false) {
+        const el = document.getElementById('toast');
+        el.textContent = msg;
+        el.style.background = isError ? '#b91c1c' : '#1a2744';
+        el.classList.add('show');
+        setTimeout(() => el.classList.remove('show'), 3000);
+    }
+
+    async function loadReadingMenu() {
+        const container = document.getElementById('passagesContainer');
+        let passages = [];
+
+        // Load JSON from free-reading folder
+        try {
+            const response = await fetch('free-reading/passages.json');
+            if (!response.ok) throw new Error('JSON not found');
+            passages = await response.json();
+        } catch (err) {
+            container.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:red;">Error loading passages. Please check that free-reading/passages.json exists.</div>';
+            return;
+        }
+
+        if (!passages || passages.length === 0) {
+            container.innerHTML = '<div style="grid-column:1/-1; text-align:center;">No reading passages yet. Check back soon!</div>';
+            return;
+        }
+
+        // Get current user and their scores from Supabase
+        const { data: { session } } = await supabase.auth.getSession();
+        let scores = {};
+        if (session) {
+            const { data: userScores } = await supabase
+                .from('reading_scores')
+                .select('passage_id, score, total_questions')
+                .eq('user_id', session.user.id);
+            if (userScores) {
+                userScores.forEach(s => { scores[s.passage_id] = { score: s.score, total: s.total_questions }; });
+            }
+        }
+
+        // Build HTML
+        container.innerHTML = passages.map(p => {
+            const userScore = scores[p.id];
+            let scoreHtml = '';
+            if (session) {
+                if (userScore) {
+                    scoreHtml = `<span class="score-badge">✅ ${userScore.score}/${userScore.total}</span>`;
+                } else {
+                    scoreHtml = `<span class="score-badge locked">📝 Not started</span>`;
+                }
+            } else {
+                scoreHtml = `<span class="score-badge locked">🔒 Sign in to track</span>`;
+            }
+            return `
+                <a href="free-reading/${p.fileName}" class="passage-card">
+                    <div class="card-body">
+                        <div class="card-title">
+                            ${p.title}
+                            ${scoreHtml}
+                        </div>
+                        <div class="card-desc">${p.description || 'Passage with ' + p.totalQuestions + ' questions'}</div>
+                    </div>
+                    <div class="card-footer">
+                        <span>📄 ${p.totalQuestions} questions</span>
+                        <span>→ Start</span>
+                    </div>
+                </a>
+            `;
+        }).join('');
+    }
+
+    loadReadingMenu();
+
+    // Simple auth UI (replace with your actual modals)
+    async function updateAuth() {
+        const zone = document.getElementById('authZone');
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session && session.user) {
+            const name = session.user.user_metadata?.name || session.user.email;
+            const short = name.split(' ')[0];
+            zone.innerHTML = `<span class="user-badge">👋 ${short}</span>
+                              <button class="btn-auth" id="signoutBtn" style="background:transparent; border:1px solid white;">Sign out</button>`;
+            document.getElementById('signoutBtn')?.addEventListener('click', async () => {
+                await supabase.auth.signOut();
+                location.reload();
+            });
+        } else {
+            zone.innerHTML = `<button class="btn-auth btn-signin" id="signinBtn">Sign in</button>
+                              <button class="btn-auth btn-signup" id="signupBtn">Sign up free</button>`;
+            // Replace alerts with your modal logic
+            document.getElementById('signinBtn')?.addEventListener('click', () => alert('Sign in modal would open'));
+            document.getElementById('signupBtn')?.addEventListener('click', () => alert('Sign up modal would open'));
+        }
+    }
+    updateAuth();
+</script>
+</body>
+</html>
