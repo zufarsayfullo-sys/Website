@@ -6,12 +6,7 @@
     <title>IELTS Help | English Flow</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
             color: #1e293b;
@@ -25,7 +20,6 @@
             background-attachment: fixed;
             position: relative;
         }
-
         body::before {
             content: "";
             position: fixed;
@@ -37,9 +31,7 @@
             backdrop-filter: blur(2px);
             z-index: -1;
         }
-
         @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap');
-
         .container {
             max-width: 1200px;
             margin: 2rem auto;
@@ -47,10 +39,9 @@
             background: rgba(255, 255, 255, 0.7);
             backdrop-filter: blur(10px);
             border-radius: 48px;
-            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 25px 45px -12px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.6);
         }
-
         .top-bar {
             display: flex;
             justify-content: flex-end;
@@ -76,7 +67,6 @@
             background: rgba(255,255,255,0.9);
             transform: translateY(-2px);
         }
-
         .page-title {
             text-align: center;
             margin-bottom: 2rem;
@@ -93,7 +83,6 @@
             color: #2c5a7a;
             margin-top: 0.5rem;
         }
-
         .skills-grid {
             display: flex;
             flex-wrap: wrap;
@@ -102,28 +91,24 @@
             margin: 2rem 0;
         }
         .skill-card {
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255,255,255,0.95);
             border-radius: 36px;
             padding: 2rem 1.5rem;
             width: 240px;
             text-align: center;
-            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            cursor: pointer;
+            transition: all 0.3s;
             text-decoration: none;
             color: inherit;
             display: block;
-            box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 20px 30px -12px rgba(0,0,0,0.1);
             border: 1px solid rgba(255,255,255,0.8);
         }
         .skill-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 30px 40px -16px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 30px 40px -16px rgba(0,0,0,0.2);
             border-color: rgba(43,95,138,0.3);
         }
-        .skill-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
+        .skill-icon { font-size: 3rem; margin-bottom: 1rem; }
         .skill-card h3 {
             font-size: 1.6rem;
             font-weight: 700;
@@ -131,29 +116,16 @@
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
-            margin-bottom: 0.5rem;
         }
-        .skill-card p {
-            font-size: 0.85rem;
-            color: #4a5c6c;
-        }
-
         .back-home {
             display: inline-block;
             margin-top: 2rem;
-            background: rgba(44, 62, 80, 0.9);
+            background: rgba(44,62,80,0.9);
             color: white;
             padding: 0.6rem 1.5rem;
             border-radius: 40px;
             text-decoration: none;
-            font-weight: 500;
-            transition: 0.2s;
         }
-        .back-home:hover {
-            background: #1a2a3a;
-            transform: translateY(-2px);
-        }
-
         footer {
             text-align: center;
             font-size: 0.75rem;
@@ -162,8 +134,7 @@
             padding-top: 1rem;
             border-top: 1px solid rgba(100,100,100,0.2);
         }
-
-        /* Modal overlays (for auth, contact, comments) */
+        /* Modal overlays */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -171,7 +142,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0,0,0,0.6);
             backdrop-filter: blur(10px);
             align-items: center;
             justify-content: center;
@@ -219,9 +190,7 @@
             border-radius: 24px;
             border: 1px solid #cbdde9;
             font-family: inherit;
-            font-size: 0.9rem;
             margin: 1rem 0;
-            resize: vertical;
         }
         .btn {
             background: #2c3e50;
@@ -229,9 +198,7 @@
             border: none;
             padding: 0.6rem 1.5rem;
             border-radius: 40px;
-            font-weight: 500;
             cursor: pointer;
-            transition: 0.2s;
         }
         .btn-primary {
             background: white;
@@ -247,9 +214,6 @@
             color: #2c5a7a;
             border: 1px solid #2c5a7a;
         }
-        .btn:hover {
-            transform: scale(0.98);
-        }
         .signup-modal {
             background: #2e7d64;
             color: white;
@@ -263,9 +227,7 @@
             background: rgba(255,255,255,0.2);
             border: none;
         }
-        .signup-modal input::placeholder {
-            color: rgba(255,255,255,0.7);
-        }
+        .signup-modal input::placeholder { color: rgba(255,255,255,0.7); }
         .message {
             text-align: center;
             font-size: 0.85rem;
@@ -275,13 +237,10 @@
         }
         .error { background: #fef2f2; color: #b91c1c; }
         .success { background: #e0f2e9; color: #2e7d64; }
-
         @keyframes fadeInScale {
             from { opacity: 0; transform: scale(0.96); }
             to { opacity: 1; transform: scale(1); }
         }
-
-        /* Notification bubble */
         .notification {
             position: fixed;
             bottom: 20px;
@@ -290,33 +249,23 @@
             color: white;
             padding: 12px 20px;
             border-radius: 60px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             z-index: 1500;
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255,255,255,0.3);
-            animation: slideIn 0.3s ease;
-            cursor: pointer;
+            animation: slideIn 0.3s;
         }
         .notification button {
             background: none;
             border: none;
             color: white;
             margin-left: 12px;
-            font-weight: bold;
             cursor: pointer;
-            font-size: 1rem;
         }
         @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
         }
-
         @media (max-width: 640px) {
             .container { margin: 1rem; padding: 1.2rem; }
             .skill-card { width: 100%; max-width: 260px; }
-            .top-bar { justify-content: center; }
         }
     </style>
 </head>
@@ -325,41 +274,36 @@
     <div class="top-bar">
         <div class="top-item" id="contactBtn">📞 Contact details</div>
         <div class="top-item" id="commentsBtn">💬 Comments</div>
-        <div class="top-item" id="signinBtn">🔑 Sign in</div>
+        <div class="top-item" id="signupBtnTop">📝 Sign up</div>
+        <div class="top-item" id="signinBtnTop">🔑 Sign in</div>
     </div>
     <div class="page-title">
         <h1>🎯 IELTS Preparation</h1>
         <p>Master the 4 skills – Academic & General Training</p>
     </div>
     <div class="skills-grid">
-        <a href="ielts/listening.html" class="skill-card"><div class="skill-icon">🎧</div><h3>Listening</h3><p>Practice with real exam tasks, multiple accents, and time management</p></a>
-        <a href="ielts/reading.html" class="skill-card"><div class="skill-icon">📖</div><h3>Reading</h3><p>Academic & General passages, question types, skimming techniques</p></a>
-        <a href="ielts/writing.html" class="skill-card"><div class="skill-icon">✍️</div><h3>Writing</h3><p>Task 1 (graphs/letters) & Task 2 (essays) with model answers</p></a>
-        <a href="ielts/speaking.html" class="skill-card"><div class="skill-icon">🗣️</div><h3>Speaking</h3><p>Part 1,2,3 practice, fluency tips, and sample topics</p></a>
+        <a href="ielts/listening.html" class="skill-card"><div class="skill-icon">🎧</div><h3>Listening</h3><p>Practice with real exam tasks</p></a>
+        <a href="ielts/reading.html" class="skill-card"><div class="skill-icon">📖</div><h3>Reading</h3><p>Academic & General passages</p></a>
+        <a href="ielts/writing.html" class="skill-card"><div class="skill-icon">✍️</div><h3>Writing</h3><p>Task 1 & Task 2 essays</p></a>
+        <a href="ielts/speaking.html" class="skill-card"><div class="skill-icon">🗣️</div><h3>Speaking</h3><p>Part 1,2,3 practice</p></a>
     </div>
-    <div style="text-align: center;">
-        <a href="index.html" class="back-home">← Back to homepage</a>
-    </div>
-    <footer>
-        <p>📖 English Flow – free IELTS preparation for every learner</p>
-    </footer>
+    <div style="text-align: center;"><a href="index.html" class="back-home">← Back to homepage</a></div>
+    <footer>📖 English Flow – free IELTS preparation for every learner</footer>
 </div>
 
-<!-- SIGN UP MODAL (green, appears on load) -->
+<!-- SIGN UP MODAL (green) -->
 <div id="signupModal" class="modal-overlay">
-    <div class="modal-card signup-modal" style="background:#2e7d64; color:white;">
+    <div class="modal-card signup-modal">
         <div style="font-size:2rem;">📝</div>
         <h2>Join English Flow</h2>
-        <p>Sign up with your phone number</p>
         <input type="text" id="signupName" placeholder="Full name">
         <div class="phone-wrapper">
-            <span class="flag">🇺🇿</span>
-            <span class="prefix">+998</span>
+            <span class="flag">🇺🇿</span><span class="prefix">+998</span>
             <input type="tel" id="signupPhone" class="phone-input" placeholder="90 123 45 67">
         </div>
         <input type="password" id="signupPassword" placeholder="Password">
-        <button class="btn btn-primary" id="doSignupBtn" style="background:white; color:#2e7d64;">Create account</button>
-        <button class="btn btn-secondary" id="laterSignupBtn" style="background:transparent; border:1px solid white;">Maybe later</button>
+        <button class="btn btn-primary" id="doSignupBtn">Create account</button>
+        <button class="btn btn-secondary" id="laterSignupBtn">Maybe later</button>
         <div id="signupMsg" class="message"></div>
     </div>
 </div>
@@ -370,8 +314,7 @@
         <div style="font-size:2rem;">🔐</div>
         <h2>Sign in</h2>
         <div class="phone-wrapper">
-            <span class="flag">🇺🇿</span>
-            <span class="prefix">+998</span>
+            <span class="flag">🇺🇿</span><span class="prefix">+998</span>
             <input type="tel" id="signinPhone" class="phone-input" placeholder="90 123 45 67">
         </div>
         <input type="password" id="signinPassword" placeholder="Password">
@@ -385,10 +328,7 @@
 <div id="contactModal" class="modal-overlay">
     <div class="modal-card">
         <h3>📬 Reach me on</h3>
-        <div style="margin: 1rem 0;">
-            <a href="https://t.me/SAYFULLAEV_ZUFAR" target="_blank" class="btn" style="display:inline-block; margin:5px;">📱 Telegram</a>
-            <a href="https://www.instagram.com/sayfullaev.zufar/" target="_blank" class="btn" style="display:inline-block; margin:5px;">📸 Instagram</a>
-        </div>
+        <div><a href="https://t.me/SAYFULLAEV_ZUFAR" target="_blank" class="btn">📱 Telegram</a> <a href="https://www.instagram.com/sayfullaev.zufar/" target="_blank" class="btn">📸 Instagram</a></div>
         <button class="btn-outline" id="closeContactBtn">Close</button>
     </div>
 </div>
@@ -398,51 +338,41 @@
     <div class="modal-card">
         <div style="font-size:2rem;">💬</div>
         <h2>Help us improve</h2>
-        <p>Leave your comments about the website – suggestions, bugs, or anything else.</p>
-        <textarea id="commentText" rows="4" placeholder="Write your comments here..."></textarea>
-        <div class="modal-buttons" style="display:flex; gap:1rem; justify-content:center;">
-            <button class="btn" id="submitCommentBtn">Submit comment</button>
-            <button class="btn-outline" id="closeCommentsBtn">Cancel</button>
-        </div>
+        <textarea id="commentText" rows="4" placeholder="Write your comments..."></textarea>
+        <div><button class="btn" id="submitCommentBtn">Submit</button> <button class="btn-outline" id="closeCommentsBtn">Cancel</button></div>
     </div>
 </div>
 
 <script>
     (function() {
-        // Helper functions
+        // Supabase setup
         const supabase = window.supabase.createClient(
             'https://evhceswvapszaghnvmxl.supabase.co',
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGNlc3d2YXBzemFnaG52bXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3OTQwNzMsImV4cCI6MjA5MzM3MDA3M30.yV7tavgR7JKc45uSGtS8Lf6m1ZMuuvQ23hmAb8n6k3A'
         );
         const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzu5EGex28ZB01TjPhKvRUANTdtgoNvoHrC2LNBEsQF_jtwyBCu6DhpT7qLobF-RcUN/exec';
 
+        // Helper functions
         function getFullPhone(partial) {
             let digits = partial.replace(/\D/g, '');
             return '+998' + digits;
         }
         function phoneToEmail(phone) {
-            return phone.replace(/\+/g, 'p') + '@phone.local';
+            // Replace + with p, remove any other non-alphanumeric, then add @englishflow.auth
+            let clean = phone.replace(/\+/g, 'p').replace(/[^a-zA-Z0-9]/g, '');
+            return clean + '@englishflow.auth';
         }
+
         function showMessage(modal, text, isError) {
             let msgDiv = modal === 'signup' ? document.getElementById('signupMsg') : document.getElementById('signinMsg');
             msgDiv.textContent = text;
             msgDiv.className = 'message ' + (isError ? 'error' : 'success');
             setTimeout(() => { msgDiv.textContent = ''; msgDiv.className = 'message'; }, 5000);
         }
-        function hideModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-        }
-        function showModal(modalId) {
-            document.getElementById(modalId).style.display = 'flex';
-        }
+        function hideModal(id) { document.getElementById(id).style.display = 'none'; }
+        function showModal(id) { document.getElementById(id).style.display = 'flex'; }
 
-        // Get modal elements
-        const signupModal = document.getElementById('signupModal');
-        const signinModal = document.getElementById('signinModal');
-        const contactModal = document.getElementById('contactModal');
-        const commentsModal = document.getElementById('commentsModal');
-
-        // Sign Up logic
+        // ---- Sign Up ----
         document.getElementById('doSignupBtn').onclick = async () => {
             const name = document.getElementById('signupName').value.trim();
             const phonePartial = document.getElementById('signupPhone').value.trim();
@@ -477,7 +407,7 @@
             }
         };
 
-        // Sign In logic
+        // ---- Sign In ----
         document.getElementById('doSigninBtn').onclick = async () => {
             const phonePartial = document.getElementById('signinPhone').value.trim();
             const password = document.getElementById('signinPassword').value;
@@ -503,34 +433,26 @@
             }
         };
 
-        // "Maybe later" and "Cancel" buttons
-        document.getElementById('laterSignupBtn').onclick = () => {
-            hideModal('signupModal');
-        };
-        document.getElementById('laterSigninBtn').onclick = () => {
-            hideModal('signinModal');
-        };
+        // "Maybe later" and "Cancel"
+        document.getElementById('laterSignupBtn').onclick = () => hideModal('signupModal');
+        document.getElementById('laterSigninBtn').onclick = () => hideModal('signinModal');
 
-        // Top bar "Sign in" button -> show sign in modal
-        document.getElementById('signinBtn').onclick = () => {
-            showModal('signinModal');
-        };
+        // Top bar buttons
+        document.getElementById('signupBtnTop').onclick = () => showModal('signupModal');
+        document.getElementById('signinBtnTop').onclick = () => showModal('signinModal');
 
         // Contact modal
         document.getElementById('contactBtn').onclick = () => showModal('contactModal');
         document.getElementById('closeContactBtn').onclick = () => hideModal('contactModal');
-        contactModal.onclick = (e) => { if (e.target === contactModal) hideModal('contactModal'); };
+        document.getElementById('contactModal').onclick = (e) => { if (e.target === document.getElementById('contactModal')) hideModal('contactModal'); };
 
         // Comments modal
         document.getElementById('commentsBtn').onclick = () => showModal('commentsModal');
         document.getElementById('closeCommentsBtn').onclick = () => hideModal('commentsModal');
-        commentsModal.onclick = (e) => { if (e.target === commentsModal) hideModal('commentsModal'); };
+        document.getElementById('commentsModal').onclick = (e) => { if (e.target === document.getElementById('commentsModal')) hideModal('commentsModal'); };
         document.getElementById('submitCommentBtn').onclick = async () => {
             const comment = document.getElementById('commentText').value.trim();
-            if (!comment) {
-                alert('✏️ Please write something before submitting.');
-                return;
-            }
+            if (!comment) { alert('Please write something.'); return; }
             const btn = document.getElementById('submitCommentBtn');
             btn.disabled = true; btn.innerText = 'Saving...';
             try {
@@ -539,31 +461,25 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ comment, timestamp: new Date().toISOString() })
                 });
-                alert('✅ Thank you for your feedback!');
+                alert('Thank you for your feedback!');
                 hideModal('commentsModal');
                 document.getElementById('commentText').value = '';
-            } catch (err) {
-                console.error(err);
-                alert('❌ Sorry, an error occurred. Please try again later.');
-            } finally {
-                btn.disabled = false; btn.innerText = 'Submit comment';
-            }
+            } catch(err) { alert('Error. Try again.'); }
+            finally { btn.disabled = false; btn.innerText = 'Submit'; }
         };
 
-        // Check if user is logged in; if not, show signup modal after delay
+        // Session check: if not logged in, show signup modal after 0.5s
         supabase.auth.getSession().then(({ data: { session } }) => {
-            if (!session) {
-                setTimeout(() => showModal('signupModal'), 500);
-            }
-        }).catch(err => console.error('Session error:', err));
+            if (!session) setTimeout(() => showModal('signupModal'), 500);
+        }).catch(console.error);
 
         // Notification bubble
-        const notification = document.createElement('div');
-        notification.className = 'notification';
-        notification.innerHTML = '💬 Help us improve with your comments <button id="closeNotif">✕</button>';
-        document.body.appendChild(notification);
-        document.getElementById('closeNotif').onclick = () => notification.remove();
-        setTimeout(() => { if (notification.parentNode) notification.remove(); }, 5000);
+        let notif = document.createElement('div');
+        notif.className = 'notification';
+        notif.innerHTML = '💬 Help us improve with your comments <button id="closeNotif">✕</button>';
+        document.body.appendChild(notif);
+        document.getElementById('closeNotif').onclick = () => notif.remove();
+        setTimeout(() => { if (notif.parentNode) notif.remove(); }, 5000);
     })();
 </script>
 </body>
