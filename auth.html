@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Sign up / Sign in | English Flow</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        /* Card container */
+        .auth-container {
+            width: 100%;
+            max-width: 420px;
+            background: white;
+            border-radius: 48px;
+            box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* Tab buttons */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .tab-btn {
+            flex: 1;
+            background: none;
+            border: none;
+            padding: 1.2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            color: #5a6e7c;
+        }
+        .tab-btn.active {
+            color: #2e7d64;
+            border-bottom: 3px solid #2e7d64;
+            background: rgba(46, 125, 100, 0.05);
+        }
+
+        /* Form panels */
+        .form-panel {
+            padding: 2rem 1.8rem;
+            display: none;
+        }
+        .form-panel.active {
+            display: block;
+        }
+
+        /* Sign up panel (green theme override) */
+        .signup-panel {
+            background: #2e7d64;
+            color: white;
+            border-radius: 0 0 48px 48px;
+        }
+        .signup-panel input {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 60px;
+            margin: 0.5rem 0;
+            font-size: 1rem;
+            outline: none;
+        }
+        .signup-panel input::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+        .signup-panel .btn {
+            background: white;
+            color: #2e7d64;
+            width: 100%;
+            margin-top: 0.8rem;
+        }
+        .signup-panel p {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.8rem;
+        }
+
+        /* Sign in panel (white theme) */
+        .signin-panel {
+            background: white;
+            color: #1e293b;
+        }
+        .signin-panel input {
+            background: #f1f5f9;
+            border: 1px solid #cbdde9;
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 60px;
+            margin: 0.5rem 0;
+            font-size: 1rem;
+            outline: none;
+        }
+        .signin-panel .btn {
+            background: #2c3e50;
+            color: white;
+            width: 100%;
+            margin-top: 0.8rem;
+        }
+        .signin-panel p {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: #5a6e7c;
+        }
+
+        .btn {
+            border: none;
+            padding: 0.8rem;
+            border-radius: 60px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+        .btn:hover {
+            transform: scale(0.98);
+            opacity: 0.9;
+        }
+        .message {
+            text-align: center;
+            font-size: 0.85rem;
+            margin-top: 1rem;
+            padding: 0.5rem;
+            border-radius: 40px;
+        }
+        .error {
+            background: #fef2f2;
+            color: #b91c1c;
+        }
+        .success {
+            background: #e0f2e9;
+            color: #2e7d64;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+<div class="auth-container">
+    <div class="tabs">
+        <button class="tab-btn active" id="signupTab">Sign up</button>
+        <button class="tab-btn" id="signinTab">Sign in</button>
+    </div>
+
+    <!-- Sign Up Panel (green) -->
+    <div id="signupPanel" class="form-panel signup-panel active">
+        <input type="text" id="signupName" placeholder="Full name" autocomplete="name">
+        <input type="tel" id="signupPhone" placeholder="Phone number (e.g., +998901234567)" autocomplete="tel">
+        <input type="password" id="signupPassword" placeholder="Password" autocomplete="new-password">
+        <button class="btn" id="doSignupBtn">Create account</button>
+        <p>📖 Free, no spam, you’ll track your progress</p>
+        <div id="signupMessage" class="message"></div>
+    </div>
+
+    <!-- Sign In Panel (white) -->
+    <div id="signinPanel" class="form-panel signin-panel">
+        <input type="tel" id="signinPhone" placeholder="Phone number" autocomplete="tel">
+        <input type="password" id="signinPassword" placeholder="Password" autocomplete="current-password">
+        <button class="btn" id="doSigninBtn">Sign in</button>
+        <p>🔐 Use the same phone & password you registered with</p>
+        <div id="signinMessage" class="message"></div>
+    </div>
+</div>
+
+<script>
+    // ========================
+    // Supabase configuration
+    // ========================
+    const SUPABASE_URL = 'https://evhceswvapszaghnvmxl.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGNlc3d2YXBzemFnaG52bXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3OTQwNzMsImV4cCI6MjA5MzM3MDA3M30.yV7tavgR7JKc45uSGtS8Lf6m1ZMuuvQ23hmAb8n6k3A';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // Google Sheet Web App URL (for storing name + phone)
+    const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzu5EGex28ZB01TjPhKvRUANTdtgoNvoHrC2LNBEsQF_jtwyBCu6DhpT7qLobF-RcUN/exec';
+
+    // Convert phone number to unique email (e.g., +998901234567 → p998901234567@phone.local)
+    function phoneToEmail(phone) {
+        let clean = phone.replace(/\s/g, '').replace(/\+/g, 'p');
+        return `${clean}@phone.local`;
+    }
+
+    // Helper to show message in the active panel
+    function showMessage(panel, text, isError = true) {
+        const msgDiv = panel === 'signup' ? document.getElementById('signupMessage') : document.getElementById('signinMessage');
+        msgDiv.textContent = text;
+        msgDiv.className = `message ${isError ? 'error' : 'success'}`;
+        setTimeout(() => {
+            msgDiv.textContent = '';
+            msgDiv.className = 'message';
+        }, 4000);
+    }
+
+    // ========================
+    // SIGN UP LOGIC
+    // ========================
+    document.getElementById('doSignupBtn').onclick = async () => {
+        const name = document.getElementById('signupName').value.trim();
+        const phone = document.getElementById('signupPhone').value.trim();
+        const password = document.getElementById('signupPassword').value;
+
+        if (!name || !phone || !password) {
+            showMessage('signup', '❌ Please fill all fields', true);
+            return;
+        }
+
+        const email = phoneToEmail(phone);
+        const btn = document.getElementById('doSignupBtn');
+        btn.disabled = true;
+        btn.textContent = 'Creating account...';
+
+        try {
+            // 1. Create user in Supabase Auth
+            const { data: authData, error: authError } = await supabase.auth.signUp({
+                email: email,
+                password: password,
+                options: {
+                    data: { name, phone }
+                }
+            });
+            if (authError) throw authError;
+
+            // 2. Send name + phone to Google Sheet (for client base)
+            await fetch(SHEET_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, phone, timestamp: new Date().toISOString() })
+            });
+
+            showMessage('signup', `✅ Account created for ${name}! You are now signed in.`, false);
+            // Signal parent to close modal and reload the page
+            if (window.parent) {
+                // Tell parent to close the auth modal and refresh session
+                window.parent.postMessage('authSuccess', '*');
+            }
+            // Also close the modal from inside (if window.parent doesn't respond)
+            setTimeout(() => {
+                if (window.parent) window.parent.location.reload();
+            }, 1500);
+        } catch (err) {
+            console.error(err);
+            showMessage('signup', `❌ ${err.message}`, true);
+        } finally {
+            btn.disabled = false;
+            btn.textContent = 'Create account';
+        }
+    };
+
+    // ========================
+    // SIGN IN LOGIC
+    // ========================
+    document.getElementById('doSigninBtn').onclick = async () => {
+        const phone = document.getElementById('signinPhone').value.trim();
+        const password = document.getElementById('signinPassword').value;
+
+        if (!phone || !password) {
+            showMessage('signin', '❌ Please enter phone and password', true);
+            return;
+        }
+
+        const email = phoneToEmail(phone);
+        const btn = document.getElementById('doSigninBtn');
+        btn.disabled = true;
+        btn.textContent = 'Signing in...';
+
+        try {
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            if (error) throw error;
+
+            showMessage('signin', '✅ Signed in successfully!', false);
+            // Notify parent to close modal and refresh
+            if (window.parent) {
+                window.parent.postMessage('authSuccess', '*');
+            }
+            setTimeout(() => {
+                if (window.parent) window.parent.location.reload();
+            }, 1000);
+        } catch (err) {
+            console.error(err);
+            showMessage('signin', `❌ ${err.message}`, true);
+        } finally {
+            btn.disabled = false;
+            btn.textContent = 'Sign in';
+        }
+    };
+
+    // ========================
+    // TAB SWITCHING
+    // ========================
+    const signupTab = document.getElementById('signupTab');
+    const signinTab = document.getElementById('signinTab');
+    const signupPanel = document.getElementById('signupPanel');
+    const signinPanel = document.getElementById('signinPanel');
+
+    signupTab.onclick = () => {
+        signupTab.classList.add('active');
+        signinTab.classList.remove('active');
+        signupPanel.classList.add('active');
+        signinPanel.classList.remove('active');
+        // Clear messages
+        document.getElementById('signupMessage').textContent = '';
+        document.getElementById('signinMessage').textContent = '';
+    };
+    signinTab.onclick = () => {
+        signinTab.classList.add('active');
+        signupTab.classList.remove('active');
+        signinPanel.classList.add('active');
+        signupPanel.classList.remove('active');
+        document.getElementById('signupMessage').textContent = '';
+        document.getElementById('signinMessage').textContent = '';
+    };
+</script>
+</body>
+</html>
