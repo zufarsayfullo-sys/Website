@@ -133,7 +133,6 @@
             padding-top: 1rem;
             border-top: 1px solid rgba(100,100,100,0.2);
         }
-        /* Modal overlays – improved design */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -243,7 +242,6 @@
         }
         .error { background: #fef2f2; color: #b91c1c; }
         .success { background: #e0f2e9; color: #2e7d64; }
-        /* Custom thank you toast */
         .toast {
             position: fixed;
             bottom: 30px;
@@ -347,7 +345,7 @@
     </div>
 </div>
 
-<!-- CONTACT MODAL (improved design) -->
+<!-- CONTACT MODAL -->
 <div id="contactModal" class="modal-overlay">
     <div class="modal-card">
         <div style="font-size:2rem;">📬</div>
@@ -360,7 +358,7 @@
     </div>
 </div>
 
-<!-- COMMENTS MODAL (improved design) -->
+<!-- COMMENTS MODAL -->
 <div id="commentsModal" class="modal-overlay">
     <div class="modal-card">
         <div style="font-size:2rem;">💬</div>
@@ -380,7 +378,7 @@
             'https://evhceswvapszaghnvmxl.supabase.co',
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGNlc3d2YXBzemFnaG52bXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3OTQwNzMsImV4cCI6MjA5MzM3MDA3M30.yV7tavgR7JKc45uSGtS8Lf6m1ZMuuvQ23hmAb8n6k3A'
         );
-        const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzu5EGex28ZB01TjPhKvRUANTdtgoNvoHrC2LNBEsQF_jtwyBCu6DhpT7qLobF-RcUN/exec';
+        const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxo7Ftm_Kelr4T6PsmoA_VeeZxKVuNo_g7TRHmIxl5YHYl_R8QjqaKpZPyTlcDuo8o/exec';
 
         function getFullPhone(partial) {
             return '+998' + partial.replace(/\D/g, '');
@@ -402,7 +400,7 @@
         function hideModal(id) { document.getElementById(id).style.display = 'none'; }
         function showModal(id) { document.getElementById(id).style.display = 'flex'; }
 
-        // ----- SIGN UP (with rate limit handling) -----
+        // Sign up with rate limiting
         let signupCooldown = false;
         document.getElementById('doSignupBtn').onclick = async () => {
             if (signupCooldown) {
@@ -436,8 +434,10 @@
                 }
                 await fetch(SHEET_URL, {
                     method: 'POST', mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, phone: fullPhone, email, timestamp: new Date().toISOString() })
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({
+                        name, phone: fullPhone, email, timestamp: new Date().toISOString()
+                    })
                 });
                 showMessage('signup', '✅ Account created! You are now signed in.', false);
                 hideModal('signupModal');
@@ -457,7 +457,7 @@
             }
         };
 
-        // ----- SIGN IN (email+password) -----
+        // Sign in
         document.getElementById('doSigninBtn').onclick = async () => {
             const email = document.getElementById('signinEmail').value.trim();
             const password = document.getElementById('signinPassword').value;
@@ -486,12 +486,12 @@
         document.getElementById('signupBtnTop').onclick = () => showModal('signupModal');
         document.getElementById('signinBtnTop').onclick = () => showModal('signinModal');
 
-        // ----- CONTACT MODAL -----
+        // Contact modal
         document.getElementById('contactBtn').onclick = () => showModal('contactModal');
         document.getElementById('closeContactBtn').onclick = () => hideModal('contactModal');
         document.getElementById('contactModal').onclick = (e) => { if (e.target === document.getElementById('contactModal')) hideModal('contactModal'); };
 
-        // ----- COMMENTS MODAL (with better toast and retry) -----
+        // Comments modal – fixed to match console test
         const commentsModal = document.getElementById('commentsModal');
         const commentText = document.getElementById('commentText');
         const submitBtn = document.getElementById('submitCommentBtn');
@@ -509,18 +509,16 @@
             submitBtn.disabled = true;
             submitBtn.innerText = 'Sending...';
             try {
-                // Use fetch with no-cors but also add a timestamp to help debugging
-                const response = await fetch(SHEET_URL, {
+                const formData = new URLSearchParams();
+                formData.append('comment', comment);
+                formData.append('timestamp', new Date().toISOString());
+                formData.append('page', 'IELTS');
+
+                await fetch(SHEET_URL, {
                     method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        comment: comment,
-                        timestamp: new Date().toISOString(),
-                        page: 'IELTS'
-                    })
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: formData
                 });
-                // Because mode: 'no-cors', we cannot read response status, but we assume success if no network error.
                 showToast('✨ Thank you for your feedback! We appreciate your help.', false);
                 hideModal('commentsModal');
                 commentText.value = '';
@@ -533,12 +531,12 @@
             }
         };
 
-        // ----- SESSION CHECK -----
+        // Session check
         supabase.auth.getSession().then(({ data: { session } }) => {
             if (!session) setTimeout(() => showModal('signupModal'), 500);
         }).catch(console.error);
 
-        // ----- NOTIFICATION BUBBLE -----
+        // Notification bubble
         let notif = document.createElement('div');
         notif.className = 'notification';
         notif.innerHTML = '💬 Help us improve with your comments <button id="closeNotif">✕</button>';
