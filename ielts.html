@@ -355,105 +355,85 @@
 
 <script>
     (function() {
-        // Helper to show/hide modals
-        function showModal(modal) { if (modal) modal.style.display = 'flex'; }
-        function hideModal(modal) { if (modal) modal.style.display = 'none'; }
-
-        // Supabase initialization (only for session check)
-        const SUPABASE_URL = 'https://evhceswvapszaghnvmxl.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGNlc3d2YXBzemFnaG52bXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3OTQwNzMsImV4cCI6MjA5MzM3MDA3M30.yV7tavgR7JKc45uSGtS8Lf6m1ZMuuvQ23hmAb8n6k3A';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-        // DOM elements
-        const contactBtn = document.getElementById('contactBtn');
-        const commentsBtn = document.getElementById('commentsBtn');
-        const signinBtn = document.getElementById('signinBtn');
+        // Helper functions to show/hide modals
+        const authModal = document.getElementById('authModal');
         const contactModal = document.getElementById('contactModal');
         const commentsModal = document.getElementById('commentsModal');
-        const authModal = document.getElementById('authModal');
-        const closeContactBtn = document.getElementById('closeContactBtn');
-        const closeCommentsBtn = document.getElementById('closeCommentsBtn');
-        const submitCommentBtn = document.getElementById('submitCommentBtn');
-        const commentText = document.getElementById('commentText');
+        const showModal = (modal) => { if (modal) modal.style.display = 'flex'; };
+        const hideModal = (modal) => { if (modal) modal.style.display = 'none'; };
 
-        // Modal functions
-        function openAuthModal() { showModal(authModal); }
-        function closeAuthModal() { hideModal(authModal); }
+        // Button listeners
+        document.getElementById('contactBtn').onclick = () => showModal(contactModal);
+        document.getElementById('commentsBtn').onclick = () => showModal(commentsModal);
+        document.getElementById('signinBtn').onclick = () => showModal(authModal);
 
-        // Event listeners for buttons
-        if (contactBtn) contactBtn.onclick = () => showModal(contactModal);
-        if (commentsBtn) commentsBtn.onclick = () => showModal(commentsModal);
-        if (signinBtn) signinBtn.onclick = openAuthModal;
+        // Close buttons for contact and comments
+        document.getElementById('closeContactBtn').onclick = () => hideModal(contactModal);
+        document.getElementById('closeCommentsBtn').onclick = () => hideModal(commentsModal);
 
-        if (closeContactBtn) closeContactBtn.onclick = () => hideModal(contactModal);
-        if (closeCommentsBtn) closeCommentsBtn.onclick = () => hideModal(commentsModal);
-        if (contactModal) contactModal.onclick = (e) => { if (e.target === contactModal) hideModal(contactModal); };
-        if (commentsModal) commentsModal.onclick = (e) => { if (e.target === commentsModal) hideModal(commentsModal); };
-        if (authModal) authModal.onclick = (e) => { if (e.target === authModal) closeAuthModal(); };
+        // Close modals when clicking outside the content
+        contactModal.onclick = (e) => { if (e.target === contactModal) hideModal(contactModal); };
+        commentsModal.onclick = (e) => { if (e.target === commentsModal) hideModal(commentsModal); };
+        authModal.onclick = (e) => { if (e.target === authModal) hideModal(authModal); };
+
+        // Supabase client for session check only
+        const supabase = window.supabase.createClient(
+            'https://evhceswvapszaghnvmxl.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGNlc3d2YXBzemFnaG52bXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3OTQwNzMsImV4cCI6MjA5MzM3MDA3M30.yV7tavgR7JKc45uSGtS8Lf6m1ZMuuvQ23hmAb8n6k3A'
+        );
+
+        // Check if user is logged in; if not, show auth modal after delay
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            if (!session) setTimeout(() => showModal(authModal), 500);
+        }).catch(err => console.error('Session error:', err));
+
+        // Listen for messages from auth.html (iframe)
+        window.addEventListener('message', (event) => {
+            if (event.data === 'authSuccess') {
+                hideModal(authModal);
+                location.reload(); // Reload to reflect logged-in state
+            } else if (event.data === 'authCancel') {
+                hideModal(authModal);
+            }
+        });
 
         // Comments submission to Google Sheet
         const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzu5EGex28ZB01TjPhKvRUANTdtgoNvoHrC2LNBEsQF_jtwyBCu6DhpT7qLobF-RcUN/exec';
-        if (submitCommentBtn) {
-            submitCommentBtn.onclick = async () => {
-                const comment = commentText.value.trim();
-                if (!comment) {
-                    alert('✏️ Please write something before submitting.');
-                    return;
-                }
-                submitCommentBtn.disabled = true;
-                submitCommentBtn.innerText = 'Saving...';
-                try {
-                    await fetch(SHEET_URL, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ comment, timestamp: new Date().toISOString() })
-                    });
-                    alert('✅ Thank you for your feedback!');
-                    hideModal(commentsModal);
-                    commentText.value = '';
-                } catch (err) {
-                    console.error(err);
-                    alert('❌ Sorry, an error occurred. Please try again later.');
-                } finally {
-                    submitCommentBtn.disabled = false;
-                    submitCommentBtn.innerText = 'Submit comment';
-                }
-            };
-        }
-
-        // Check session: if not logged in, show auth modal after a short delay
-        async function checkSession() {
+        const submitBtn = document.getElementById('submitCommentBtn');
+        const commentText = document.getElementById('commentText');
+        submitBtn.onclick = async () => {
+            const comment = commentText.value.trim();
+            if (!comment) {
+                alert('✏️ Please write something before submitting.');
+                return;
+            }
+            submitBtn.disabled = true;
+            submitBtn.innerText = 'Saving...';
             try {
-                const { data: { session } } = await supabase.auth.getSession();
-                if (!session) {
-                    setTimeout(openAuthModal, 500);
-                } else {
-                    console.log('User already logged in');
-                }
+                await fetch(SHEET_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ comment, timestamp: new Date().toISOString() })
+                });
+                alert('✅ Thank you for your feedback!');
+                hideModal(commentsModal);
+                commentText.value = '';
             } catch (err) {
-                console.error('Session check error:', err);
-                // Still show auth modal if there's an error (e.g., guest)
-                setTimeout(openAuthModal, 500);
+                console.error(err);
+                alert('❌ Sorry, an error occurred. Please try again later.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'Submit comment';
             }
-        }
-        checkSession();
-
-        // Listen for success message from auth.html (iframe)
-        window.addEventListener('message', (event) => {
-            if (event.data === 'authSuccess') {
-                closeAuthModal();
-                location.reload();
-            }
-        });
+        };
 
         // Notification bubble
         const notification = document.createElement('div');
         notification.className = 'notification';
         notification.innerHTML = '💬 Help us improve with your comments <button id="closeNotif">✕</button>';
         document.body.appendChild(notification);
-        const closeNotif = document.getElementById('closeNotif');
-        if (closeNotif) closeNotif.onclick = () => notification.remove();
+        document.getElementById('closeNotif').onclick = () => notification.remove();
         setTimeout(() => { if (notification.parentNode) notification.remove(); }, 5000);
     })();
 </script>
