@@ -193,45 +193,9 @@
             background: white;
             border-radius: 48px;
         }
-        @keyframes fadeInScale {
-            from { opacity: 0; transform: scale(0.96); }
-            to { opacity: 1; transform: scale(1); }
-        }
 
-        /* Notification bubble */
-        .notification {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #a3d9a5;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 60px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            z-index: 1500;
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255,255,255,0.3);
-            animation: slideIn 0.3s ease;
-            cursor: pointer;
-        }
-        .notification button {
-            background: none;
-            border: none;
-            color: white;
-            margin-left: 12px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 1rem;
-        }
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        /* Contact & Comments modals (basic) */
-        .overlay {
+        /* Contact & Comments modals */
+        .modal-overlay {
             display: none;
             position: fixed;
             top: 0;
@@ -286,6 +250,43 @@
             background: #eef2f6;
         }
 
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.96); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Notification bubble */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #a3d9a5;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 60px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1500;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.3);
+            animation: slideIn 0.3s ease;
+            cursor: pointer;
+        }
+        .notification button {
+            background: none;
+            border: none;
+            color: white;
+            margin-left: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
         @media (max-width: 640px) {
             .container { margin: 1rem; padding: 1.2rem; }
             .skill-card { width: 100%; max-width: 260px; }
@@ -327,7 +328,7 @@
 </div>
 
 <!-- Contact Modal -->
-<div id="contactModal" class="overlay">
+<div id="contactModal" class="modal-overlay">
     <div class="modal-card">
         <h3>📬 Reach me on</h3>
         <div style="margin: 1rem 0;">
@@ -339,7 +340,7 @@
 </div>
 
 <!-- Comments Modal -->
-<div id="commentsModal" class="overlay">
+<div id="commentsModal" class="modal-overlay">
     <div class="modal-card">
         <div style="font-size:2rem;">💬</div>
         <h2>Help us improve</h2>
@@ -353,106 +354,108 @@
 </div>
 
 <script>
-    // ========================
-    // Supabase init (for session check only)
-    // ========================
-    const SUPABASE_URL = 'https://evhceswvapszaghnvmxl.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGNlc3d2YXBzemFnaG52bXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3OTQwNzMsImV4cCI6MjA5MzM3MDA3M30.yV7tavgR7JKc45uSGtS8Lf6m1ZMuuvQ23hmAb8n6k3A';
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    (function() {
+        // Helper to show/hide modals
+        function showModal(modal) { if (modal) modal.style.display = 'flex'; }
+        function hideModal(modal) { if (modal) modal.style.display = 'none'; }
 
-    // Auth modal elements
-    const authModal = document.getElementById('authModal');
-    function openAuthModal() { authModal.style.display = 'flex'; }
-    function closeAuthModal() { authModal.style.display = 'none'; }
+        // Supabase initialization (only for session check)
+        const SUPABASE_URL = 'https://evhceswvapszaghnvmxl.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGNlc3d2YXBzemFnaG52bXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3OTQwNzMsImV4cCI6MjA5MzM3MDA3M30.yV7tavgR7JKc45uSGtS8Lf6m1ZMuuvQ23hmAb8n6k3A';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // Check if user is already logged in – if not, show auth modal
-    async function checkSession() {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session) {
-            setTimeout(() => openAuthModal(), 500);
+        // DOM elements
+        const contactBtn = document.getElementById('contactBtn');
+        const commentsBtn = document.getElementById('commentsBtn');
+        const signinBtn = document.getElementById('signinBtn');
+        const contactModal = document.getElementById('contactModal');
+        const commentsModal = document.getElementById('commentsModal');
+        const authModal = document.getElementById('authModal');
+        const closeContactBtn = document.getElementById('closeContactBtn');
+        const closeCommentsBtn = document.getElementById('closeCommentsBtn');
+        const submitCommentBtn = document.getElementById('submitCommentBtn');
+        const commentText = document.getElementById('commentText');
+
+        // Modal functions
+        function openAuthModal() { showModal(authModal); }
+        function closeAuthModal() { hideModal(authModal); }
+
+        // Event listeners for buttons
+        if (contactBtn) contactBtn.onclick = () => showModal(contactModal);
+        if (commentsBtn) commentsBtn.onclick = () => showModal(commentsModal);
+        if (signinBtn) signinBtn.onclick = openAuthModal;
+
+        if (closeContactBtn) closeContactBtn.onclick = () => hideModal(contactModal);
+        if (closeCommentsBtn) closeCommentsBtn.onclick = () => hideModal(commentsModal);
+        if (contactModal) contactModal.onclick = (e) => { if (e.target === contactModal) hideModal(contactModal); };
+        if (commentsModal) commentsModal.onclick = (e) => { if (e.target === commentsModal) hideModal(commentsModal); };
+        if (authModal) authModal.onclick = (e) => { if (e.target === authModal) closeAuthModal(); };
+
+        // Comments submission to Google Sheet
+        const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzu5EGex28ZB01TjPhKvRUANTdtgoNvoHrC2LNBEsQF_jtwyBCu6DhpT7qLobF-RcUN/exec';
+        if (submitCommentBtn) {
+            submitCommentBtn.onclick = async () => {
+                const comment = commentText.value.trim();
+                if (!comment) {
+                    alert('✏️ Please write something before submitting.');
+                    return;
+                }
+                submitCommentBtn.disabled = true;
+                submitCommentBtn.innerText = 'Saving...';
+                try {
+                    await fetch(SHEET_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ comment, timestamp: new Date().toISOString() })
+                    });
+                    alert('✅ Thank you for your feedback!');
+                    hideModal(commentsModal);
+                    commentText.value = '';
+                } catch (err) {
+                    console.error(err);
+                    alert('❌ Sorry, an error occurred. Please try again later.');
+                } finally {
+                    submitCommentBtn.disabled = false;
+                    submitCommentBtn.innerText = 'Submit comment';
+                }
+            };
         }
-    }
-    checkSession();
 
-    // Sign in button in top bar
-    document.getElementById('signinBtn').onclick = openAuthModal;
-
-    // Close modal when clicking outside the iframe area
-    authModal.onclick = (e) => {
-        if (e.target === authModal) closeAuthModal();
-    };
-
-    // Listen for success message from auth.html (iframe)
-    window.addEventListener('message', (event) => {
-        if (event.data === 'authSuccess') {
-            closeAuthModal();
-            location.reload(); // refresh to reflect logged-in state
+        // Check session: if not logged in, show auth modal after a short delay
+        async function checkSession() {
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (!session) {
+                    setTimeout(openAuthModal, 500);
+                } else {
+                    console.log('User already logged in');
+                }
+            } catch (err) {
+                console.error('Session check error:', err);
+                // Still show auth modal if there's an error (e.g., guest)
+                setTimeout(openAuthModal, 500);
+            }
         }
-    });
+        checkSession();
 
-    // ========================
-    // Contact Modal
-    // ========================
-    const contactModal = document.getElementById('contactModal');
-    const contactBtn = document.getElementById('contactBtn');
-    const closeContactBtn = document.getElementById('closeContactBtn');
-    contactBtn.onclick = () => contactModal.style.display = 'flex';
-    closeContactBtn.onclick = () => contactModal.style.display = 'none';
-    contactModal.onclick = (e) => { if (e.target === contactModal) contactModal.style.display = 'none'; };
+        // Listen for success message from auth.html (iframe)
+        window.addEventListener('message', (event) => {
+            if (event.data === 'authSuccess') {
+                closeAuthModal();
+                location.reload();
+            }
+        });
 
-    // ========================
-    // Comments Modal + Google Sheets
-    // ========================
-    const commentsModal = document.getElementById('commentsModal');
-    const commentsBtn = document.getElementById('commentsBtn');
-    const closeCommentsBtn = document.getElementById('closeCommentsBtn');
-    const commentText = document.getElementById('commentText');
-    const submitCommentBtn = document.getElementById('submitCommentBtn');
-
-    function closeComments() {
-        commentsModal.style.display = 'none';
-        commentText.value = '';
-    }
-    commentsBtn.onclick = () => commentsModal.style.display = 'flex';
-    closeCommentsBtn.onclick = closeComments;
-    commentsModal.onclick = (e) => { if (e.target === commentsModal) closeComments(); };
-
-    const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzu5EGex28ZB01TjPhKvRUANTdtgoNvoHrC2LNBEsQF_jtwyBCu6DhpT7qLobF-RcUN/exec';
-    submitCommentBtn.onclick = async () => {
-        const comment = commentText.value.trim();
-        if (!comment) {
-            alert('✏️ Please write something before submitting.');
-            return;
-        }
-        submitCommentBtn.disabled = true;
-        submitCommentBtn.innerText = 'Saving...';
-        try {
-            await fetch(SHEET_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ comment, timestamp: new Date().toISOString() })
-            });
-            alert('✅ Thank you for your feedback!');
-            closeComments();
-        } catch (err) {
-            console.error(err);
-            alert('❌ Sorry, an error occurred. Please try again later.');
-        } finally {
-            submitCommentBtn.disabled = false;
-            submitCommentBtn.innerText = 'Submit comment';
-        }
-    };
-
-    // ========================
-    // Notification bubble (on load)
-    // ========================
-    const notification = document.createElement('div');
-    notification.className = 'notification';
-    notification.innerHTML = '💬 Help us improve with your comments <button id="closeNotif">✕</button>';
-    document.body.appendChild(notification);
-    document.getElementById('closeNotif').onclick = () => notification.remove();
-    setTimeout(() => { if (notification.parentNode) notification.remove(); }, 5000);
+        // Notification bubble
+        const notification = document.createElement('div');
+        notification.className = 'notification';
+        notification.innerHTML = '💬 Help us improve with your comments <button id="closeNotif">✕</button>';
+        document.body.appendChild(notification);
+        const closeNotif = document.getElementById('closeNotif');
+        if (closeNotif) closeNotif.onclick = () => notification.remove();
+        setTimeout(() => { if (notification.parentNode) notification.remove(); }, 5000);
+    })();
 </script>
 </body>
 </html>
