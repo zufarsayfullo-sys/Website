@@ -6,6 +6,7 @@
     <title>IELTS Help | English Flow</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
+        /* (copy your existing CSS from the previous working version - unchanged) */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
@@ -16,7 +17,6 @@
             flex-direction: column;
             background-image: url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop');
             background-size: cover;
-            background-position: center;
             background-attachment: fixed;
             position: relative;
         }
@@ -291,7 +291,7 @@
     <footer>📖 English Flow – free IELTS preparation for every learner</footer>
 </div>
 
-<!-- SIGN UP MODAL (green) -->
+<!-- SIGN UP MODAL -->
 <div id="signupModal" class="modal-overlay">
     <div class="modal-card signup-modal">
         <div style="font-size:2rem;">📝</div>
@@ -308,7 +308,7 @@
     </div>
 </div>
 
-<!-- SIGN IN MODAL (white) -->
+<!-- SIGN IN MODAL -->
 <div id="signinModal" class="modal-overlay">
     <div class="modal-card">
         <div style="font-size:2rem;">🔐</div>
@@ -345,20 +345,16 @@
 
 <script>
     (function() {
-        // Supabase setup
         const supabase = window.supabase.createClient(
             'https://evhceswvapszaghnvmxl.supabase.co',
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGNlc3d2YXBzemFnaG52bXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3OTQwNzMsImV4cCI6MjA5MzM3MDA3M30.yV7tavgR7JKc45uSGtS8Lf6m1ZMuuvQ23hmAb8n6k3A'
         );
         const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzu5EGex28ZB01TjPhKvRUANTdtgoNvoHrC2LNBEsQF_jtwyBCu6DhpT7qLobF-RcUN/exec';
 
-        // Helper functions
         function getFullPhone(partial) {
-            let digits = partial.replace(/\D/g, '');
-            return '+998' + digits;
+            return '+998' + partial.replace(/\D/g, '');
         }
         function phoneToEmail(phone) {
-            // Replace + with p, remove any other non-alphanumeric, then add @englishflow.auth
             let clean = phone.replace(/\+/g, 'p').replace(/[^a-zA-Z0-9]/g, '');
             return clean + '@englishflow.auth';
         }
@@ -372,8 +368,13 @@
         function hideModal(id) { document.getElementById(id).style.display = 'none'; }
         function showModal(id) { document.getElementById(id).style.display = 'flex'; }
 
-        // ---- Sign Up ----
+        // Sign up with rate‑limit handling
+        let signupCooldown = false;
         document.getElementById('doSignupBtn').onclick = async () => {
+            if (signupCooldown) {
+                showMessage('signup', '⏳ Please wait 30 seconds before trying again.', true);
+                return;
+            }
             const name = document.getElementById('signupName').value.trim();
             const phonePartial = document.getElementById('signupPhone').value.trim();
             const password = document.getElementById('signupPassword').value;
@@ -384,13 +385,22 @@
             const fullPhone = getFullPhone(phonePartial);
             const email = phoneToEmail(fullPhone);
             const btn = document.getElementById('doSignupBtn');
-            btn.disabled = true; btn.textContent = 'Creating...';
+            btn.disabled = true;
+            btn.textContent = 'Creating...';
+            signupCooldown = true;
+            setTimeout(() => { signupCooldown = false; }, 30000);
+
             try {
                 const { error } = await supabase.auth.signUp({
                     email, password,
                     options: { data: { name, phone: fullPhone } }
                 });
-                if (error) throw error;
+                if (error) {
+                    if (error.status === 429 || error.message.includes('rate limit')) {
+                        throw new Error('Too many sign‑up attempts. Please wait a minute and try again.');
+                    }
+                    throw error;
+                }
                 await fetch(SHEET_URL, {
                     method: 'POST', mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
@@ -401,13 +411,23 @@
                 setTimeout(() => location.reload(), 1000);
             } catch (err) {
                 console.error(err);
-                showMessage('signup', '❌ ' + err.message, true);
+                let errMsg = err.message;
+                if (errMsg.includes('already registered')) errMsg = 'This phone number is already registered. Please sign in instead.';
+                showMessage('signup', '❌ ' + errMsg, true);
+                // If error is not rate‑limit, enable button again but keep cooldown? Better to keep cooldown for 30s anyway.
+                btn.disabled = false;
+                btn.textContent = 'Create account';
+                signupCooldown = false; // allow immediate retry unless it's a rate limit
+                if (errMsg.includes('Too many')) signupCooldown = true; // keep cooldown for rate limit
             } finally {
-                btn.disabled = false; btn.textContent = 'Create account';
+                if (btn.disabled && !signupCooldown) {
+                    btn.disabled = false;
+                    btn.textContent = 'Create account';
+                }
             }
         };
 
-        // ---- Sign In ----
+        // Sign in
         document.getElementById('doSigninBtn').onclick = async () => {
             const phonePartial = document.getElementById('signinPhone').value.trim();
             const password = document.getElementById('signinPassword').value;
@@ -433,11 +453,8 @@
             }
         };
 
-        // "Maybe later" and "Cancel"
         document.getElementById('laterSignupBtn').onclick = () => hideModal('signupModal');
         document.getElementById('laterSigninBtn').onclick = () => hideModal('signinModal');
-
-        // Top bar buttons
         document.getElementById('signupBtnTop').onclick = () => showModal('signupModal');
         document.getElementById('signinBtnTop').onclick = () => showModal('signinModal');
 
@@ -468,7 +485,7 @@
             finally { btn.disabled = false; btn.innerText = 'Submit'; }
         };
 
-        // Session check: if not logged in, show signup modal after 0.5s
+        // Session check
         supabase.auth.getSession().then(({ data: { session } }) => {
             if (!session) setTimeout(() => showModal('signupModal'), 500);
         }).catch(console.error);
