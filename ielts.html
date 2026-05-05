@@ -1,549 +1,1286 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>IELTS Help | English Flow</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
-            color: #1e293b;
-            line-height: 1.5;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            background-image: url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop');
-            background-size: cover;
-            background-attachment: fixed;
-            position: relative;
-        }
-        body::before {
-            content: "";
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(2px);
-            z-index: -1;
-        }
-        @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap');
-        .container {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 2rem;
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(10px);
-            border-radius: 48px;
-            box-shadow: 0 25px 45px -12px rgba(0,0,0,0.2);
-            border: 1px solid rgba(255,255,255,0.6);
-        }
-        .top-bar {
-            display: flex;
-            justify-content: flex-end;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-            border-bottom: 1px solid rgba(0,0,0,0.1);
-            padding-bottom: 1rem;
-        }
-        .top-item {
-            background: rgba(255,255,255,0.6);
-            backdrop-filter: blur(4px);
-            padding: 0.5rem 1rem;
-            border-radius: 60px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: #1e4a76;
-            border: 1px solid rgba(43,95,138,0.2);
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .top-item:hover {
-            background: rgba(255,255,255,0.9);
-            transform: translateY(-2px);
-        }
-        .page-title {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-        .page-title h1 {
-            font-size: 2.5rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #1E2A3E, #2B5F8A);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-        }
-        .page-title p {
-            color: #2c5a7a;
-            margin-top: 0.5rem;
-        }
-        .skills-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 2rem;
-            justify-content: center;
-            margin: 2rem 0;
-        }
-        .skill-card {
-            background: rgba(255,255,255,0.95);
-            border-radius: 36px;
-            padding: 2rem 1.5rem;
-            width: 240px;
-            text-align: center;
-            transition: all 0.3s;
-            text-decoration: none;
-            color: inherit;
-            display: block;
-            box-shadow: 0 20px 30px -12px rgba(0,0,0,0.1);
-            border: 1px solid rgba(255,255,255,0.8);
-        }
-        .skill-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 30px 40px -16px rgba(0,0,0,0.2);
-            border-color: rgba(43,95,138,0.3);
-        }
-        .skill-icon { font-size: 3rem; margin-bottom: 1rem; }
-        .skill-card h3 {
-            font-size: 1.6rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #1F3B4C, #2C5A7A);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-        }
-        .back-home {
-            display: inline-block;
-            margin-top: 2rem;
-            background: rgba(44,62,80,0.9);
-            color: white;
-            padding: 0.6rem 1.5rem;
-            border-radius: 40px;
-            text-decoration: none;
-        }
-        footer {
-            text-align: center;
-            font-size: 0.75rem;
-            color: #3b5c7a;
-            margin-top: 2rem;
-            padding-top: 1rem;
-            border-top: 1px solid rgba(100,100,100,0.2);
-        }
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(10px);
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-        }
-        .modal-card {
-            background: white;
-            border-radius: 48px;
-            max-width: 450px;
-            width: 90%;
-            padding: 2rem;
-            text-align: center;
-            animation: fadeInScale 0.25s ease;
-            box-shadow: 0 25px 40px -12px rgba(0,0,0,0.3);
-        }
-        input {
-            width: 100%;
-            padding: 0.8rem;
-            border-radius: 60px;
-            border: 1px solid #cbdde9;
-            font-size: 1rem;
-            margin: 0.5rem 0;
-        }
-        .phone-wrapper {
-            display: flex;
-            align-items: center;
-            background: #f1f5f9;
-            border: 1px solid #cbdde9;
-            border-radius: 60px;
-            padding: 0 0.5rem;
-            margin: 0.5rem 0;
-        }
-        .flag { font-size: 1.5rem; margin-right: 0.2rem; }
-        .prefix { font-weight: 500; margin-right: 0.2rem; }
-        .phone-input {
-            flex: 1;
-            background: transparent !important;
-            border: none !important;
-            padding: 0.8rem 0 !important;
-            margin: 0 !important;
-        }
-        textarea {
-            width: 100%;
-            padding: 0.8rem;
-            border-radius: 24px;
-            border: 1px solid #cbdde9;
-            font-family: inherit;
-            margin: 1rem 0;
-            resize: vertical;
-        }
-        .btn {
-            background: #2c3e50;
-            color: white;
-            border: none;
-            padding: 0.6rem 1.5rem;
-            border-radius: 40px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: 0.2s;
-        }
-        .btn:hover {
-            transform: scale(0.98);
-            opacity: 0.9;
-        }
-        .btn-primary {
-            background: white;
-            color: #2e7d64;
-        }
-        .btn-secondary {
-            background: transparent;
-            color: white;
-            border: 1px solid white;
-        }
-        .btn-outline {
-            background: transparent;
-            color: #2c5a7a;
-            border: 1px solid #2c5a7a;
-        }
-        .signup-modal {
-            background: #2e7d64;
-            color: white;
-        }
-        .signup-modal input {
-            background: rgba(255,255,255,0.2);
-            border: none;
-            color: white;
-        }
-        .signup-modal .phone-wrapper {
-            background: rgba(255,255,255,0.2);
-            border: none;
-        }
-        .signup-modal input::placeholder { color: rgba(255,255,255,0.7); }
-        .message {
-            text-align: center;
-            font-size: 0.85rem;
-            margin-top: 1rem;
-            padding: 0.5rem;
-            border-radius: 40px;
-        }
-        .error { background: #fef2f2; color: #b91c1c; }
-        .success { background: #e0f2e9; color: #2e7d64; }
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #2e7d64;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 60px;
-            font-weight: 500;
-            z-index: 2500;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            animation: fadeInUp 0.3s ease;
-        }
-        @keyframes fadeInScale {
-            from { opacity: 0; transform: scale(0.96); }
-            to { opacity: 1; transform: scale(1); }
-        }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px) translateX(-50%); }
-            to { opacity: 1; transform: translateY(0) translateX(-50%); }
-        }
-        .notification {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #a3d9a5;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 60px;
-            z-index: 1500;
-            animation: slideIn 0.3s;
-        }
-        .notification button {
-            background: none;
-            border: none;
-            color: white;
-            margin-left: 12px;
-            cursor: pointer;
-        }
-        @keyframes slideIn {
-            from { transform: translateX(100%); }
-            to { transform: translateX(0); }
-        }
-        @media (max-width: 640px) {
-            .container { margin: 1rem; padding: 1.2rem; }
-            .skill-card { width: 100%; max-width: 260px; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IELTS Preparation | English Flow</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root {
+    --navy: #1a2744;
+    --navy-mid: #243358;
+    --sky: #2e6fad;
+    --sky-light: #e8f2fc;
+    --gold: #c9922a;
+    --gold-light: #fdf3e3;
+    --cream: #f9f7f4;
+    --surface: #ffffff;
+    --text: #1a2744;
+    --text-muted: #5a6a8a;
+    --border: rgba(26,39,68,0.1);
+    --green: #1e6e4e;
+    --green-light: #e8f5ee;
+    --radius: 16px;
+    --radius-lg: 24px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  /* === HERO HEADER === */
+  .hero {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 60%, #1f4a7a 100%);
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -40%;
+    right: -10%;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(46,111,173,0.25) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -30%;
+    left: 5%;
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,146,42,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* === TOP BAR === */
+  .top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 2rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    position: relative;
+    z-index: 10;
+  }
+
+  .logo {
+    font-family: 'DM Serif Display', serif;
+    color: white;
+    font-size: 1.4rem;
+    letter-spacing: -0.02em;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .logo-dot { color: var(--gold); }
+
+  .auth-buttons {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .btn-auth {
+    padding: 0.45rem 1.1rem;
+    border-radius: 40px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+    border: none;
+  }
+
+  .btn-signin {
+    background: transparent;
+    color: rgba(255,255,255,0.85);
+    border: 1px solid rgba(255,255,255,0.3);
+  }
+
+  .btn-signin:hover {
+    background: rgba(255,255,255,0.1);
+    color: white;
+  }
+
+  .btn-signup {
+    background: var(--gold);
+    color: white;
+  }
+
+  .btn-signup:hover {
+    background: #b8821e;
+    transform: translateY(-1px);
+  }
+
+  .user-badge {
+    background: rgba(255,255,255,0.15);
+    color: white;
+    padding: 0.4rem 1rem;
+    border-radius: 40px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    display: none;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .btn-signout {
+    background: transparent;
+    color: rgba(255,255,255,0.7);
+    border: 1px solid rgba(255,255,255,0.2);
+    font-size: 0.78rem;
+    padding: 0.35rem 0.8rem;
+  }
+
+  .btn-signout:hover { color: white; background: rgba(255,255,255,0.1); }
+
+  /* === BANNER TEXT === */
+  .hero-banner {
+    padding: 0.65rem 2rem;
+    background: rgba(255,255,255,0.06);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    text-align: center;
+    position: relative;
+    z-index: 10;
+  }
+
+  .hero-banner p {
+    color: rgba(255,255,255,0.75);
+    font-size: 0.82rem;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+  }
+
+  .hero-banner span { color: var(--gold); font-weight: 500; }
+
+  /* === HERO CONTENT === */
+  .hero-content {
+    padding: 2.5rem 2rem 2rem;
+    position: relative;
+    z-index: 10;
+  }
+
+  .hero-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    color: white;
+    line-height: 1.15;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.02em;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .hero-subtitle {
+    color: rgba(255,255,255,0.65);
+    font-size: 1rem;
+    max-width: 540px;
+    font-weight: 300;
+  }
+
+  .hero-pills {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 1.25rem;
+  }
+
+  .pill {
+    background: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.8);
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 0.3rem 0.85rem;
+    border-radius: 40px;
+    font-size: 0.78rem;
+    font-weight: 500;
+  }
+
+  /* === QUICK LINKS BAR === */
+  .quick-links {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0.75rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .quick-link {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.4rem 0.9rem;
+    border-radius: 40px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    background: var(--cream);
+  }
+
+  .quick-link:hover {
+    background: var(--sky-light);
+    color: var(--sky);
+    border-color: rgba(46,111,173,0.2);
+  }
+
+  .quick-link.active {
+    background: var(--navy);
+    color: white;
+    border-color: var(--navy);
+  }
+
+  /* === MAIN LAYOUT === */
+  .main {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 768px) {
+    .main { grid-template-columns: 1fr; padding: 1rem; }
+    .hero-content { padding: 1.5rem 1rem 1.5rem; }
+    .top-bar { padding: 0.75rem 1rem; }
+  }
+
+  /* === SECTION PANELS === */
+  .panel {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .panel-header {
+    padding: 1.25rem 1.5rem 1rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .panel-badge {
+    padding: 0.3rem 0.8rem;
+    border-radius: 40px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .badge-free {
+    background: var(--green-light);
+    color: var(--green);
+  }
+
+  .badge-premium {
+    background: var(--gold-light);
+    color: var(--gold);
+  }
+
+  .panel-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.2rem;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+
+  .panel-subtitle {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    margin-top: 0.2rem;
+  }
+
+  .panel-body {
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  /* === FEATURE CARDS === */
+  .feat {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.1rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    text-decoration: none;
+    color: inherit;
+    background: var(--cream);
+    transition: all 0.22s;
+    cursor: pointer;
+  }
+
+  .feat:hover {
+    border-color: var(--sky);
+    background: var(--sky-light);
+    transform: translateX(4px);
+  }
+
+  .feat.premium:hover {
+    border-color: var(--gold);
+    background: var(--gold-light);
+  }
+
+  .feat.locked {
+    opacity: 0.7;
+    cursor: default;
+  }
+
+  .feat.locked:hover {
+    transform: none;
+    border-color: var(--border);
+    background: var(--cream);
+  }
+
+  .feat-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+  }
+
+  .icon-free { background: var(--green-light); }
+  .icon-premium { background: var(--gold-light); }
+
+  .feat-info { flex: 1; min-width: 0; }
+
+  .feat-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--text);
+  }
+
+  .feat-desc {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: 0.1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .feat-arrow {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    flex-shrink: 0;
+    transition: transform 0.2s;
+  }
+
+  .feat:hover .feat-arrow { transform: translateX(3px); color: var(--sky); }
+  .feat.premium:hover .feat-arrow { color: var(--gold); }
+
+  .lock-icon {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    flex-shrink: 0;
+  }
+
+  /* === MODALS === */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(10,20,40,0.55);
+    backdrop-filter: blur(6px);
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    padding: 1rem;
+  }
+
+  .modal-overlay.active { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border-radius: 28px;
+    width: 100%;
+    max-width: 420px;
+    padding: 2rem;
+    animation: popIn 0.25s ease;
+    box-shadow: 0 24px 48px rgba(0,0,0,0.18);
+    border: 1px solid var(--border);
+  }
+
+  @keyframes popIn {
+    from { opacity: 0; transform: scale(0.95) translateY(10px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .modal-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .modal-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+
+  .modal-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.5rem;
+    color: var(--text);
+  }
+
+  .modal-sub {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+  }
+
+  .form-group { margin-bottom: 0.75rem; }
+
+  .form-label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-bottom: 0.35rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .form-input {
+    width: 100%;
+    padding: 0.7rem 1rem;
+    border-radius: 12px;
+    border: 1.5px solid var(--border);
+    font-size: 0.92rem;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    background: var(--cream);
+    transition: border-color 0.2s;
+    outline: none;
+  }
+
+  .form-input:focus { border-color: var(--sky); background: white; }
+
+  .phone-row {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    background: var(--cream);
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .phone-row:focus-within { border-color: var(--sky); background: white; }
+
+  .phone-prefix {
+    padding: 0.7rem 0.75rem;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    background: transparent;
+    white-space: nowrap;
+    border-right: 1.5px solid var(--border);
+    user-select: none;
+  }
+
+  .phone-input {
+    flex: 1;
+    padding: 0.7rem 0.8rem;
+    border: none;
+    background: transparent;
+    font-size: 0.92rem;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    outline: none;
+  }
+
+  .form-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 1.25rem;
+  }
+
+  .btn-form {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 12px;
+    border: none;
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.2s;
+  }
+
+  .btn-form-primary { background: var(--navy); color: white; }
+  .btn-form-primary:hover { background: #111c36; }
+
+  .btn-form-ghost {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1.5px solid var(--border);
+  }
+
+  .btn-form-ghost:hover { background: var(--cream); color: var(--text); }
+
+  .form-msg {
+    font-size: 0.8rem;
+    text-align: center;
+    padding: 0.5rem;
+    border-radius: 8px;
+    margin-top: 0.5rem;
+    display: none;
+  }
+
+  .form-msg.show { display: block; }
+  .form-msg.error { background: #fef2f2; color: #b91c1c; }
+  .form-msg.success { background: var(--green-light); color: var(--green); }
+
+  .modal-switch {
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 1rem;
+  }
+
+  .modal-switch a {
+    color: var(--sky);
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  /* === SUPPORT CARD === */
+  .support-section {
+    max-width: 1280px;
+    margin: 0 auto 2rem;
+    padding: 0 2rem;
+  }
+
+  .support-card {
+    background: linear-gradient(135deg, #1a2744, #243358);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem 2rem;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+  }
+
+  .support-left h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.2rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .support-left p {
+    color: rgba(255,255,255,0.65);
+    font-size: 0.85rem;
+  }
+
+  .support-card-number {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 12px;
+    padding: 0.75rem 1.25rem;
+    text-align: center;
+  }
+
+  .card-label {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.3rem;
+  }
+
+  .card-number {
+    font-family: 'DM Mono', 'Courier New', monospace;
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: var(--gold);
+  }
+
+  .card-name {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.6);
+    margin-top: 0.25rem;
+  }
+
+  /* === COMMENTS SECTION === */
+  .comments-section {
+    max-width: 1280px;
+    margin: 0 auto 2rem;
+    padding: 0 2rem;
+  }
+
+  .section-heading {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.4rem;
+    color: var(--text);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .comments-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+
+  @media (max-width: 640px) {
+    .comments-grid { grid-template-columns: 1fr; }
+    .support-section, .comments-section { padding: 0 1rem; }
+    .support-card { flex-direction: column; text-align: center; }
+  }
+
+  .comment-submit-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+  }
+
+  .comment-submit-card textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    color: var(--text);
+    background: var(--cream);
+    resize: vertical;
+    min-height: 90px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .comment-submit-card textarea:focus { border-color: var(--sky); background: white; }
+
+  .btn-send {
+    margin-top: 0.75rem;
+    background: var(--navy);
+    color: white;
+    border: none;
+    padding: 0.6rem 1.5rem;
+    border-radius: 40px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.2s;
+  }
+
+  .btn-send:hover { background: #111c36; transform: translateY(-1px); }
+
+  .comments-display {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    overflow-y: auto;
+    max-height: 260px;
+  }
+
+  .no-comments {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    padding: 2rem 0;
+  }
+
+  .comment-item {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .comment-item:last-child { border-bottom: none; }
+
+  .comment-meta {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-bottom: 0.25rem;
+  }
+
+  .comment-text {
+    font-size: 0.88rem;
+    color: var(--text);
+  }
+
+  /* === CONTACT BAR === */
+  .contact-bar {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 0.75rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    max-width: 100%;
+  }
+
+  .contact-links { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+  .contact-link {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.9rem;
+    border-radius: 40px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+  }
+
+  .contact-link:hover { background: var(--sky-light); color: var(--sky); border-color: rgba(46,111,173,0.25); }
+
+  .footer-copy {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  /* === TOAST === */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--navy);
+    color: white;
+    padding: 0.7rem 1.5rem;
+    border-radius: 40px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    z-index: 3000;
+    opacity: 0;
+    transition: all 0.3s;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .toast.error { background: #b91c1c; }
+  .toast.success { background: var(--green); }
+
+  /* === PREMIUM UPSELL === */
+  .upsell-note {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--gold-light);
+    border: 1px solid rgba(201,146,42,0.2);
+    border-radius: 12px;
+    padding: 0.65rem 1rem;
+    font-size: 0.8rem;
+    color: #7a5a14;
+    margin-bottom: 0.5rem;
+  }
+</style>
 </head>
 <body>
-<div class="container">
-    <div class="top-bar">
-        <div class="top-item" id="contactBtn">📞 Contact details</div>
-        <div class="top-item" id="commentsBtn">💬 Comments</div>
-        <div class="top-item" id="signupBtnTop">📝 Sign up</div>
-        <div class="top-item" id="signinBtnTop">🔑 Sign in</div>
+
+<!-- HERO SECTION -->
+<div class="hero">
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div class="logo">
+      English<span class="logo-dot">Flow</span>
     </div>
-    <div class="page-title">
-        <h1>🎯 IELTS Preparation</h1>
-        <p>Master the 4 skills – Academic & General Training</p>
+    <div class="auth-buttons" id="authZone">
+      <button class="btn-auth btn-signin" id="signinBtn">Sign in</button>
+      <button class="btn-auth btn-signup" id="signupBtn">Sign up free</button>
     </div>
-    <div class="skills-grid">
-        <a href="ielts/listening.html" class="skill-card"><div class="skill-icon">🎧</div><h3>Listening</h3><p>Practice with real exam tasks</p></a>
-        <a href="ielts/reading.html" class="skill-card"><div class="skill-icon">📖</div><h3>Reading</h3><p>Academic & General passages</p></a>
-        <a href="ielts/writing.html" class="skill-card"><div class="skill-icon">✍️</div><h3>Writing</h3><p>Task 1 & Task 2 essays</p></a>
-        <a href="ielts/speaking.html" class="skill-card"><div class="skill-icon">🗣️</div><h3>Speaking</h3><p>Part 1,2,3 practice</p></a>
+  </div>
+
+  <!-- PLATFORM DESCRIPTION BANNER -->
+  <div class="hero-banner">
+    <p>
+      <span>English Flow</span> is a free IELTS preparation platform built for ambitious students who want to study smarter — offering real exam-style practice, AI-powered writing feedback, and structured learning paths for Academic &amp; General Training.
+    </p>
+  </div>
+
+  <!-- HERO CONTENT -->
+  <div class="hero-content">
+    <div class="hero-title">Prepare for IELTS<br>with <em>confidence.</em></div>
+    <div class="hero-subtitle">
+      Structured practice across all 4 skills. Free resources for every student, with premium tools for those who want to go further.
     </div>
-    <div style="text-align: center;"><a href="index.html" class="back-home">← Back to homepage</a></div>
-    <footer>📖 English Flow – free IELTS preparation for every learner</footer>
+    <div class="hero-pills">
+      <span class="pill">Academic Training</span>
+      <span class="pill">General Training</span>
+      <span class="pill">All 4 Skills</span>
+      <span class="pill">Score Tracking</span>
+    </div>
+  </div>
+
 </div>
 
-<!-- SIGN UP MODAL (green) -->
-<div id="signupModal" class="modal-overlay">
-    <div class="modal-card signup-modal">
-        <div style="font-size:2rem;">📝</div>
-        <h2>Join English Flow</h2>
-        <input type="text" id="signupName" placeholder="Full name">
-        <div class="phone-wrapper">
-            <span class="flag">🇺🇿</span><span class="prefix">+998</span>
-            <input type="tel" id="signupPhone" class="phone-input" placeholder="90 123 45 67">
+<!-- QUICK LINKS -->
+<div class="quick-links">
+  <a href="index.html" class="quick-link">← Home</a>
+  <a href="ielts/listening.html" class="quick-link">Listening</a>
+  <a href="ielts/reading.html" class="quick-link">Reading</a>
+  <a href="ielts/writing.html" class="quick-link">Writing</a>
+  <a href="ielts/speaking.html" class="quick-link">Speaking</a>
+  <span class="quick-link active">All Features</span>
+</div>
+
+<!-- MAIN TWO-COLUMN LAYOUT -->
+<div class="main">
+
+  <!-- LEFT: FREE FEATURES -->
+  <div class="panel">
+    <div class="panel-header">
+      <div>
+        <span class="panel-badge badge-free">Free</span>
+        <div class="panel-title" style="margin-top:0.4rem;">Free Features</div>
+        <div class="panel-subtitle">Available to all students, no account required</div>
+      </div>
+    </div>
+    <div class="panel-body">
+
+      <a href="ielts/reading.html" class="feat">
+        <div class="feat-icon icon-free">📖</div>
+        <div class="feat-info">
+          <div class="feat-name">Reading Practice</div>
+          <div class="feat-desc">Academic & General passages with questions</div>
         </div>
-        <input type="email" id="signupEmail" placeholder="Email address">
-        <input type="password" id="signupPassword" placeholder="Password">
-        <button class="btn btn-primary" id="doSignupBtn">Create account</button>
-        <button class="btn btn-secondary" id="laterSignupBtn">Maybe later</button>
-        <div id="signupMsg" class="message"></div>
-    </div>
-</div>
+        <span class="feat-arrow">→</span>
+      </a>
 
-<!-- SIGN IN MODAL (white) -->
-<div id="signinModal" class="modal-overlay">
-    <div class="modal-card">
-        <div style="font-size:2rem;">🔐</div>
-        <h2>Sign in</h2>
-        <input type="email" id="signinEmail" placeholder="Email address">
-        <input type="password" id="signinPassword" placeholder="Password">
-        <button class="btn" id="doSigninBtn">Sign in</button>
-        <button class="btn btn-outline" id="laterSigninBtn">Cancel</button>
-        <div id="signinMsg" class="message"></div>
-    </div>
-</div>
-
-<!-- CONTACT MODAL -->
-<div id="contactModal" class="modal-overlay">
-    <div class="modal-card">
-        <div style="font-size:2rem;">📬</div>
-        <h3 style="margin-bottom:1rem;">Get in touch</h3>
-        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin: 1rem 0;">
-            <a href="https://t.me/SAYFULLAEV_ZUFAR" target="_blank" class="btn" style="display:inline-flex; align-items:center; gap:6px;">📱 Telegram</a>
-            <a href="https://www.instagram.com/sayfullaev.zufar/" target="_blank" class="btn" style="display:inline-flex; align-items:center; gap:6px;">📸 Instagram</a>
+      <a href="ielts/writing-questions.html" class="feat">
+        <div class="feat-icon icon-free">📝</div>
+        <div class="feat-info">
+          <div class="feat-name">Recent Writing Questions</div>
+          <div class="feat-desc">Latest Task 1 & Task 2 topics from exam reports</div>
         </div>
-        <button class="btn-outline" id="closeContactBtn" style="margin-top:0.5rem;">Close</button>
+        <span class="feat-arrow">→</span>
+      </a>
+
+      <a href="ielts/speaking-questions.html" class="feat">
+        <div class="feat-icon icon-free">💬</div>
+        <div class="feat-info">
+          <div class="feat-name">Recent Speaking Questions</div>
+          <div class="feat-desc">Part 1, 2 & 3 prompts from recent exam cycles</div>
+        </div>
+        <span class="feat-arrow">→</span>
+      </a>
+
+      <a href="ielts/listening.html" class="feat">
+        <div class="feat-icon icon-free">🎧</div>
+        <div class="feat-info">
+          <div class="feat-name">Listening Practice</div>
+          <div class="feat-desc">Section 1–4 audio tasks with answer keys</div>
+        </div>
+        <span class="feat-arrow">→</span>
+      </a>
+
     </div>
+  </div>
+
+  <!-- RIGHT: PREMIUM FEATURES -->
+  <div class="panel">
+    <div class="panel-header">
+      <div>
+        <span class="panel-badge badge-premium">Premium</span>
+        <div class="panel-title" style="margin-top:0.4rem;">Premium Features</div>
+        <div class="panel-subtitle">Advanced tools to push your score higher</div>
+      </div>
+    </div>
+    <div class="panel-body">
+
+      <div class="upsell-note">
+        ✦ Support the platform to unlock all premium tools
+      </div>
+
+      <div class="feat premium locked" title="Upgrade to access">
+        <div class="feat-icon icon-premium">✍️</div>
+        <div class="feat-info">
+          <div class="feat-name">Writing Checking</div>
+          <div class="feat-desc">AI-powered feedback on Task 1 &amp; Task 2 essays</div>
+        </div>
+        <span class="lock-icon">🔒</span>
+      </div>
+
+      <div class="feat premium locked" title="Upgrade to access">
+        <div class="feat-icon icon-premium">🗣️</div>
+        <div class="feat-info">
+          <div class="feat-name">Speaking Practice</div>
+          <div class="feat-desc">Live simulation with pronunciation feedback</div>
+        </div>
+        <span class="lock-icon">🔒</span>
+      </div>
+
+      <div class="feat premium locked" title="Upgrade to access">
+        <div class="feat-icon icon-premium">📋</div>
+        <div class="feat-info">
+          <div class="feat-name">Full Mock Exam</div>
+          <div class="feat-desc">Timed complete exam across all 4 skills</div>
+        </div>
+        <span class="lock-icon">🔒</span>
+      </div>
+
+      <div class="feat premium locked" title="Upgrade to access">
+        <div class="feat-icon icon-premium">📚</div>
+        <div class="feat-info">
+          <div class="feat-name">Real-Exam Reading Passages</div>
+          <div class="feat-desc">Authentic passages from official exam banks</div>
+        </div>
+        <span class="lock-icon">🔒</span>
+      </div>
+
+      <div class="feat premium locked" title="Upgrade to access">
+        <div class="feat-icon icon-premium">🎙️</div>
+        <div class="feat-info">
+          <div class="feat-name">Real-Exam Listening</div>
+          <div class="feat-desc">Original recordings matching exam difficulty</div>
+        </div>
+        <span class="lock-icon">🔒</span>
+      </div>
+
+    </div>
+  </div>
+
 </div>
 
-<!-- COMMENTS MODAL -->
-<div id="commentsModal" class="modal-overlay">
-    <div class="modal-card">
-        <div style="font-size:2rem;">💬</div>
-        <h2>Your feedback matters</h2>
-        <p style="color:#4a5c6c; margin-bottom:0.5rem;">Help us improve the website – suggestions, bug reports, or just a hello.</p>
-        <textarea id="commentText" rows="4" placeholder="Write your comments here..."></textarea>
-        <div style="display: flex; gap: 1rem; justify-content: center;">
-            <button class="btn" id="submitCommentBtn">Send feedback</button>
-            <button class="btn-outline" id="closeCommentsBtn">Cancel</button>
-        </div>
+<!-- SUPPORT CARD SECTION -->
+<div class="support-section">
+  <div class="support-card">
+    <div class="support-left">
+      <h3>Support English Flow</h3>
+      <p>Your support keeps this platform free for students. Even a small contribution helps us build more features.</p>
     </div>
+    <div class="support-card-number">
+      <div class="card-label">Card number (Uzcard)</div>
+      <div class="card-number">9860 0801 6498 1690</div>
+      <div class="card-name">Z. S.</div>
+    </div>
+  </div>
+</div>
+
+<!-- COMMENTS SECTION -->
+<div class="comments-section">
+  <div class="section-heading">💬 Student Feedback</div>
+  <div class="comments-grid">
+
+    <div class="comment-submit-card">
+      <div style="font-weight:600; font-size:0.95rem; margin-bottom:0.75rem; color:var(--text);">Share your thoughts</div>
+      <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.75rem;">Bug reports, suggestions, or just a hello — all welcome.</p>
+      <textarea id="commentText" placeholder="Write your comment here..."></textarea>
+      <button class="btn-send" id="submitComment">Send feedback →</button>
+    </div>
+
+    <div class="comments-display" id="commentsDisplay">
+      <div class="no-comments" id="noComments">No comments yet. Be the first! 👋</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER CONTACT BAR -->
+<div class="contact-bar">
+  <div class="contact-links">
+    <a href="https://t.me/SAYFULLAEV_ZUFAR" target="_blank" class="contact-link">📱 Telegram</a>
+    <a href="https://www.instagram.com/sayfullaev.zufar/" target="_blank" class="contact-link">📸 Instagram</a>
+  </div>
+  <div class="footer-copy">📖 English Flow — free IELTS preparation for every learner</div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- SIGN IN MODAL -->
+<div class="modal-overlay" id="signinModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-icon">🔐</div>
+      <div class="modal-title">Welcome back</div>
+      <div class="modal-sub">Sign in to track your progress</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email</label>
+      <input type="email" id="siEmail" class="form-input" placeholder="you@example.com">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <input type="password" id="siPass" class="form-input" placeholder="••••••••">
+    </div>
+    <div class="form-actions">
+      <button class="btn-form btn-form-primary" id="doSignin">Sign in</button>
+      <button class="btn-form btn-form-ghost" id="closeSignin">Cancel</button>
+    </div>
+    <div class="form-msg" id="siMsg"></div>
+    <div class="modal-switch">No account? <a id="switchToSignup">Create one free →</a></div>
+  </div>
+</div>
+
+<!-- SIGN UP MODAL -->
+<div class="modal-overlay" id="signupModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-icon">🎓</div>
+      <div class="modal-title">Join English Flow</div>
+      <div class="modal-sub">Free to join — track your IELTS journey</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Full name</label>
+      <input type="text" id="suName" class="form-input" placeholder="Your name">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Phone (Uzbekistan)</label>
+      <div class="phone-row">
+        <span class="phone-prefix">🇺🇿 +998</span>
+        <input type="tel" id="suPhone" class="phone-input" placeholder="90 123 45 67">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email</label>
+      <input type="email" id="suEmail" class="form-input" placeholder="you@example.com">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <input type="password" id="suPass" class="form-input" placeholder="At least 6 characters">
+    </div>
+    <div class="form-actions">
+      <button class="btn-form btn-form-primary" id="doSignup">Create account</button>
+      <button class="btn-form btn-form-ghost" id="closeSignup">Maybe later</button>
+    </div>
+    <div class="form-msg" id="suMsg"></div>
+    <div class="modal-switch">Already have an account? <a id="switchToSignin">Sign in →</a></div>
+  </div>
 </div>
 
 <script>
-    (function() {
-        const supabase = window.supabase.createClient(
-            'https://evhceswvapszaghnvmxl.supabase.co',
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGNlc3d2YXBzemFnaG52bXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3OTQwNzMsImV4cCI6MjA5MzM3MDA3M30.yV7tavgR7JKc45uSGtS8Lf6m1ZMuuvQ23hmAb8n6k3A'
-        );
-        const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxo7Ftm_Kelr4T6PsmoA_VeeZxKVuNo_g7TRHmIxl5YHYl_R8QjqaKpZPyTlcDuo8o/exec';
+(function() {
+  const SUPABASE_URL = 'https://evhceswvapszaghnvmxl.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGNlc3d2YXBzemFnaG52bXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3OTQwNzMsImV4cCI6MjA5MzM3MDA3M30.yV7tavgR7JKc45uSGtS8Lf6m1ZMuuvQ23hmAb8n6k3A';
+  const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxo7Ftm_Kelr4T6PsmoA_VeeZxKVuNo_g7TRHmIxl5YHYl_R8QjqaKpZPyTlcDuo8o/exec';
 
-        function getFullPhone(partial) {
-            return '+998' + partial.replace(/\D/g, '');
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  // LOCAL comments (in-memory for this session, since no DB column for comments yet)
+  let sessionComments = [];
+
+  // Toast
+  function toast(msg, type = 'default') {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className = 'toast show' + (type !== 'default' ? ' ' + type : '');
+    setTimeout(() => { el.className = 'toast'; }, 3200);
+  }
+
+  // Modal helpers
+  function openModal(id) { document.getElementById(id).classList.add('active'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+  function showMsg(id, text, isErr) {
+    const el = document.getElementById(id);
+    el.textContent = text;
+    el.className = 'form-msg show ' + (isErr ? 'error' : 'success');
+    setTimeout(() => { el.className = 'form-msg'; }, 5000);
+  }
+
+  // Auth buttons
+  document.getElementById('signinBtn').onclick = () => openModal('signinModal');
+  document.getElementById('signupBtn').onclick = () => openModal('signupModal');
+  document.getElementById('closeSignin').onclick = () => closeModal('signinModal');
+  document.getElementById('closeSignup').onclick = () => closeModal('signupModal');
+  document.getElementById('switchToSignup').onclick = () => { closeModal('signinModal'); openModal('signupModal'); };
+  document.getElementById('switchToSignin').onclick = () => { closeModal('signupModal'); openModal('signinModal'); };
+
+  // Close modal clicking backdrop
+  ['signinModal', 'signupModal'].forEach(id => {
+    document.getElementById(id).addEventListener('click', function(e) {
+      if (e.target === this) closeModal(id);
+    });
+  });
+
+  // Sign in
+  let signinBusy = false;
+  document.getElementById('doSignin').onclick = async () => {
+    if (signinBusy) return;
+    const email = document.getElementById('siEmail').value.trim();
+    const pass = document.getElementById('siPass').value;
+    if (!email || !pass) { showMsg('siMsg', 'Please enter your email and password.', true); return; }
+    signinBusy = true;
+    const btn = document.getElementById('doSignin');
+    btn.disabled = true; btn.textContent = 'Signing in…';
+    try {
+      const { error } = await sb.auth.signInWithPassword({ email, password: pass });
+      if (error) throw error;
+      showMsg('siMsg', '✓ Signed in!', false);
+      setTimeout(() => { closeModal('signinModal'); location.reload(); }, 800);
+    } catch (e) {
+      showMsg('siMsg', e.message || 'Something went wrong.', true);
+    } finally {
+      signinBusy = false; btn.disabled = false; btn.textContent = 'Sign in';
+    }
+  };
+
+  // Sign up (with rate limit guard)
+  let signupCooldown = false;
+  let signupBusy = false;
+  document.getElementById('doSignup').onclick = async () => {
+    if (signupBusy || signupCooldown) {
+      if (signupCooldown) showMsg('suMsg', 'Please wait 30 seconds before trying again.', true);
+      return;
+    }
+    const name = document.getElementById('suName').value.trim();
+    const phone = document.getElementById('suPhone').value.trim();
+    const email = document.getElementById('suEmail').value.trim();
+    const pass = document.getElementById('suPass').value;
+    if (!name || !phone || !email || !pass) { showMsg('suMsg', 'Please fill in all fields.', true); return; }
+    if (pass.length < 6) { showMsg('suMsg', 'Password must be at least 6 characters.', true); return; }
+
+    signupBusy = true; signupCooldown = true;
+    const btn = document.getElementById('doSignup');
+    btn.disabled = true; btn.textContent = 'Creating…';
+    setTimeout(() => { signupCooldown = false; }, 30000);
+
+    try {
+      const { error } = await sb.auth.signUp({ email, password: pass, options: { data: { name } } });
+      if (error) {
+        if (error.status === 429 || (error.message && error.message.toLowerCase().includes('rate limit'))) {
+          throw new Error('Too many attempts. Please wait a minute then try again.');
         }
-        function showToast(message, isError = false) {
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            toast.style.background = isError ? '#b91c1c' : '#2e7d64';
-            toast.textContent = message;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
+        if (error.message && error.message.toLowerCase().includes('already registered')) {
+          throw new Error('This email is already registered. Please sign in instead.');
         }
-        function showMessage(modal, text, isError) {
-            let msgDiv = modal === 'signup' ? document.getElementById('signupMsg') : document.getElementById('signinMsg');
-            msgDiv.textContent = text;
-            msgDiv.className = 'message ' + (isError ? 'error' : 'success');
-            setTimeout(() => { msgDiv.textContent = ''; msgDiv.className = 'message'; }, 5000);
-        }
-        function hideModal(id) { document.getElementById(id).style.display = 'none'; }
-        function showModal(id) { document.getElementById(id).style.display = 'flex'; }
+        throw error;
+      }
+      // Also save to sheet
+      try {
+        await fetch(SHEET_URL, {
+          method: 'POST', mode: 'no-cors',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({ name, phone: '+998' + phone.replace(/\D/g,''), email, timestamp: new Date().toISOString() })
+        });
+      } catch (_) {}
 
-        // Sign up with rate limiting
-        let signupCooldown = false;
-        document.getElementById('doSignupBtn').onclick = async () => {
-            if (signupCooldown) {
-                showMessage('signup', '⏳ Please wait 30 seconds before trying again.', true);
-                return;
-            }
-            const name = document.getElementById('signupName').value.trim();
-            const phonePartial = document.getElementById('signupPhone').value.trim();
-            const email = document.getElementById('signupEmail').value.trim();
-            const password = document.getElementById('signupPassword').value;
-            if (!name || !phonePartial || !email || !password) {
-                showMessage('signup', '❌ Please fill all fields', true);
-                return;
-            }
-            const fullPhone = getFullPhone(phonePartial);
-            const btn = document.getElementById('doSignupBtn');
-            btn.disabled = true; btn.textContent = 'Creating...';
-            signupCooldown = true;
-            setTimeout(() => { signupCooldown = false; }, 30000);
+      showMsg('suMsg', '✓ Account created! Welcome to English Flow.', false);
+      setTimeout(() => { closeModal('signupModal'); location.reload(); }, 1000);
+    } catch (e) {
+      showMsg('suMsg', e.message || 'Could not create account. Try again.', true);
+      if (!e.message || !e.message.includes('Too many')) signupCooldown = false;
+    } finally {
+      signupBusy = false; btn.disabled = false; btn.textContent = 'Create account';
+    }
+  };
 
-            try {
-                const { error } = await supabase.auth.signUp({
-                    email, password,
-                    options: { data: { name } }
-                });
-                if (error) {
-                    if (error.status === 429 || error.message.includes('rate limit')) {
-                        throw new Error('Too many sign‑up attempts. Please wait a minute or use a different network.');
-                    }
-                    throw error;
-                }
-                await fetch(SHEET_URL, {
-                    method: 'POST', mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: new URLSearchParams({
-                        name, phone: fullPhone, email, timestamp: new Date().toISOString()
-                    })
-                });
-                showMessage('signup', '✅ Account created! You are now signed in.', false);
-                hideModal('signupModal');
-                setTimeout(() => location.reload(), 1000);
-            } catch (err) {
-                console.error(err);
-                let msg = err.message;
-                if (msg.includes('already registered')) msg = 'This email is already registered. Please sign in.';
-                showMessage('signup', '❌ ' + msg, true);
-                if (!msg.includes('Too many')) signupCooldown = false;
-            } finally {
-                if (btn.disabled && !signupCooldown) {
-                    btn.disabled = false; btn.textContent = 'Create account';
-                } else if (btn.disabled && signupCooldown) {
-                    setTimeout(() => { btn.disabled = false; btn.textContent = 'Create account'; }, 30000);
-                }
-            }
+  // Session check → update auth zone
+  async function checkSession() {
+    try {
+      const { data: { session } } = await sb.auth.getSession();
+      if (session && session.user) {
+        const name = session.user.user_metadata?.name || session.user.email;
+        const short = name.split(' ')[0];
+        const zone = document.getElementById('authZone');
+        zone.innerHTML = `
+          <span class="user-badge" style="display:inline-flex;">👋 ${short}</span>
+          <button class="btn-auth btn-signout" id="signoutBtn">Sign out</button>
+        `;
+        document.getElementById('signoutBtn').onclick = async () => {
+          await sb.auth.signOut();
+          location.reload();
         };
+      }
+    } catch (e) {}
+  }
+  checkSession();
 
-        // Sign in
-        document.getElementById('doSigninBtn').onclick = async () => {
-            const email = document.getElementById('signinEmail').value.trim();
-            const password = document.getElementById('signinPassword').value;
-            if (!email || !password) {
-                showMessage('signin', '❌ Please enter email and password', true);
-                return;
-            }
-            const btn = document.getElementById('doSigninBtn');
-            btn.disabled = true; btn.textContent = 'Signing in...';
-            try {
-                const { error } = await supabase.auth.signInWithPassword({ email, password });
-                if (error) throw error;
-                showMessage('signin', '✅ Signed in successfully!', false);
-                hideModal('signinModal');
-                setTimeout(() => location.reload(), 1000);
-            } catch (err) {
-                console.error(err);
-                showMessage('signin', '❌ ' + err.message, true);
-            } finally {
-                btn.disabled = false; btn.textContent = 'Sign in';
-            }
-        };
+  // Comments submit
+  function renderComments() {
+    const display = document.getElementById('commentsDisplay');
+    const noC = document.getElementById('noComments');
+    if (sessionComments.length === 0) {
+      noC && (noC.style.display = 'block');
+      return;
+    }
+    noC && (noC.style.display = 'none');
+    // Clear old rendered items
+    display.querySelectorAll('.comment-item').forEach(el => el.remove());
+    sessionComments.slice().reverse().forEach(c => {
+      const div = document.createElement('div');
+      div.className = 'comment-item';
+      div.innerHTML = `<div class="comment-meta">${c.time}</div><div class="comment-text">${c.text}</div>`;
+      display.appendChild(div);
+    });
+  }
 
-        document.getElementById('laterSignupBtn').onclick = () => hideModal('signupModal');
-        document.getElementById('laterSigninBtn').onclick = () => hideModal('signinModal');
-        document.getElementById('signupBtnTop').onclick = () => showModal('signupModal');
-        document.getElementById('signinBtnTop').onclick = () => showModal('signinModal');
+  document.getElementById('submitComment').onclick = async () => {
+    const ta = document.getElementById('commentText');
+    const text = ta.value.trim();
+    if (!text) { toast('Please write something first.', 'error'); return; }
 
-        // Contact modal
-        document.getElementById('contactBtn').onclick = () => showModal('contactModal');
-        document.getElementById('closeContactBtn').onclick = () => hideModal('contactModal');
-        document.getElementById('contactModal').onclick = (e) => { if (e.target === document.getElementById('contactModal')) hideModal('contactModal'); };
+    const btn = document.getElementById('submitComment');
+    btn.disabled = true; btn.textContent = 'Sending…';
+    try {
+      const formData = new URLSearchParams();
+      formData.append('comment', text);
+      formData.append('timestamp', new Date().toISOString());
+      formData.append('page', 'IELTS');
+      await fetch(SHEET_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: formData
+      });
+      sessionComments.push({ text, time: new Date().toLocaleString() });
+      renderComments();
+      ta.value = '';
+      toast('Thank you for your feedback! ✨', 'success');
+    } catch (e) {
+      toast('Could not send. Please try again.', 'error');
+    } finally {
+      btn.disabled = false; btn.textContent = 'Send feedback →';
+    }
+  };
 
-        // Comments modal – fixed to match console test
-        const commentsModal = document.getElementById('commentsModal');
-        const commentText = document.getElementById('commentText');
-        const submitBtn = document.getElementById('submitCommentBtn');
-        const closeCommentsBtn = document.getElementById('closeCommentsBtn');
-        document.getElementById('commentsBtn').onclick = () => showModal('commentsModal');
-        closeCommentsBtn.onclick = () => hideModal('commentsModal');
-        commentsModal.onclick = (e) => { if (e.target === commentsModal) hideModal('commentsModal'); };
+  renderComments();
 
-        submitBtn.onclick = async () => {
-            const comment = commentText.value.trim();
-            if (!comment) {
-                showToast('✏️ Please write something before submitting.', true);
-                return;
-            }
-            submitBtn.disabled = true;
-            submitBtn.innerText = 'Sending...';
-            try {
-                const formData = new URLSearchParams();
-                formData.append('comment', comment);
-                formData.append('timestamp', new Date().toISOString());
-                formData.append('page', 'IELTS');
-
-                await fetch(SHEET_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: formData
-                });
-                showToast('✨ Thank you for your feedback! We appreciate your help.', false);
-                hideModal('commentsModal');
-                commentText.value = '';
-            } catch (err) {
-                console.error('Comment submission error:', err);
-                showToast('❌ Failed to send comment. Please try again later.', true);
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.innerText = 'Send feedback';
-            }
-        };
-
-        // Session check
-        supabase.auth.getSession().then(({ data: { session } }) => {
-            if (!session) setTimeout(() => showModal('signupModal'), 500);
-        }).catch(console.error);
-
-        // Notification bubble
-        let notif = document.createElement('div');
-        notif.className = 'notification';
-        notif.innerHTML = '💬 Help us improve with your comments <button id="closeNotif">✕</button>';
-        document.body.appendChild(notif);
-        document.getElementById('closeNotif').onclick = () => notif.remove();
-        setTimeout(() => { if (notif.parentNode) notif.remove(); }, 5000);
-    })();
+})();
 </script>
 </body>
 </html>
