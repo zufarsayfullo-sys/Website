@@ -887,7 +887,7 @@
         <span class="feat-arrow">→</span>
       </a>
 
-      <a href="free-writing/" class="feat">
+      <a href="ielts/writing-questions.html" class="feat">
         <div class="feat-icon icon-free">📝</div>
         <div class="feat-info">
           <div class="feat-name">Recent Writing Questions</div>
@@ -896,7 +896,7 @@
         <span class="feat-arrow">→</span>
       </a>
 
-      <a href="free-speaking/" class="feat">
+      <a href="ielts/speaking-questions.html" class="feat">
         <div class="feat-icon icon-free">💬</div>
         <div class="feat-info">
           <div class="feat-name">Recent Speaking Questions</div>
@@ -905,7 +905,7 @@
         <span class="feat-arrow">→</span>
       </a>
 
-      <a href="free-listening/" class="feat">
+      <a href="ielts/listening.html" class="feat">
         <div class="feat-icon icon-free">🎧</div>
         <div class="feat-info">
           <div class="feat-name">Listening Practice</div>
@@ -1248,7 +1248,7 @@
       formData.append('timestamp', new Date().toISOString());
       formData.append('page', 'IELTS');
       await fetch(SHEET_URL, {
-        method: 'POST',
+        method: 'POST', mode: 'no-cors',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: formData
       });
