@@ -31,16 +31,16 @@
     "time": "15 min",
     "description": "A General Training passage involving a letter and a short article about renting accommodation.",
     "file": "passages/letter-to-a-landlord.html"
+  },
+  {
+    "id": 4,
+    "title": "The Importance of Children’s Play",
+    "type": "Academic",
+    "difficulty": "Medium",
+    "topic": "Education & Development",
+    "questions": 13,
+    "time": "20 min",
+    "description": "An academic analysis of the role of play in child development and the factors limiting it in the modern world.",
+    "file": "passages/the-importance-of-childrens-play.html"
   }
 ]
-{
-  "id": "4",
-  "title": "The Importance of Children’s Play",
-  "type": "Academic",
-  "difficulty": "Medium",
-  "topic": "Education & Development",
-  "questions": 13,
-  "time": "20 min",
-  "description": "An academic analysis of the role of play in child development and the factors limiting it in the modern world.",
-  "file": "passages/the-importance-of-childrens-play.html"
-}
