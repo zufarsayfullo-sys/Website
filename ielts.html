@@ -1097,8 +1097,7 @@
 
   const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  let sessionComments = [];
-
+  // ── Toast ──────────────────────────────────────────────
   function toast(msg, type = 'default') {
     const el = document.getElementById('toast');
     el.textContent = msg;
@@ -1106,6 +1105,7 @@
     setTimeout(() => { el.className = 'toast'; }, 3200);
   }
 
+  // ── Modal helpers ──────────────────────────────────────
   function openModal(id) { document.getElementById(id).classList.add('active'); }
   function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
@@ -1116,6 +1116,7 @@
     setTimeout(() => { el.className = 'form-msg'; }, 5000);
   }
 
+  // ── Auth buttons ───────────────────────────────────────
   document.getElementById('signinBtn').onclick = () => openModal('signinModal');
   document.getElementById('signupBtn').onclick = () => openModal('signupModal');
   document.getElementById('closeSignin').onclick = () => closeModal('signinModal');
@@ -1129,6 +1130,7 @@
     });
   });
 
+  // ── Sign in ────────────────────────────────────────────
   let signinBusy = false;
   document.getElementById('doSignin').onclick = async () => {
     if (signinBusy) return;
@@ -1150,6 +1152,7 @@
     }
   };
 
+  // ── Sign up ────────────────────────────────────────────
   let signupCooldown = false;
   let signupBusy = false;
   document.getElementById('doSignup').onclick = async () => {
@@ -1187,7 +1190,6 @@
           body: new URLSearchParams({ name, phone: '+998' + phone.replace(/\D/g,''), email, timestamp: new Date().toISOString() })
         });
       } catch (_) {}
-
       showMsg('suMsg', '✓ Account created! Welcome to English Flow.', false);
       setTimeout(() => { closeModal('signupModal'); location.reload(); }, 1000);
     } catch (e) {
@@ -1198,6 +1200,7 @@
     }
   };
 
+  // ── Session check ──────────────────────────────────────
   async function checkSession() {
     try {
       const { data: { session } } = await sb.auth.getSession();
@@ -1218,23 +1221,64 @@
   }
   checkSession();
 
+  // ── Comments — Supabase-backed ─────────────────────────
+  let allComments = [];
+  let visibleCount = 0;
+  const PER_PAGE = 1; // show one at a time
+
   function renderComments() {
     const display = document.getElementById('commentsDisplay');
     const noC = document.getElementById('noComments');
-    if (sessionComments.length === 0) {
+
+    // remove old items and nav
+    display.querySelectorAll('.comment-item, .comment-nav').forEach(el => el.remove());
+
+    if (allComments.length === 0) {
       noC && (noC.style.display = 'block');
       return;
     }
     noC && (noC.style.display = 'none');
-    display.querySelectorAll('.comment-item').forEach(el => el.remove());
-    sessionComments.slice().reverse().forEach(c => {
-      const div = document.createElement('div');
-      div.className = 'comment-item';
-      div.innerHTML = `<div class="comment-meta">${c.time}</div><div class="comment-text">${c.text}</div>`;
-      display.appendChild(div);
-    });
+
+    // newest first
+    const sorted = allComments.slice().reverse();
+    const current = sorted[visibleCount] || sorted[0];
+
+    const div = document.createElement('div');
+    div.className = 'comment-item';
+    const date = new Date(current.created_at).toLocaleString();
+    div.innerHTML = `<div class="comment-meta">${date}</div><div class="comment-text">${current.text}</div>`;
+    display.appendChild(div);
+
+    // nav row: ← prev | count | next →
+    if (allComments.length > 1) {
+      const nav = document.createElement('div');
+      nav.className = 'comment-nav';
+      nav.style.cssText = 'display:flex;align-items:center;justify-content:space-between;margin-top:0.75rem;gap:0.5rem;';
+      nav.innerHTML = `
+        <button class="comment-nav-btn" id="prevComment" ${visibleCount === 0 ? 'disabled' : ''}>← Prev</button>
+        <span style="font-size:0.75rem;color:var(--text-muted);">${visibleCount + 1} / ${allComments.length}</span>
+        <button class="comment-nav-btn" id="nextComment" ${visibleCount >= allComments.length - 1 ? 'disabled' : ''}>Next →</button>
+      `;
+      display.appendChild(nav);
+
+      document.getElementById('prevComment').onclick = () => { visibleCount = Math.max(0, visibleCount - 1); renderComments(); };
+      document.getElementById('nextComment').onclick = () => { visibleCount = Math.min(allComments.length - 1, visibleCount + 1); renderComments(); };
+    }
   }
 
+  async function loadComments() {
+    try {
+      const { data, error } = await sb.from('comments').select('*').order('created_at', { ascending: true });
+      if (error) throw error;
+      allComments = data || [];
+      visibleCount = Math.max(0, allComments.length - 1); // start at newest
+      renderComments();
+    } catch (e) {
+      console.error('Could not load comments:', e);
+    }
+  }
+
+  // ── Submit comment ─────────────────────────────────────
   document.getElementById('submitComment').onclick = async () => {
     const ta = document.getElementById('commentText');
     const text = ta.value.trim();
@@ -1243,19 +1287,26 @@
     const btn = document.getElementById('submitComment');
     btn.disabled = true; btn.textContent = 'Sending…';
     try {
-      const formData = new URLSearchParams();
-      formData.append('comment', text);
-      formData.append('timestamp', new Date().toISOString());
-      formData.append('page', 'IELTS');
-      await fetch(SHEET_URL, {
-        method: 'POST', mode: 'no-cors',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: formData
-      });
-      sessionComments.push({ text, time: new Date().toLocaleString() });
-      renderComments();
+      // Save to Supabase
+      const { error } = await sb.from('comments').insert([{ text }]);
+      if (error) throw error;
+
+      // Also send to Google Sheet (keep original behaviour)
+      try {
+        const formData = new URLSearchParams();
+        formData.append('comment', text);
+        formData.append('timestamp', new Date().toISOString());
+        formData.append('page', 'IELTS');
+        await fetch(SHEET_URL, {
+          method: 'POST', mode: 'no-cors',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: formData
+        });
+      } catch (_) {}
+
       ta.value = '';
       toast('Thank you for your feedback! ✨', 'success');
+      await loadComments(); // refresh list
     } catch (e) {
       toast('Could not send. Please try again.', 'error');
     } finally {
@@ -1263,7 +1314,12 @@
     }
   };
 
-  renderComments();
+  // ── Nav button styles ──────────────────────────────────
+  const navStyle = document.createElement('style');
+  navStyle.textContent = `.comment-nav-btn{background:var(--cream);border:1px solid var(--border);border-radius:40px;padding:0.3rem 0.8rem;font-size:0.78rem;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--text-muted);transition:all 0.2s;}.comment-nav-btn:hover:not(:disabled){background:var(--sky-light);color:var(--sky);border-color:rgba(46,111,173,0.2);}.comment-nav-btn:disabled{opacity:0.35;cursor:default;}`;
+  document.head.appendChild(navStyle);
+
+  loadComments();
 
 })();
 </script>
