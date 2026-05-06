@@ -1,196 +1,547 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Free Reading | English Flow</title>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;400;500;600&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        /* Copy your full IELTS menu styles here – I'll include a minimal but complete version */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'DM Sans', sans-serif; background: #f9f7f4; color: #1a2744; line-height: 1.6; }
-        .hero { background: linear-gradient(135deg, #1a2744 0%, #243358 100%); }
-        .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; border-bottom: 1px solid rgba(255,255,255,0.1); flex-wrap: wrap; gap: 1rem; }
-        .logo { font-family: 'DM Serif Display', serif; color: white; font-size: 1.4rem; }
-        .logo-dot { color: #c9922a; }
-        .auth-buttons { display: flex; gap: 0.5rem; }
-        .btn-auth { padding: 0.45rem 1.1rem; border-radius: 40px; font-weight: 500; cursor: pointer; background: transparent; color: rgba(255,255,255,0.85); border: 1px solid rgba(255,255,255,0.3); transition: 0.2s; }
-        .btn-signup { background: #c9922a; color: white; border: none; }
-        .btn-signout { background: transparent; border: 1px solid rgba(255,255,255,0.3); }
-        .user-badge { background: rgba(255,255,255,0.15); color: white; padding: 0.4rem 1rem; border-radius: 40px; display: inline-flex; align-items: center; gap: 0.5rem; }
-        .hero-banner { background: rgba(255,255,255,0.06); padding: 0.65rem 2rem; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.08); }
-        .hero-content { padding: 2rem 2rem 1.5rem; }
-        .hero-title { font-family: 'DM Serif Display', serif; font-size: clamp(2rem, 4vw, 3rem); color: white; }
-        .hero-subtitle { color: rgba(255,255,255,0.65); max-width: 600px; margin-top: 0.5rem; }
-        .quick-links { background: white; border-bottom: 1px solid rgba(26,39,68,0.1); padding: 0.75rem 2rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
-        .quick-link { padding: 0.4rem 0.9rem; border-radius: 40px; font-size: 0.82rem; font-weight: 500; text-decoration: none; color: #5a6a8a; border: 1px solid rgba(26,39,68,0.1); background: #f9f7f4; }
-        .quick-link.active { background: #1a2744; color: white; border-color: #1a2744; }
-        .main { max-width: 1280px; margin: 2rem auto; padding: 0 2rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
-        .passage-card { background: white; border-radius: 16px; border: 1px solid rgba(26,39,68,0.1); overflow: hidden; transition: all 0.2s; text-decoration: none; color: inherit; display: block; }
-        .passage-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,0.1); }
-        .card-body { padding: 1.25rem; }
-        .card-title { font-family: 'DM Serif Display', serif; font-size: 1.2rem; margin-bottom: 0.3rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
-        .score-badge { background: #e8f5ee; color: #1e6e4e; padding: 0.2rem 0.6rem; border-radius: 40px; font-size: 0.7rem; font-weight: 600; white-space: nowrap; }
-        .score-badge.locked { background: #fef2f2; color: #b91c1c; }
-        .card-desc { font-size: 0.85rem; color: #5a6a8a; margin: 0.5rem 0; }
-        .card-footer { border-top: 1px solid rgba(26,39,68,0.05); padding: 0.75rem 1.25rem; background: #faf9f8; font-size: 0.75rem; color: #5a6a8a; display: flex; justify-content: space-between; }
-        .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #1a2744; color: white; padding: 0.7rem 1.5rem; border-radius: 40px; opacity: 0; transition: 0.3s; pointer-events: none; z-index: 3000; }
-        .toast.show { opacity: 1; }
-        @media (max-width: 640px) { .main { padding: 0 1rem; } .top-bar { padding: 0.75rem 1rem; } }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reading Practice | English Flow</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1a2744;
+    --navy-mid: #243358;
+    --sky: #2e6fad;
+    --sky-light: #e8f2fc;
+    --gold: #c9922a;
+    --gold-light: #fdf3e3;
+    --cream: #f9f7f4;
+    --surface: #ffffff;
+    --text: #1a2744;
+    --text-muted: #5a6a8a;
+    --border: rgba(26,39,68,0.1);
+    --green: #1e6e4e;
+    --green-light: #e8f5ee;
+    --radius: 16px;
+    --radius-lg: 24px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  /* === HERO === */
+  .hero {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 60%, #1f4a7a 100%);
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -40%; right: -10%;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(46,111,173,0.25) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -30%; left: 5%;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,146,42,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* === TOP BAR === */
+  .top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.55rem 1.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    position: relative;
+    z-index: 10;
+  }
+
+  .logo {
+    font-family: 'DM Serif Display', serif;
+    color: white;
+    font-size: 1.15rem;
+    letter-spacing: -0.02em;
+    text-decoration: none;
+  }
+
+  .logo-dot { color: var(--gold); }
+
+  /* === HERO CONTENT === */
+  .hero-content {
+    padding: 2.5rem 2rem 2rem;
+    position: relative;
+    z-index: 10;
+  }
+
+  .hero-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    color: white;
+    line-height: 1.15;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.02em;
+  }
+
+  .hero-title em { font-style: italic; color: var(--gold); }
+
+  .hero-subtitle {
+    color: rgba(255,255,255,0.65);
+    font-size: 1rem;
+    max-width: 540px;
+    font-weight: 300;
+  }
+
+  .hero-pills {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 1.25rem;
+  }
+
+  .pill {
+    background: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.8);
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 0.3rem 0.85rem;
+    border-radius: 40px;
+    font-size: 0.78rem;
+    font-weight: 500;
+  }
+
+  /* === QUICK LINKS === */
+  .quick-links {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0.6rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .quick-link {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 40px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    background: var(--cream);
+  }
+
+  .quick-link:hover {
+    background: var(--sky-light);
+    color: var(--sky);
+    border-color: rgba(46,111,173,0.2);
+  }
+
+  .quick-link.active {
+    background: var(--navy);
+    color: white;
+    border-color: var(--navy);
+  }
+
+  /* === MAIN === */
+  .main {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  @media (max-width: 768px) {
+    .main { padding: 1rem; }
+    .hero-content { padding: 1.5rem 1rem 1.5rem; }
+    .top-bar { padding: 0.5rem 1rem; }
+  }
+
+  /* === FILTER BAR === */
+  .filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+  }
+
+  .filter-btn {
+    padding: 0.35rem 0.9rem;
+    border-radius: 40px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-muted);
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.2s;
+  }
+
+  .filter-btn:hover {
+    background: var(--sky-light);
+    color: var(--sky);
+    border-color: rgba(46,111,173,0.2);
+  }
+
+  .filter-btn.active {
+    background: var(--navy);
+    color: white;
+    border-color: var(--navy);
+  }
+
+  /* === PASSAGE GRID === */
+  .passages-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.25rem;
+  }
+
+  @media (max-width: 480px) {
+    .passages-grid { grid-template-columns: 1fr; }
+  }
+
+  /* === PASSAGE CARD === */
+  .passage-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem 1.4rem;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    transition: all 0.22s;
+    cursor: pointer;
+  }
+
+  .passage-card:hover {
+    border-color: var(--sky);
+    background: var(--sky-light);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(26,39,68,0.08);
+  }
+
+  .card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .card-badges {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    padding: 0.2rem 0.65rem;
+    border-radius: 40px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+
+  .badge-academic { background: var(--sky-light); color: var(--sky); }
+  .badge-general  { background: var(--gold-light); color: var(--gold); }
+  .badge-easy     { background: var(--green-light); color: var(--green); }
+  .badge-medium   { background: #fff3e0; color: #e65100; }
+  .badge-hard     { background: #fce4ec; color: #c62828; }
+
+  .card-number {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .card-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.1rem;
+    color: var(--text);
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+
+  .card-desc {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  .card-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 0.25rem;
+  }
+
+  .card-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .card-topic {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  .card-arrow {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    transition: transform 0.2s;
+  }
+
+  .passage-card:hover .card-arrow {
+    transform: translateX(4px);
+    color: var(--sky);
+  }
+
+  /* === EMPTY STATE === */
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--text-muted);
+  }
+
+  .empty-state .empty-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+  .empty-state p { font-size: 0.9rem; }
+
+  /* === LOADING === */
+  .loading {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+
+  /* === SECTION HEADING === */
+  .section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.4rem;
+    color: var(--text);
+  }
+
+  .section-count {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 0.25rem 0.75rem;
+    border-radius: 40px;
+  }
+
+  /* === FOOTER === */
+  .contact-bar {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 0.75rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 3rem;
+  }
+
+  .contact-links { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+  .contact-link {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.9rem;
+    border-radius: 40px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+  }
+
+  .contact-link:hover { background: var(--sky-light); color: var(--sky); border-color: rgba(46,111,173,0.25); }
+
+  .footer-copy { font-size: 0.75rem; color: var(--text-muted); }
+</style>
 </head>
 <body>
 
+<!-- HERO -->
 <div class="hero">
-    <div class="top-bar">
-        <div class="logo">English<span class="logo-dot">Flow</span></div>
-        <div class="auth-buttons" id="authZone">
-            <button class="btn-auth btn-signin" id="signinBtn">Sign in</button>
-            <button class="btn-auth btn-signup" id="signupBtn">Sign up free</button>
-        </div>
+  <div class="top-bar">
+    <a href="../index.html" class="logo">English<span class="logo-dot">Flow</span></a>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-title">Reading <em>Practice</em></div>
+    <div class="hero-subtitle">
+      Academic and General Training passages with exam-style questions. Practice at your own pace.
     </div>
-    <div class="hero-banner">
-        <p><span>Free Reading</span> — Improve your comprehension with real‑world passages. Your progress is saved when you sign in.</p>
+    <div class="hero-pills">
+      <span class="pill">Academic</span>
+      <span class="pill">General Training</span>
+      <span class="pill">Free Access</span>
     </div>
-    <div class="hero-content">
-        <div class="hero-title">📚 Free Reading Library</div>
-        <div class="hero-subtitle">Build your reading skills with graded passages. Scores are saved when you sign in.</div>
-    </div>
+  </div>
 </div>
 
+<!-- QUICK LINKS -->
 <div class="quick-links">
-    <a href="index.html" class="quick-link">← Home</a>
-    <a href="free-reading.html" class="quick-link active">Free Reading</a>
-    <a href="ielts/listening.html" class="quick-link">Listening</a>
-    <a href="ielts/writing.html" class="quick-link">Writing</a>
-    <a href="ielts/speaking.html" class="quick-link">Speaking</a>
+  <a href="../index.html" class="quick-link">← Home</a>
+  <a href="../ielts.html" class="quick-link">← IELTS Menu</a>
+  <span class="quick-link active">Reading</span>
 </div>
 
-<div class="main" id="passagesContainer">
-    <div style="text-align: center; grid-column: 1/-1;">Loading passages...</div>
+<!-- MAIN -->
+<div class="main">
+
+  <!-- FILTER BAR -->
+  <div class="filter-bar">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="Academic">Academic</button>
+    <button class="filter-btn" data-filter="General">General</button>
+    <button class="filter-btn" data-filter="Easy">Easy</button>
+    <button class="filter-btn" data-filter="Medium">Medium</button>
+    <button class="filter-btn" data-filter="Hard">Hard</button>
+  </div>
+
+  <!-- SECTION HEADING -->
+  <div class="section-heading">
+    <div class="section-title">📖 All Passages</div>
+    <span class="section-count" id="passageCount">Loading…</span>
+  </div>
+
+  <!-- PASSAGES GRID -->
+  <div class="passages-grid" id="passagesGrid">
+    <div class="loading">Loading passages…</div>
+  </div>
+
 </div>
 
-<div class="toast" id="toast"></div>
+<!-- FOOTER -->
+<div class="contact-bar">
+  <div class="contact-links">
+    <a href="https://t.me/SAYFULLAEV_ZUFAR" target="_blank" class="contact-link">📱 Telegram</a>
+    <a href="https://www.instagram.com/sayfullaev.zufar/" target="_blank" class="contact-link">📸 Instagram</a>
+  </div>
+  <div class="footer-copy">📖 English Flow — free IELTS preparation for every learner</div>
+</div>
 
 <script>
-    const SUPABASE_URL = 'https://evhceswvapszaghnvmxl.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGNlc3d2YXBzemFnaG52bXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3OTQwNzMsImV4cCI6MjA5MzM3MDA3M30.yV7tavgR7JKc45uSGtS8Lf6m1ZMuuvQ23hmAb8n6k3A';
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  let allPassages = [];
+  let activeFilter = 'all';
 
-    function toast(msg, isError = false) {
-        const el = document.getElementById('toast');
-        el.textContent = msg;
-        el.style.background = isError ? '#b91c1c' : '#1a2744';
-        el.classList.add('show');
-        setTimeout(() => el.classList.remove('show'), 3000);
+  async function loadPassages() {
+    try {
+      const res = await fetch('passages.json');
+      allPassages = await res.json();
+      renderPassages();
+    } catch (e) {
+      document.getElementById('passagesGrid').innerHTML =
+        '<div class="empty-state"><div class="empty-icon">⚠️</div><p>Could not load passages. Please try again.</p></div>';
+      document.getElementById('passageCount').textContent = '0 passages';
+    }
+  }
+
+  function renderPassages() {
+    const grid = document.getElementById('passagesGrid');
+    const count = document.getElementById('passageCount');
+
+    let filtered = allPassages;
+    if (activeFilter !== 'all') {
+      filtered = allPassages.filter(p =>
+        p.type === activeFilter || p.difficulty === activeFilter
+      );
     }
 
-    async function loadReadingMenu() {
-        const container = document.getElementById('passagesContainer');
-        let passages = [];
+    count.textContent = filtered.length + ' passage' + (filtered.length !== 1 ? 's' : '');
 
-        // Load JSON from the free-reading folder
-        try {
-            const response = await fetch('free-reading/passages.json');
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            passages = await response.json();
-        } catch (err) {
-            console.error(err);
-            container.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:red;">❌ Error loading passages. Please ensure free-reading/passages.json exists and is valid.</div>';
-            return;
-        }
-
-        if (!passages || passages.length === 0) {
-            container.innerHTML = '<div style="grid-column:1/-1; text-align:center;">📖 No reading passages yet. Check back soon!</div>';
-            return;
-        }
-
-        // Get current user and their scores
-        const { data: { session } } = await supabase.auth.getSession();
-        let scores = {};
-        if (session) {
-            const { data: userScores } = await supabase
-                .from('reading_scores')
-                .select('passage_id, score, total_questions')
-                .eq('user_id', session.user.id);
-            if (userScores) {
-                userScores.forEach(s => { scores[s.passage_id] = { score: s.score, total: s.total_questions }; });
-            }
-        }
-
-        // Build cards
-        container.innerHTML = passages.map(p => {
-            const userScore = scores[p.id];
-            let scoreHtml = '';
-            if (session) {
-                if (userScore) {
-                    scoreHtml = `<span class="score-badge">✅ ${userScore.score}/${userScore.total}</span>`;
-                } else {
-                    scoreHtml = `<span class="score-badge locked">📝 Not started</span>`;
-                }
-            } else {
-                scoreHtml = `<span class="score-badge locked">🔒 Sign in to track</span>`;
-            }
-            return `
-                <a href="free-reading/${p.fileName}" class="passage-card">
-                    <div class="card-body">
-                        <div class="card-title">
-                            ${escapeHtml(p.title)}
-                            ${scoreHtml}
-                        </div>
-                        <div class="card-desc">${escapeHtml(p.description || 'Passage with ' + p.totalQuestions + ' questions')}</div>
-                    </div>
-                    <div class="card-footer">
-                        <span>📄 ${p.totalQuestions} questions</span>
-                        <span>→ Start</span>
-                    </div>
-                </a>
-            `;
-        }).join('');
+    if (filtered.length === 0) {
+      grid.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><p>No passages found for this filter.</p></div>';
+      return;
     }
 
-    function escapeHtml(str) {
-        if (!str) return '';
-        return str.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        });
-    }
+    grid.innerHTML = filtered.map((p, i) => `
+      <a href="${p.file}" class="passage-card">
+        <div class="card-top">
+          <div class="card-badges">
+            <span class="badge badge-${p.type.toLowerCase()}">${p.type}</span>
+            <span class="badge badge-${p.difficulty.toLowerCase()}">${p.difficulty}</span>
+          </div>
+          <span class="card-number">#${p.id}</span>
+        </div>
+        <div class="card-title">${p.title}</div>
+        <div class="card-desc">${p.description}</div>
+        <div class="card-meta">
+          <span class="card-meta-item">📝 ${p.questions} questions</span>
+          <span class="card-meta-item">⏱ ${p.time}</span>
+        </div>
+        <div class="card-footer">
+          <span class="card-topic">📂 ${p.topic}</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </a>
+    `).join('');
+  }
 
-    loadReadingMenu();
+  // Filter buttons
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      renderPassages();
+    });
+  });
 
-    // --------------------------------------------
-    // Authentication UI (replace alerts with your actual sign‑in modal logic)
-    // --------------------------------------------
-    async function updateAuthUI() {
-        const zone = document.getElementById('authZone');
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session && session.user) {
-            const name = session.user.user_metadata?.name || session.user.email;
-            const short = name.split(' ')[0];
-            zone.innerHTML = `<span class="user-badge">👋 ${short}</span>
-                              <button class="btn-auth btn-signout" id="signoutBtn">Sign out</button>`;
-            document.getElementById('signoutBtn')?.addEventListener('click', async () => {
-                await supabase.auth.signOut();
-                location.reload();
-            });
-        } else {
-            zone.innerHTML = `<button class="btn-auth btn-signin" id="signinBtn">Sign in</button>
-                              <button class="btn-auth btn-signup" id="signupBtn">Sign up free</button>`;
-            // Replace these with your actual modal opening code
-            document.getElementById('signinBtn')?.addEventListener('click', () => {
-                // Example: open your sign‑in modal (copy from your IELTS page)
-                alert('Open sign‑in modal (integrate your modal here)');
-            });
-            document.getElementById('signupBtn')?.addEventListener('click', () => {
-                alert('Open sign‑up modal (integrate your modal here)');
-            });
-        }
-    }
-    updateAuthUI();
+  loadPassages();
 </script>
 </body>
 </html>
