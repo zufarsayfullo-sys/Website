@@ -1,32 +1,3 @@
-Based on your GitHub file structure shown in **image_685592.png**, you have your files organized inside the `free-reading` folder.
-
-To ensure your code works perfectly with this specific structure, here is the expanded, full-length HTML code for **"The Importance of Children’s Play"**. I have included all 13 questions and updated the file paths to match your project exactly.
-
----
-
-### 1. Updated `passages.json` Snippet
-According to your directory structure in the image, your HTML files are currently in the same folder as `passages.json`. Therefore, the `"file"` path should just be the filename.
-
-```json
-{
-  "id": 4,
-  "title": "The Importance of Children’s Play",
-  "type": "Academic",
-  "difficulty": "Medium",
-  "topic": "Education & Development",
-  "questions": 13,
-  "time": "20 min",
-  "description": "An academic analysis of the role of play in child development and the factors limiting it in the modern world.",
-  "file": "the-importance-of-childrens-play.html"
-}
-```
-
----
-
-### 2. Full Standalone HTML (`the-importance-of-childrens-play.html`)
-Save this code as a new file in your `free-reading` folder.
-
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -196,4 +167,3 @@ Save this code as a new file in your `free-reading` folder.
 
 </body>
 </html>
-```
