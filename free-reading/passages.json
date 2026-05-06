@@ -1,23 +1,35 @@
 [
   {
     "id": 1,
-    "title": "The Solar System",
-    "description": "Learn about planets and their orbits.",
-    "fileName": "passage001.html",
-    "totalQuestions": 10
+    "title": "The History of Coffee",
+    "type": "Academic",
+    "difficulty": "Medium",
+    "topic": "History & Culture",
+    "questions": 13,
+    "time": "20 min",
+    "description": "An academic passage exploring the origins and global spread of coffee from Ethiopia to the world.",
+    "file": "passages/the-history-of-coffee.html"
   },
   {
     "id": 2,
-    "title": "Climate Change Basics",
-    "description": "Understanding global warming effects.",
-    "fileName": "passage002.html",
-    "totalQuestions": 8
+    "title": "Renewable Energy Sources",
+    "type": "Academic",
+    "difficulty": "Hard",
+    "topic": "Science & Technology",
+    "questions": 14,
+    "time": "20 min",
+    "description": "A detailed passage examining solar, wind, and hydro energy and their role in the modern world.",
+    "file": "passages/renewable-energy-sources.html"
   },
   {
     "id": 3,
-    "title": "Artificial Intelligence",
-    "description": "A beginner's guide to AI.",
-    "fileName": "passage003.html",
-    "totalQuestions": 12
+    "title": "Letter to a Landlord",
+    "type": "General",
+    "difficulty": "Easy",
+    "topic": "Everyday Life",
+    "questions": 10,
+    "time": "15 min",
+    "description": "A General Training passage involving a letter and a short article about renting accommodation.",
+    "file": "passages/letter-to-a-landlord.html"
   }
 ]
