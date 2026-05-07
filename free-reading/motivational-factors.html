@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Motivational Factors – IELTS Reading | English Flow</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1a2744;--navy-mid:#243358;--sky:#2e6fad;--sky-light:#e8f2fc;
+  --gold:#c9922a;--gold-light:#fdf3e3;--cream:#f9f7f4;--surface:#ffffff;
+  --text:#1a2744;--text-muted:#5a6a8a;--border:rgba(26,39,68,0.1);
+  --green:#1e6e4e;--green-light:#e8f5ee;--red:#b91c1c;--red-light:#fef2f2;
+  --radius:16px;--radius-lg:24px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden}
+body{font-family:'DM Sans',sans-serif;color:var(--text);background:var(--cream);display:flex;flex-direction:column}
+
+/* ── AUTH ── */
+#auth-overlay{position:fixed;inset:0;z-index:9999;background:rgba(26,39,68,.88);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center}
+.auth-card{background:#fff;border-radius:var(--radius-lg);padding:2.5rem;width:100%;max-width:420px;text-align:center;box-shadow:0 32px 64px rgba(0,0,0,.3)}
+.auth-card h2{font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--navy);margin-bottom:.4rem}
+.auth-card p{color:var(--text-muted);font-size:.9rem;margin-bottom:1.5rem}
+.auth-input{width:100%;padding:.75rem 1rem;border:1.5px solid var(--border);border-radius:50px;font-family:'DM Sans',sans-serif;font-size:.95rem;color:var(--text);outline:none;margin-bottom:.75rem;transition:.2s}
+.auth-input:focus{border-color:var(--sky)}
+.auth-btn{width:100%;padding:.8rem;background:var(--navy);color:#fff;border:none;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:600;cursor:pointer;transition:.2s;margin-top:.25rem}
+.auth-btn:hover{background:var(--navy-mid)}
+.auth-btn:disabled{opacity:.6;cursor:default}
+.auth-msg{font-size:.85rem;margin-top:.75rem;padding:.5rem 1rem;border-radius:50px}
+.auth-msg.error{background:#fef2f2;color:var(--red)}
+.auth-msg.success{background:var(--green-light);color:var(--green)}
+
+/* ── TOP BAR ── */
+#top-bar{background:linear-gradient(135deg,var(--navy),var(--navy-mid));color:#fff;padding:.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;z-index:100}
+.logo{font-family:'DM Serif Display',serif;font-size:1.4rem;color:#fff}
+.logo .dot{color:var(--gold)}
+.timer-lbl{font-size:.72rem;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.1rem;text-align:center}
+#timer-display{font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--gold);letter-spacing:.05em;min-width:70px;text-align:center}
+#timer-display.warning{color:#ff8c42;animation:blink .8s infinite}
+#timer-display.danger{color:#ff4444;animation:blink .5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
+.user-area{display:flex;align-items:center;gap:.75rem}
+.user-pill{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:50px;padding:.35rem .9rem;font-size:.85rem;font-weight:500;color:#fff}
+.signout-btn{background:transparent;border:1px solid rgba(255,255,255,.3);color:rgba(255,255,255,.8);border-radius:50px;padding:.35rem .85rem;font-family:'DM Sans',sans-serif;font-size:.8rem;cursor:pointer;transition:.2s}
+.signout-btn:hover{background:rgba(255,255,255,.1);color:#fff}
+
+/* ── BREADCRUMB ── */
+#breadcrumb{background:#fff;border-bottom:1px solid var(--border);padding:.6rem 1.5rem;display:flex;align-items:center;gap:1rem;flex-shrink:0;font-size:.85rem}
+#breadcrumb a{color:var(--sky);text-decoration:none;font-weight:500;transition:.15s}
+#breadcrumb a:hover{color:var(--navy)}
+.crumb-sep{color:var(--text-muted)}
+.crumb-active{background:var(--navy);color:#fff;border-radius:50px;padding:.2rem .75rem;font-size:.8rem;font-weight:600;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ── SPLIT ── */
+#split-layout{display:flex;flex:1;overflow:hidden}
+#passage-col{width:55%;background:var(--cream);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+#questions-col{width:45%;background:var(--cream);display:flex;flex-direction:column;overflow:hidden}
+
+/* ── HIGHLIGHT TOOLBAR ── */
+#highlight-toolbar{background:#fff;border-bottom:1px solid var(--border);padding:.6rem 1.5rem;display:flex;align-items:center;gap:.75rem;flex-shrink:0}
+.hl-label{font-size:.8rem;color:var(--text-muted);font-weight:500}
+.hl-btn{width:26px;height:26px;border-radius:50%;border:2px solid rgba(0,0,0,.15);cursor:pointer;transition:transform .15s;flex-shrink:0}
+.hl-btn:hover{transform:scale(1.2)}
+.hl-btn.active{border-color:rgba(0,0,0,.45);transform:scale(1.15)}
+#hl-yellow{background:#fff176}
+#hl-green{background:#c8e6c9}
+#hl-pink{background:#f8bbd0}
+.hl-clear{background:transparent;border:1px solid var(--border);color:var(--text-muted);border-radius:50px;padding:.25rem .7rem;font-family:'DM Sans',sans-serif;font-size:.75rem;cursor:pointer;transition:.15s}
+.hl-clear:hover{background:var(--red-light);color:var(--red);border-color:var(--red)}
+
+/* ── PASSAGE ── */
+#passage-scroll{padding:1.75rem 2rem;overflow-y:auto;flex:1}
+.passage-title-row{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.passage-title{font-family:'DM Serif Display',serif;font-size:1.45rem;color:var(--navy);line-height:1.3}
+.diff-badge{padding:.25rem .75rem;border-radius:50px;font-size:.72rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;flex-shrink:0;margin-top:.3rem}
+.diff-hard{background:#fce8e8;color:var(--red)}
+#passage-text{font-size:1rem;line-height:1.85;color:var(--text)}
+#passage-text p{margin-bottom:1rem}
+
+/* ── QUESTIONS ── */
+#progress-bar-wrap{background:#fff;border-bottom:1px solid var(--border);padding:.75rem 1.5rem;flex-shrink:0}
+.progress-label{display:flex;justify-content:space-between;font-size:.8rem;color:var(--text-muted);margin-bottom:.4rem;font-weight:500}
+.progress-track{height:6px;background:rgba(26,39,68,.08);border-radius:3px;overflow:hidden}
+#progress-fill{height:100%;background:linear-gradient(90deg,var(--sky),var(--navy));border-radius:3px;transition:width .4s ease;width:0%}
+#questions-scroll{padding:1.25rem 1.5rem;overflow-y:auto;flex:1}
+
+.q-section-hdr{background:var(--navy);color:#fff;border-radius:var(--radius) var(--radius) 0 0;padding:.9rem 1.25rem;margin-top:1.5rem}
+.q-section-hdr:first-child{margin-top:0}
+.q-section-type{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;opacity:.7;margin-bottom:.2rem}
+.q-section-title{font-family:'DM Serif Display',serif;font-size:1.1rem}
+.q-section-instr{font-size:.82rem;opacity:.8;margin-top:.4rem;line-height:1.55}
+
+/* researcher table */
+.researcher-table{background:#fff;border:1.5px solid var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius);padding:1rem 1.25rem;margin-bottom:1rem}
+.rt-title{font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--navy);margin-bottom:.6rem}
+.rt-grid{display:grid;grid-template-columns:1fr 1fr;gap:.3rem .75rem;font-size:.85rem}
+.rt-item{display:flex;gap:.4rem}
+.rt-letter{font-weight:700;color:var(--navy);min-width:16px}
+.rt-name{color:var(--text-muted)}
+
+/* question cards */
+.question-card{background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.25rem;margin-bottom:.75rem;transition:.2s}
+.question-card.flagged{border-color:var(--gold);background:var(--gold-light)}
+.q-header{display:flex;align-items:flex-start;justify-content:space-between;gap:.75rem;margin-bottom:.8rem}
+.q-num{background:var(--navy);color:#fff;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0;margin-top:.1rem}
+.q-text{font-size:.9rem;line-height:1.55;flex:1;color:var(--text)}
+.flag-btn{background:transparent;border:1px solid var(--border);border-radius:50px;padding:.2rem .55rem;font-size:.8rem;cursor:pointer;flex-shrink:0;transition:.15s;color:var(--text-muted)}
+.flag-btn:hover{background:var(--gold-light);border-color:var(--gold)}
+.flag-btn.active{background:var(--gold-light);border-color:var(--gold);color:var(--gold)}
+
+/* dropdown */
+.q-select{width:100%;padding:.6rem .9rem;border:1.5px solid var(--border);border-radius:50px;font-family:'DM Sans',sans-serif;font-size:.88rem;color:var(--text);background:#fff;outline:none;cursor:pointer;transition:.2s}
+.q-select:focus{border-color:var(--sky)}
+.q-select.answered{border-color:var(--green)}
+
+/* YNG options */
+.yng-row{display:flex;gap:.5rem;flex-wrap:wrap}
+.opt-label{display:flex;align-items:center;justify-content:center;gap:.4rem;cursor:pointer;font-size:.85rem;background:var(--cream);border:1.5px solid var(--border);border-radius:50px;padding:.4rem .9rem;transition:.2s;user-select:none;flex:1;min-width:80px;text-align:center}
+.opt-label:hover{background:var(--sky-light);border-color:var(--sky)}
+.opt-label input[type=radio]{display:none}
+.opt-label.selected{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+/* fill blanks */
+.blank-input{border:none;border-bottom:2px solid var(--sky);background:transparent;font-family:'DM Sans',sans-serif;font-size:.88rem;color:var(--navy);outline:none;width:120px;padding:.1rem .3rem;transition:.2s;text-align:center}
+.blank-input:focus{border-color:var(--navy);background:var(--sky-light)}
+.blank-input.answered{border-color:var(--green)}
+
+/* summary box */
+.summary-box{background:#fff;border:1.5px solid var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;font-size:.9rem;line-height:2.1}
+.summary-box strong{color:var(--navy)}
+
+/* submit */
+#submit-wrap{padding:1rem 1.5rem;border-top:1px solid var(--border);background:#fff;flex-shrink:0}
+#submit-btn{width:100%;padding:.85rem;background:var(--navy);color:#fff;border:none;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:.2s}
+#submit-btn:hover{background:var(--navy-mid);transform:translateY(-1px);box-shadow:0 4px 16px rgba(26,39,68,.25)}
+
+/* ── CONFIRM ── */
+#confirm-overlay{position:fixed;inset:0;z-index:800;background:rgba(26,39,68,.7);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center}
+#confirm-overlay.show{display:flex}
+.confirm-card{background:#fff;border-radius:var(--radius-lg);padding:2rem;max-width:400px;width:90%;text-align:center}
+.confirm-card h3{font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--navy);margin-bottom:.75rem}
+.confirm-card p{font-size:.9rem;color:var(--text-muted);margin-bottom:1.5rem;line-height:1.6}
+.confirm-btns{display:flex;gap:.75rem;justify-content:center}
+.confirm-yes{background:var(--navy);color:#fff;border:none;border-radius:50px;padding:.65rem 1.75rem;font-family:'DM Sans',sans-serif;font-weight:600;cursor:pointer;transition:.2s}
+.confirm-yes:hover{background:var(--navy-mid)}
+.confirm-no{background:transparent;color:var(--text-muted);border:1.5px solid var(--border);border-radius:50px;padding:.65rem 1.75rem;font-family:'DM Sans',sans-serif;font-weight:500;cursor:pointer;transition:.2s}
+.confirm-no:hover{border-color:var(--navy);color:var(--navy)}
+
+/* ── RESULTS ── */
+#results-screen{display:none;position:fixed;inset:0;background:var(--cream);z-index:500;overflow-y:auto;padding:2rem 1rem}
+.results-inner{max-width:760px;margin:0 auto}
+.results-hero{text-align:center;margin-bottom:2.5rem}
+.results-hero h1{font-family:'DM Serif Display',serif;font-size:2rem;color:var(--navy);margin-bottom:.5rem}
+.band-ring{width:140px;height:140px;border-radius:50%;margin:1.5rem auto;background:conic-gradient(var(--gold) 0%,var(--gold) var(--fill,0%),rgba(26,39,68,.08) var(--fill,0%));display:flex;align-items:center;justify-content:center;position:relative;box-shadow:0 0 40px rgba(201,146,42,.2)}
+.band-ring::before{content:'';position:absolute;inset:12px;border-radius:50%;background:var(--cream)}
+.band-inner{position:relative;z-index:1;text-align:center}
+.band-num{font-family:'DM Serif Display',serif;font-size:2.4rem;color:var(--gold);line-height:1}
+.band-lbl{font-size:.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em;margin-top:.1rem}
+.score-raw{font-size:1.1rem;color:var(--text-muted);margin-top:.5rem}
+.score-raw strong{color:var(--navy);font-size:1.4rem}
+.review-list{display:flex;flex-direction:column;gap:1rem;margin-bottom:2rem}
+.review-item{background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.25rem}
+.review-item.correct-item{border-color:var(--green)}
+.review-item.wrong-item{border-color:var(--red)}
+.review-q-num{font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.4rem}
+.review-item.correct-item .review-q-num{color:var(--green)}
+.review-item.wrong-item .review-q-num{color:var(--red)}
+.review-q-text{font-size:.9rem;color:var(--text-muted);margin-bottom:.6rem;line-height:1.5}
+.review-answer-row{display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:.5rem}
+.ra-block{font-size:.85rem}
+.ra-label{font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);margin-bottom:.2rem}
+.ra-val.correct{color:var(--green);font-weight:700}
+.ra-val.wrong{color:var(--red);font-weight:700}
+.ra-val.answer{color:var(--navy);font-weight:700}
+.review-exp{font-size:.82rem;color:var(--text-muted);line-height:1.6;padding:.6rem .9rem;background:var(--cream);border-radius:8px;margin-top:.5rem}
+.back-btn{display:inline-block;background:var(--navy);color:#fff;border-radius:50px;padding:.75rem 2rem;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:600;text-decoration:none;transition:.2s}
+.back-btn:hover{background:var(--navy-mid)}
+
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(26,39,68,.18);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:rgba(26,39,68,.32)}
+
+@media(max-width:768px){
+  html,body{overflow:auto;height:auto}
+  #split-layout{flex-direction:column;overflow:visible}
+  #passage-col,#questions-col{width:100%;overflow:visible;height:auto}
+  #passage-scroll,#questions-scroll{overflow:visible;height:auto}
+}
+</style>
+</head>
+<body>
+
+<!-- AUTH -->
+<div id="auth-overlay">
+  <div class="auth-card">
+    <div style="font-size:2.5rem;margin-bottom:.5rem">📖</div>
+    <h2>Sign in to read</h2>
+    <p>You need an English Flow account to access this passage and track your scores.</p>
+    <input type="email" id="auth-email" class="auth-input" placeholder="Email address" onkeydown="if(event.key==='Enter')doSignIn()">
+    <input type="password" id="auth-pass" class="auth-input" placeholder="Password" onkeydown="if(event.key==='Enter')doSignIn()">
+    <button class="auth-btn" id="auth-btn" onclick="doSignIn()">Sign In</button>
+    <div id="auth-msg" class="auth-msg" style="display:none"></div>
+    <p style="margin-top:1rem;font-size:.8rem;color:var(--text-muted)">No account? <a href="../ielts.html" style="color:var(--sky)">Sign up on the IELTS page</a></p>
+  </div>
+</div>
+
+<!-- CONFIRM -->
+<div id="confirm-overlay">
+  <div class="confirm-card">
+    <h3>Submit Answers?</h3>
+    <p>You cannot change your answers after submitting. Make sure you've reviewed all questions.</p>
+    <div class="confirm-btns">
+      <button class="confirm-yes" onclick="submitAnswers()">Yes, Submit</button>
+      <button class="confirm-no" onclick="closeConfirm()">Go Back</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOP BAR -->
+<div id="top-bar">
+  <div class="logo">English <span class="dot">Flow</span></div>
+  <div>
+    <div class="timer-lbl">Time remaining</div>
+    <div id="timer-display">20:00</div>
+  </div>
+  <div class="user-area">
+    <div class="user-pill" id="user-pill">Student</div>
+    <button class="signout-btn" onclick="doSignOut()">Sign out</button>
+  </div>
+</div>
+
+<!-- BREADCRUMB -->
+<div id="breadcrumb">
+  <a href="../index.html">← Home</a>
+  <span class="crumb-sep">/</span>
+  <a href="../free-reading/index.html">← Reading</a>
+  <span class="crumb-sep">/</span>
+  <span class="crumb-active">Motivational Factors &amp; Hospitality</span>
+</div>
+
+<!-- SPLIT LAYOUT -->
+<div id="split-layout">
+
+  <!-- PASSAGE -->
+  <div id="passage-col">
+    <div id="highlight-toolbar">
+      <span class="hl-label">Highlight:</span>
+      <div class="hl-btn" id="hl-yellow" title="Yellow" onclick="setColor('#fff176')"></div>
+      <div class="hl-btn" id="hl-green"  title="Green"  onclick="setColor('#c8e6c9')"></div>
+      <div class="hl-btn" id="hl-pink"   title="Pink"   onclick="setColor('#f8bbd0')"></div>
+      <button class="hl-clear" onclick="clearHighlights()">✕ Clear all</button>
+    </div>
+    <div id="passage-scroll">
+      <div class="passage-title-row">
+        <h1 class="passage-title">Motivational factors and the hospitality industry</h1>
+        <span class="diff-badge diff-hard">Hard</span>
+      </div>
+      <div id="passage-text">
+        <p>A critical ingredient in the success of hotels is developing and maintaining superior performance from their employees. How is that accomplished? What Human Resource Management (HRM) practices should organizations invest in to acquire and retain great employees?</p>
+        <p>Some hotels aim to provide superior working conditions for their employees. The idea originated from workplaces – usually in the non-service sector – that emphasized fun and enjoyment as part of work-life balance. By contrast, the service sector, and more specifically hotels, has traditionally not extended these practices to address basic employee needs, such as good working conditions.</p>
+        <p>Pfeffer (1994) emphasizes that in order to succeed in a global business environment, organizations must make investment in Human Resource Management (HRM) to allow them to acquire employees who possess better skills and capabilities than their competitors. This investment will be to their competitive advantage. Despite this recognition of the importance of employee development, the hospitality industry has historically been dominated by underdeveloped HR practices (Lucas, 2002).</p>
+        <p>Lucas also points out that 'the substance of HRM practices does not appear to be designed to foster constructive relations with employees or to represent a managerial approach that enables developing and drawing out the full potential of people, even though employees may be broadly satisfied with many aspects of their work' (Lucas, 2002). In addition, or maybe as a result, high employee turnover has been a recurring problem throughout the hospitality industry. Among the many cited reasons are low compensation, inadequate benefits, poor working conditions and compromised employee <strong>morale</strong> and attitudes (Maroudas et al., 2008).</p>
+        <p>Ng and Sorensen (2008) demonstrated that when managers provide recognition to employees, motivate employees to work together, and remove obstacles preventing effective performance, employees feel more obligated to stay with the company. This was succinctly summarized by Michel et al. (2013): '[P]roviding support to employees gives them the confidence to perform their jobs better and the motivation to stay with the organization.' Hospitality organizations can therefore enhance employee motivation and retention through the development and improvement of their working conditions. These conditions are inherently linked to the working environment.</p>
+        <p>While it seems likely that employees' reactions to their job characteristics could be affected by a predisposition to view their work environment negatively, no evidence exists to support this hypothesis (Spector et al., 2000). However, given the opportunity, many people will find something to complain about in relation to their workplace (Poulston, 2009). There is a strong link between the perceptions of employees and particular factors of their work environment that are separate from the work itself, including company policies, salary and vacations.</p>
+        <p>Such conditions are particularly troubling for the luxury hotel market, where high-quality service, requiring a sophisticated approach to HRM, is recognized as a critical source of competitive advantage (Maroudas et al., 2008). In a real sense, the services of hotel employees represent their industry (Schneider and Bowen, 1993). This representation has commonly been limited to guest experiences. This suggests that there has been a dichotomy between the guest environment provided in luxury hotels and the working conditions of their employees.</p>
+        <p>It is therefore essential for hotel management to develop HRM practices that enable them to inspire and retain competent employees. This requires an understanding of what motivates employees at different levels of management and different stages of their careers (Enz and Siguaw, 2000). This implies that it is beneficial for hotel managers to understand what practices are most favorable to increase employee satisfaction and retention.</p>
+        <p>Herzberg (1966) proposes that people have two major types of needs, the first being extrinsic motivation factors relating to the context in which work is performed, rather than the work itself. These include working conditions and job security. When these factors are unfavorable, job dissatisfaction may result. Significantly, though, just fulfilling these needs does not result in satisfaction, but only in the reduction of dissatisfaction (Maroudas et al., 2008).</p>
+        <p>Employees also have intrinsic motivation needs or motivators, which include such factors as achievement and recognition. Unlike extrinsic factors, motivator factors may ideally result in job satisfaction (Maroudas et al., 2008). Herzberg's (1966) theory discusses the need for a 'balance' of these two types of needs.</p>
+        <p>The impact of fun as a motivating factor at work has also been explored. For example, Tews, Michel and Stafford (2013) conducted a study focusing on staff from a chain of themed <strong>restaurants</strong> in the United States. It was found that fun activities had a favorable impact on <strong>performance</strong> and manager support for fun had a favorable impact in reducing <strong>turnover</strong>. Their findings support the view that fun may indeed have a beneficial effect, but the framing of that fun must be carefully aligned with both organizational <strong>goals</strong> and employee <strong>characteristics</strong>. 'Managers must learn how to achieve the delicate balance of allowing employees the freedom to enjoy themselves at work while simultaneously maintaining high levels of performance' (Tews et al., 2013).</p>
+        <p>Deery (2008) has recommended several actions that can be adopted at the organizational level to retain good staff as well as assist in balancing work and family life. Those particularly appropriate to the hospitality industry include allowing adequate breaks during the working day, staff functions that involve families, and providing health and well-being opportunities.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUESTIONS -->
+  <div id="questions-col">
+    <div id="progress-bar-wrap">
+      <div class="progress-label">
+        <span>Questions answered</span>
+        <span id="progress-text">0 / 14</span>
+      </div>
+      <div class="progress-track"><div id="progress-fill"></div></div>
+    </div>
+
+    <div id="questions-scroll">
+
+      <!-- Q27–31 Matching Researchers -->
+      <div class="q-section-hdr">
+        <div class="q-section-type">Questions 27–31</div>
+        <div class="q-section-title">Matching Information — Researchers</div>
+        <div class="q-section-instr">Match each statement with the correct researcher A–F. You may use any letter more than once.</div>
+      </div>
+
+      <div class="researcher-table">
+        <div class="rt-title">List of Researchers</div>
+        <div class="rt-grid">
+          <div class="rt-item"><span class="rt-letter">A</span><span class="rt-name">Pfeffer</span></div>
+          <div class="rt-item"><span class="rt-letter">B</span><span class="rt-name">Lucas</span></div>
+          <div class="rt-item"><span class="rt-letter">C</span><span class="rt-name">Maroudas et al.</span></div>
+          <div class="rt-item"><span class="rt-letter">D</span><span class="rt-name">Ng and Sorensen</span></div>
+          <div class="rt-item"><span class="rt-letter">E</span><span class="rt-name">Enz and Siguaw</span></div>
+          <div class="rt-item"><span class="rt-letter">F</span><span class="rt-name">Deery</span></div>
+        </div>
+      </div>
+
+      <!-- Q27 -->
+      <div class="question-card" id="card-27">
+        <div class="q-header">
+          <div class="q-num">27</div>
+          <div class="q-text">Hotel managers need to know what would encourage good staff to remain.</div>
+          <button class="flag-btn" onclick="toggleFlag(27)">🚩</button>
+        </div>
+        <select class="q-select" id="q27" onchange="selectDrop(27,this.value)">
+          <option value="">Select researcher…</option>
+          <option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option>
+        </select>
+      </div>
+
+      <!-- Q28 -->
+      <div class="question-card" id="card-28">
+        <div class="q-header">
+          <div class="q-num">28</div>
+          <div class="q-text">The actions of managers may make staff feel they shouldn't move to a different employer.</div>
+          <button class="flag-btn" onclick="toggleFlag(28)">🚩</button>
+        </div>
+        <select class="q-select" id="q28" onchange="selectDrop(28,this.value)">
+          <option value="">Select researcher…</option>
+          <option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option>
+        </select>
+      </div>
+
+      <!-- Q29 -->
+      <div class="question-card" id="card-29">
+        <div class="q-header">
+          <div class="q-num">29</div>
+          <div class="q-text">Little is done in the hospitality industry to help workers improve their skills.</div>
+          <button class="flag-btn" onclick="toggleFlag(29)">🚩</button>
+        </div>
+        <select class="q-select" id="q29" onchange="selectDrop(29,this.value)">
+          <option value="">Select researcher…</option>
+          <option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option>
+        </select>
+      </div>
+
+      <!-- Q30 -->
+      <div class="question-card" id="card-30">
+        <div class="q-header">
+          <div class="q-num">30</div>
+          <div class="q-text">Staff are less likely to change jobs if cooperation is encouraged.</div>
+          <button class="flag-btn" onclick="toggleFlag(30)">🚩</button>
+        </div>
+        <select class="q-select" id="q30" onchange="selectDrop(30,this.value)">
+          <option value="">Select researcher…</option>
+          <option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option>
+        </select>
+      </div>
+
+      <!-- Q31 -->
+      <div class="question-card" id="card-31">
+        <div class="q-header">
+          <div class="q-num">31</div>
+          <div class="q-text">Dissatisfaction with pay is not the only reason why hospitality workers change jobs.</div>
+          <button class="flag-btn" onclick="toggleFlag(31)">🚩</button>
+        </div>
+        <select class="q-select" id="q31" onchange="selectDrop(31,this.value)">
+          <option value="">Select researcher…</option>
+          <option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option>
+        </select>
+      </div>
+
+      <!-- Q32–35 Yes / No / Not Given -->
+      <div class="q-section-hdr">
+        <div class="q-section-type">Questions 32–35</div>
+        <div class="q-section-title">Yes / No / Not Given</div>
+        <div class="q-section-instr">
+          <strong>YES</strong> — agrees with the writer's claims &nbsp;|&nbsp;
+          <strong>NO</strong> — contradicts the writer &nbsp;|&nbsp;
+          <strong>NOT GIVEN</strong> — impossible to say
+        </div>
+      </div>
+
+      <!-- Q32 -->
+      <div class="question-card" id="card-32">
+        <div class="q-header">
+          <div class="q-num">32</div>
+          <div class="q-text">One reason for high staff turnover in the hospitality industry is poor morale.</div>
+          <button class="flag-btn" onclick="toggleFlag(32)">🚩</button>
+        </div>
+        <div class="yng-row" id="opts-32">
+          <label class="opt-label"><input type="radio" name="q32" value="YES" onchange="selectOpt(32,'YES')">YES</label>
+          <label class="opt-label"><input type="radio" name="q32" value="NO" onchange="selectOpt(32,'NO')">NO</label>
+          <label class="opt-label"><input type="radio" name="q32" value="NOT GIVEN" onchange="selectOpt(32,'NOT GIVEN')">NOT GIVEN</label>
+        </div>
+      </div>
+
+      <!-- Q33 -->
+      <div class="question-card" id="card-33">
+        <div class="q-header">
+          <div class="q-num">33</div>
+          <div class="q-text">Research has shown that staff have a tendency to dislike their workplace.</div>
+          <button class="flag-btn" onclick="toggleFlag(33)">🚩</button>
+        </div>
+        <div class="yng-row" id="opts-33">
+          <label class="opt-label"><input type="radio" name="q33" value="YES" onchange="selectOpt(33,'YES')">YES</label>
+          <label class="opt-label"><input type="radio" name="q33" value="NO" onchange="selectOpt(33,'NO')">NO</label>
+          <label class="opt-label"><input type="radio" name="q33" value="NOT GIVEN" onchange="selectOpt(33,'NOT GIVEN')">NOT GIVEN</label>
+        </div>
+      </div>
+
+      <!-- Q34 -->
+      <div class="question-card" id="card-34">
+        <div class="q-header">
+          <div class="q-num">34</div>
+          <div class="q-text">An improvement in working conditions and job security makes staff satisfied with their jobs.</div>
+          <button class="flag-btn" onclick="toggleFlag(34)">🚩</button>
+        </div>
+        <div class="yng-row" id="opts-34">
+          <label class="opt-label"><input type="radio" name="q34" value="YES" onchange="selectOpt(34,'YES')">YES</label>
+          <label class="opt-label"><input type="radio" name="q34" value="NO" onchange="selectOpt(34,'NO')">NO</label>
+          <label class="opt-label"><input type="radio" name="q34" value="NOT GIVEN" onchange="selectOpt(34,'NOT GIVEN')">NOT GIVEN</label>
+        </div>
+      </div>
+
+      <!-- Q35 -->
+      <div class="question-card" id="card-35">
+        <div class="q-header">
+          <div class="q-num">35</div>
+          <div class="q-text">Staff should be allowed to choose when they take breaks during the working day.</div>
+          <button class="flag-btn" onclick="toggleFlag(35)">🚩</button>
+        </div>
+        <div class="yng-row" id="opts-35">
+          <label class="opt-label"><input type="radio" name="q35" value="YES" onchange="selectOpt(35,'YES')">YES</label>
+          <label class="opt-label"><input type="radio" name="q35" value="NO" onchange="selectOpt(35,'NO')">NO</label>
+          <label class="opt-label"><input type="radio" name="q35" value="NOT GIVEN" onchange="selectOpt(35,'NOT GIVEN')">NOT GIVEN</label>
+        </div>
+      </div>
+
+      <!-- Q36–40 Summary Completion -->
+      <div class="q-section-hdr">
+        <div class="q-section-type">Questions 36–40</div>
+        <div class="q-section-title">Summary Completion</div>
+        <div class="q-section-instr">Complete the summary using ONE WORD ONLY from the passage for each answer.</div>
+      </div>
+
+      <div class="summary-box">
+        <strong>Fun at work</strong><br><br>
+        Tews, Michel and Stafford carried out research on staff in an American chain of
+        <strong>36</strong> <input class="blank-input" id="q36" data-q="36" placeholder="…" oninput="onInput(this)" autocomplete="off" autocorrect="off" spellcheck="false">.
+        They discovered that activities designed for staff to have fun improved their
+        <strong>37</strong> <input class="blank-input" id="q37" data-q="37" placeholder="…" oninput="onInput(this)" autocomplete="off" autocorrect="off" spellcheck="false">,
+        and that management involvement led to lower staff
+        <strong>38</strong> <input class="blank-input" id="q38" data-q="38" placeholder="…" oninput="onInput(this)" autocomplete="off" autocorrect="off" spellcheck="false">.
+        They also found that the activities needed to fit with both the company's
+        <strong>39</strong> <input class="blank-input" id="q39" data-q="39" placeholder="…" oninput="onInput(this)" autocomplete="off" autocorrect="off" spellcheck="false">
+        and the
+        <strong>40</strong> <input class="blank-input" id="q40" data-q="40" placeholder="…" oninput="onInput(this)" autocomplete="off" autocorrect="off" spellcheck="false">
+        of the staff. A balance was required between a degree of freedom and maintaining work standards.
+      </div>
+
+    </div><!-- /questions-scroll -->
+
+    <div id="submit-wrap">
+      <button id="submit-btn" onclick="showConfirm()">Submit Answers</button>
+    </div>
+  </div>
+
+</div><!-- /split-layout -->
+
+<!-- RESULTS -->
+<div id="results-screen">
+  <div class="results-inner">
+    <div class="results-hero">
+      <h1>Your Results</h1>
+      <div class="band-ring" id="band-ring">
+        <div class="band-inner">
+          <div class="band-num" id="band-num">—</div>
+          <div class="band-lbl">Band</div>
+        </div>
+      </div>
+      <div class="score-raw"><strong id="raw-score">0</strong> / 14 correct</div>
+    </div>
+    <div class="review-list" id="review-list"></div>
+    <div style="text-align:center;margin-bottom:2rem">
+      <a href="../free-reading/index.html" class="back-btn">← Back to Reading</a>
+    </div>
+  </div>
+</div>
+
+<script>
+const PASSAGE_ID   = 'motivational-factors-hospitality';
+const SUPABASE_URL = 'https://evhceswvapszaghnvmxl.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGNlc3d2YXBzemFnaG52bXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3OTQwNzMsImV4cCI6MjA5MzM3MDA3M30.yV7tavgR7JKc45uSGtS8Lf6m1ZMuuvQ23hmAb8n6k3A';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const RESEARCHERS = { A:'Pfeffer', B:'Lucas', C:'Maroudas et al.', D:'Ng and Sorensen', E:'Enz and Siguaw', F:'Deery' };
+
+const ANSWERS = {
+  27: { correct:'E', type:'drop', text:'Hotel managers need to know what would encourage good staff to remain.',
+        exp:"Enz and Siguaw (2000): 'beneficial for hotel managers to understand what practices are most favorable to increase employee satisfaction and retention.'" },
+  28: { correct:'D', type:'drop', text:"The actions of managers may make staff feel they shouldn't move to a different employer.",
+        exp:"Ng and Sorensen (2008): when managers provide recognition and motivate cooperation, 'employees feel more obligated to stay with the company.'" },
+  29: { correct:'B', type:'drop', text:'Little is done in the hospitality industry to help workers improve their skills.',
+        exp:"Lucas (2002): the hospitality industry 'has historically been dominated by underdeveloped HR practices' — HRM doesn't enable 'developing and drawing out the full potential of people.'" },
+  30: { correct:'D', type:'drop', text:'Staff are less likely to change jobs if cooperation is encouraged.',
+        exp:"Ng and Sorensen (2008): managers who 'motivate employees to work together' make employees feel obligated to stay." },
+  31: { correct:'C', type:'drop', text:"Dissatisfaction with pay is not the only reason why hospitality workers change jobs.",
+        exp:"Maroudas et al. (2008): cited reasons for turnover include 'low compensation, inadequate benefits, poor working conditions and compromised employee morale and attitudes.'" },
+  32: { correct:'YES',       type:'yng', text:'One reason for high staff turnover in the hospitality industry is poor morale.',
+        exp:"The passage explicitly lists 'compromised employee morale and attitudes' among cited reasons for high turnover (Maroudas et al., 2008)." },
+  33: { correct:'NO',        type:'yng', text:'Research has shown that staff have a tendency to dislike their workplace.',
+        exp:"The passage states 'no evidence exists to support this hypothesis' (Spector et al., 2000) — the opposite of what is claimed." },
+  34: { correct:'NO',        type:'yng', text:'An improvement in working conditions and job security makes staff satisfied with their jobs.',
+        exp:"Herzberg: fulfilling extrinsic needs 'does not result in satisfaction, but only in the reduction of dissatisfaction.' Satisfaction requires intrinsic motivators." },
+  35: { correct:'NOT GIVEN', type:'yng', text:'Staff should be allowed to choose when they take breaks during the working day.',
+        exp:"Deery recommends 'allowing adequate breaks' but says nothing about staff choosing when to take them. The writer makes no claim about this." },
+  36: { correct:['restaurants'],     type:'fill', text:'Tews et al. studied staff in an American chain of ___.',   exp:"'Tews, Michel and Stafford (2013) conducted a study focusing on staff from a chain of themed restaurants in the United States.'" },
+  37: { correct:['performance'],     type:'fill', text:'Fun activities improved their ___ .',                       exp:"'fun activities had a favorable impact on performance'" },
+  38: { correct:['turnover'],        type:'fill', text:'Management involvement led to lower staff ___.',            exp:"'manager support for fun had a favorable impact in reducing turnover'" },
+  39: { correct:['goals'],           type:'fill', text:"Activities needed to fit with the company's ___.",         exp:"'carefully aligned with both organizational goals and employee characteristics'" },
+  40: { correct:['characteristics'], type:'fill', text:'Activities needed to fit with the ___ of the staff.',     exp:"'carefully aligned with both organizational goals and employee characteristics'" }
+};
+
+const TOTAL = 14;
+
+let currentUser = null;
+let timerInterval = null;
+let secondsLeft = 20 * 60;
+let userAnswers = {};
+let flagged = {};
+let activeHlColor = null;
+
+// ── AUTH ──
+async function initAuth() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) { currentUser = session.user; showApp(); }
+}
+
+async function doSignIn() {
+  const email = document.getElementById('auth-email').value.trim();
+  const pass  = document.getElementById('auth-pass').value;
+  const btn   = document.getElementById('auth-btn');
+  if (!email || !pass) { showAuthMsg('Please enter email and password.', true); return; }
+  btn.disabled = true; btn.textContent = 'Signing in…';
+  const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+  btn.disabled = false; btn.textContent = 'Sign In';
+  if (error) { showAuthMsg(error.message, true); return; }
+  currentUser = data.user;
+  showApp();
+}
+
+function showAuthMsg(text, isErr) {
+  const el = document.getElementById('auth-msg');
+  el.textContent = text;
+  el.className = 'auth-msg ' + (isErr ? 'error' : 'success');
+  el.style.display = 'block';
+}
+
+function showApp() {
+  document.getElementById('auth-overlay').style.display = 'none';
+  const name = currentUser.user_metadata?.name || currentUser.email.split('@')[0];
+  document.getElementById('user-pill').textContent = '👤 ' + name.split(' ')[0];
+  startTimer();
+}
+
+async function doSignOut() { await sb.auth.signOut(); location.reload(); }
+
+// ── TIMER ──
+function startTimer() {
+  updateTimerDisplay();
+  timerInterval = setInterval(() => {
+    secondsLeft--;
+    updateTimerDisplay();
+    if (secondsLeft <= 0) { clearInterval(timerInterval); submitAnswers(); }
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const m = Math.floor(secondsLeft / 60), s = secondsLeft % 60;
+  const el = document.getElementById('timer-display');
+  el.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  el.className = '';
+  if (secondsLeft <= 60) el.classList.add('danger');
+  else if (secondsLeft <= 180) el.classList.add('warning');
+}
+
+// ── HIGHLIGHT ──
+function setColor(color) {
+  activeHlColor = color;
+  document.querySelectorAll('.hl-btn').forEach(b => b.classList.remove('active'));
+  const map = {'#fff176':'hl-yellow','#c8e6c9':'hl-green','#f8bbd0':'hl-pink'};
+  if (map[color]) document.getElementById(map[color]).classList.add('active');
+}
+document.getElementById('passage-text').addEventListener('mouseup', () => {
+  if (!activeHlColor) return;
+  const sel = window.getSelection();
+  if (!sel || sel.isCollapsed) return;
+  const range = sel.getRangeAt(0);
+  const span = document.createElement('span');
+  span.style.backgroundColor = activeHlColor;
+  span.style.borderRadius = '3px';
+  try { range.surroundContents(span); } catch(e) {}
+  sel.removeAllRanges();
+});
+function clearHighlights() {
+  document.querySelectorAll('#passage-text span[style*="background"]').forEach(s => {
+    const p = s.parentNode;
+    while (s.firstChild) p.insertBefore(s.firstChild, s);
+    p.removeChild(s);
+  });
+}
+
+// ── INPUTS ──
+function selectDrop(q, val) {
+  userAnswers[q] = val;
+  document.getElementById('q'+q).classList.toggle('answered', val !== '');
+  updateProgress();
+}
+
+function selectOpt(q, val) {
+  userAnswers[q] = val;
+  document.querySelectorAll(`#opts-${q} .opt-label`).forEach(l => {
+    l.classList.toggle('selected', l.querySelector('input').value === val);
+  });
+  updateProgress();
+}
+
+function onInput(el) {
+  const q = parseInt(el.dataset.q);
+  userAnswers[q] = el.value.trim();
+  el.classList.toggle('answered', el.value.trim().length > 0);
+  updateProgress();
+}
+
+function toggleFlag(q) {
+  flagged[q] = !flagged[q];
+  const card = document.getElementById(`card-${q}`);
+  const btn  = card?.querySelector('.flag-btn');
+  if (card) card.classList.toggle('flagged', !!flagged[q]);
+  if (btn)  btn.classList.toggle('active', !!flagged[q]);
+}
+
+function updateProgress() {
+  let count = 0;
+  for (let i = 27; i <= 40; i++) {
+    const v = userAnswers[i];
+    if (v && String(v).trim() !== '') count++;
+  }
+  document.getElementById('progress-text').textContent = `${count} / ${TOTAL}`;
+  document.getElementById('progress-fill').style.width = `${(count/TOTAL)*100}%`;
+}
+
+// ── CONFIRM / SUBMIT ──
+function showConfirm() { document.getElementById('confirm-overlay').classList.add('show'); }
+function closeConfirm() { document.getElementById('confirm-overlay').classList.remove('show'); }
+
+async function submitAnswers() {
+  closeConfirm();
+  clearInterval(timerInterval);
+
+  let correct = 0;
+  for (let i = 27; i <= 40; i++) {
+    const a = ANSWERS[i];
+    const given = (userAnswers[i] || '').trim();
+    if (a.type === 'drop' || a.type === 'yng') {
+      if (given.toUpperCase() === a.correct.toUpperCase()) correct++;
+    } else {
+      if (a.correct.some(c => c.toLowerCase() === given.toLowerCase())) correct++;
+    }
+  }
+
+  const band = getBand(correct, TOTAL);
+
+  if (currentUser) {
+    try {
+      await sb.from('reading_scores').upsert({
+        user_id: currentUser.id, passage_id: PASSAGE_ID,
+        band_score: band, score_raw: correct, total: TOTAL,
+        completed_at: new Date().toISOString()
+      }, { onConflict: 'user_id,passage_id' });
+    } catch(e) { console.warn('Score save failed:', e); }
+  }
+
+  showResults(correct, band);
+}
+
+function getBand(raw, total) {
+  const s = raw / total * 40;
+  if (s >= 39) return 9.0; if (s >= 37) return 8.5; if (s >= 35) return 8.0;
+  if (s >= 33) return 7.5; if (s >= 30) return 7.0; if (s >= 27) return 6.5;
+  if (s >= 23) return 6.0; if (s >= 19) return 5.5; if (s >= 15) return 5.0;
+  if (s >= 13) return 4.5; if (s >= 10) return 4.0; return 3.5;
+}
+
+function showResults(correct, band) {
+  document.getElementById('results-screen').style.display = 'block';
+  document.getElementById('band-num').textContent = band.toFixed(1);
+  document.getElementById('raw-score').textContent = correct;
+  const pct = Math.min(100, (band / 9) * 100);
+  document.getElementById('band-ring').style.setProperty('--fill', pct + '%');
+
+  const list = document.getElementById('review-list');
+  list.innerHTML = '';
+
+  for (let i = 27; i <= 40; i++) {
+    const a = ANSWERS[i];
+    const given = (userAnswers[i] || '').trim();
+    let isOk;
+    if (a.type === 'drop' || a.type === 'yng') {
+      isOk = given.toUpperCase() === a.correct.toUpperCase();
+    } else {
+      isOk = a.correct.some(c => c.toLowerCase() === given.toLowerCase());
+    }
+
+    const correctDisplay = Array.isArray(a.correct) ? a.correct[0] : a.correct;
+    const givenDisplay = given || '(no answer)';
+    // For drop questions, show researcher name if available
+    const correctLabel = a.type === 'drop'
+      ? `${correctDisplay} — ${RESEARCHERS[correctDisplay]}`
+      : correctDisplay;
+    const givenLabel = a.type === 'drop' && given
+      ? `${given} — ${RESEARCHERS[given] || given}`
+      : givenDisplay;
+
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (isOk ? 'correct-item' : 'wrong-item');
+    div.innerHTML = `
+      <div class="review-q-num">${isOk ? '✓' : '✗'} Question ${i}</div>
+      <div class="review-q-text">${a.text}</div>
+      <div class="review-answer-row">
+        <div class="ra-block">
+          <div class="ra-label">Your answer</div>
+          <div class="ra-val ${isOk ? 'correct' : 'wrong'}">${givenLabel}</div>
+        </div>
+        ${!isOk ? `<div class="ra-block"><div class="ra-label">Correct answer</div><div class="ra-val answer">${correctLabel}</div></div>` : ''}
+      </div>
+      <div class="review-exp">💡 ${a.exp}</div>`;
+    list.appendChild(div);
+  }
+}
+
+initAuth();
+</script>
+</body>
+</html>
