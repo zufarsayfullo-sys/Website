@@ -1,1 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Articles | English Flow</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1a2744;
+    --navy-mid: #243358;
+    --sky: #2e6fad;
+    --sky-light: #e8f2fc;
+    --gold: #c9922a;
+    --gold-light: #fdf3e3;
+    --cream: #f9f7f4;
+    --surface: #ffffff;
+    --text: #1a2744;
+    --text-muted: #5a6a8a;
+    --border: rgba(26,39,68,0.1);
+    --green: #1e6e4e;
+    --green-light: #e8f5ee;
+    --radius: 16px;
+    --radius-lg: 24px;
+  }
 
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  /* === HERO === */
+  .hero {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 60%, #1f4a7a 100%);
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -40%; right: -10%;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(46,111,173,0.25) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -30%; left: 5%;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,146,42,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* === TOP BAR === */
+  .top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.55rem 1.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    position: relative;
+    z-index: 10;
+  }
+
+  .logo {
+    font-family: 'DM Serif Display', serif;
+    color: white;
+    font-size: 1.15rem;
+    letter-spacing: -0.02em;
+    text-decoration: none;
+  }
+
+  .logo-dot { color: var(--gold); }
+
+  /* === HERO CONTENT === */
+  .hero-content {
+    padding: 2.5rem 2rem 2rem;
+    position: relative;
+    z-index: 10;
+  }
+
+  .hero-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    color: white;
+    line-height: 1.15;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.02em;
+  }
+
+  .hero-title em { font-style: italic; color: var(--gold); }
+
+  .hero-subtitle {
+    color: rgba(255,255,255,0.65);
+    font-size: 1rem;
+    max-width: 540px;
+    font-weight: 300;
+  }
+
+  .hero-pills {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 1.25rem;
+  }
+
+  .pill {
+    background: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.8);
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 0.3rem 0.85rem;
+    border-radius: 40px;
+    font-size: 0.78rem;
+    font-weight: 500;
+  }
+
+  /* === QUICK LINKS === */
+  .quick-links {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0.6rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .quick-link {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 40px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    background: var(--cream);
+  }
+
+  .quick-link:hover {
+    background: var(--sky-light);
+    color: var(--sky);
+    border-color: rgba(46,111,173,0.2);
+  }
+
+  .quick-link.active {
+    background: var(--navy);
+    color: white;
+    border-color: var(--navy);
+  }
+
+  /* === MAIN === */
+  .main {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  @media (max-width: 768px) {
+    .main { padding: 1rem; }
+    .hero-content { padding: 1.5rem 1rem 1.5rem; }
+    .top-bar { padding: 0.5rem 1rem; }
+  }
+
+  /* === FILTER BAR === */
+  .filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+  }
+
+  .filter-btn {
+    padding: 0.35rem 0.9rem;
+    border-radius: 40px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-muted);
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.2s;
+  }
+
+  .filter-btn:hover {
+    background: var(--sky-light);
+    color: var(--sky);
+    border-color: rgba(46,111,173,0.2);
+  }
+
+  .filter-btn.active {
+    background: var(--navy);
+    color: white;
+    border-color: var(--navy);
+  }
+
+  /* === ARTICLES GRID === */
+  .articles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.25rem;
+  }
+
+  @media (max-width: 480px) {
+    .articles-grid { grid-template-columns: 1fr; }
+  }
+
+  /* === ARTICLE CARD === */
+  .article-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem 1.4rem;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    transition: all 0.22s;
+    cursor: pointer;
+  }
+
+  .article-card:hover {
+    border-color: var(--sky);
+    background: var(--sky-light);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(26,39,68,0.08);
+  }
+
+  .card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .card-badges {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    padding: 0.2rem 0.65rem;
+    border-radius: 40px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+
+  .badge-society      { background: var(--sky-light); color: var(--sky); }
+  .badge-science      { background: #e8f5ee; color: var(--green); }
+  .badge-technology   { background: #f3e5f5; color: #6a1b9a; }
+  .badge-culture      { background: var(--gold-light); color: var(--gold); }
+  .badge-environment  { background: #e0f2f1; color: #00695c; }
+  .badge-health       { background: #fce4ec; color: #c2185b; }
+  .badge-education    { background: #e3f2fd; color: #1565c0; }
+  .badge-business     { background: #fff3e0; color: #e65100; }
+
+  .badge-easy     { background: var(--green-light); color: var(--green); }
+  .badge-medium   { background: #fff3e0; color: #e65100; }
+  .badge-hard     { background: #fce4ec; color: #c62828; }
+
+  .card-number {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .card-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.1rem;
+    color: var(--text);
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+
+  .card-desc {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  .card-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 0.25rem;
+    flex-wrap: wrap;
+  }
+
+  .card-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .card-author {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  .card-arrow {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    transition: transform 0.2s;
+  }
+
+  .article-card:hover .card-arrow {
+    transform: translateX(4px);
+    color: var(--sky);
+  }
+
+  /* === EMPTY / LOADING === */
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--text-muted);
+  }
+
+  .empty-state .empty-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+  .empty-state p { font-size: 0.9rem; }
+
+  .loading {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+
+  /* === SECTION HEADING === */
+  .section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.4rem;
+    color: var(--text);
+  }
+
+  .section-count {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 0.25rem 0.75rem;
+    border-radius: 40px;
+  }
+
+  /* === FOOTER === */
+  .contact-bar {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 0.75rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 3rem;
+  }
+
+  .contact-links { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+  .contact-link {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.9rem;
+    border-radius: 40px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+  }
+
+  .contact-link:hover { background: var(--sky-light); color: var(--sky); border-color: rgba(46,111,173,0.25); }
+
+  .footer-copy { font-size: 0.75rem; color: var(--text-muted); }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="top-bar">
+    <a href="../index.html" class="logo">English<span class="logo-dot">Flow</span></a>
+  </div>
+  <div class="hero-content">
+    <div class="hero-title">English <em>Articles</em></div>
+    <div class="hero-subtitle">
+      Curated articles to expand your vocabulary, sharpen your reading, and explore ideas that matter for IELTS and beyond.
+    </div>
+    <div class="hero-pills">
+      <span class="pill">Vocabulary Builder</span>
+      <span class="pill">Free Access</span>
+      <span class="pill">No Time Limit</span>
+    </div>
+  </div>
+</div>
+
+<!-- QUICK LINKS -->
+<div class="quick-links">
+  <a href="../index.html" class="quick-link">← Home</a>
+  <a href="../ielts.html" class="quick-link">← IELTS Menu</a>
+  <span class="quick-link active">Articles</span>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <div class="filter-bar">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="Easy">Easy</button>
+    <button class="filter-btn" data-filter="Medium">Medium</button>
+    <button class="filter-btn" data-filter="Hard">Hard</button>
+  </div>
+
+  <div class="section-heading">
+    <div class="section-title">📰 All Articles</div>
+    <span class="section-count" id="articleCount">Loading…</span>
+  </div>
+
+  <div class="articles-grid" id="articlesGrid">
+    <div class="loading">Loading articles…</div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="contact-bar">
+  <div class="contact-links">
+    <a href="https://t.me/SAYFULLAEV_ZUFAR" target="_blank" class="contact-link">📱 Telegram</a>
+    <a href="https://www.instagram.com/sayfullaev.zufar/" target="_blank" class="contact-link">📸 Instagram</a>
+  </div>
+  <div class="footer-copy">📖 English Flow — free IELTS preparation for every learner</div>
+</div>
+
+<script>
+  let allArticles = [];
+  let activeFilter = 'all';
+
+  async function loadArticles() {
+    try {
+      const res = await fetch('articles.json');
+      allArticles = await res.json();
+    } catch (e) {
+      document.getElementById('articlesGrid').innerHTML =
+        '<div class="empty-state"><div class="empty-icon">⚠️</div><p>Could not load articles. Please try again.</p></div>';
+      document.getElementById('articleCount').textContent = '0 articles';
+      return;
+    }
+    renderArticles();
+  }
+
+  function renderArticles() {
+    const grid = document.getElementById('articlesGrid');
+    const count = document.getElementById('articleCount');
+
+    let filtered = allArticles;
+    if (activeFilter !== 'all') {
+      filtered = allArticles.filter(a => a.difficulty === activeFilter);
+    }
+
+    count.textContent = filtered.length + ' article' + (filtered.length !== 1 ? 's' : '');
+
+    if (filtered.length === 0) {
+      grid.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><p>No articles found for this filter.</p></div>';
+      return;
+    }
+
+    grid.innerHTML = filtered.map(a => {
+      const topicSlug = (a.topic || 'society').toLowerCase().split(' ')[0];
+      return `
+        <a href="${a.file}" class="article-card">
+          <div class="card-top">
+            <div class="card-badges">
+              <span class="badge badge-${topicSlug}">${a.topic}</span>
+              <span class="badge badge-${a.difficulty.toLowerCase()}">${a.difficulty}</span>
+            </div>
+            <span class="card-number">#${a.id}</span>
+          </div>
+          <div class="card-title">${a.title}</div>
+          <div class="card-desc">${a.description}</div>
+          <div class="card-meta">
+            <span class="card-meta-item">📖 ${a.words} words</span>
+            <span class="card-meta-item">⏱ ${a.time}</span>
+          </div>
+          <div class="card-footer">
+            <span class="card-author">✍ ${a.author || 'English Flow'}</span>
+            <span class="card-arrow">→</span>
+          </div>
+        </a>`;
+    }).join('');
+  }
+
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      renderArticles();
+    });
+  });
+
+  loadArticles();
+</script>
+</body>
+</html>
