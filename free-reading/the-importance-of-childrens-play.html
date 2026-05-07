@@ -1,170 +1,912 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IELTS Exam Mode: Children's Play</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        :root { --bg: #ffffff; --text: #1a1a1a; --sidebar: #f8f9fa; --accent: #2563eb; --highlight: #fff176; }
-        body.dark-mode { --bg: #121212; --text: #e0e0e0; --sidebar: #1e1e1e; --accent: #4dabf7; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; height: 100vh; overflow: hidden; transition: 0.3s; }
-        
-        .toolbar { position: fixed; top: 0; width: 100%; height: 60px; background: var(--sidebar); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-bottom: 1px solid #ddd; z-index: 100; box-sizing: border-box; }
-        .container { display: flex; width: 100%; margin-top: 60px; height: calc(100vh - 60px); }
-        .passage-area, .question-area { flex: 1; overflow-y: auto; padding: 40px; scroll-behavior: smooth; }
-        .passage-area { border-right: 1px solid #ddd; line-height: 1.8; font-size: 18px; }
-        
-        .nav-grid { width: 70px; background: var(--sidebar); display: flex; flex-direction: column; align-items: center; padding-top: 20px; border-left: 1px solid #ddd; }
-        .q-num { width: 35px; height: 35px; border: 2px solid var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; cursor: pointer; font-weight: bold; transition: 0.2s; }
-        .q-num.filled { background: var(--accent); color: white; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Children's Play – IELTS Reading | English Flow</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #1a2744;
+  --navy-mid: #243358;
+  --sky: #2e6fad;
+  --sky-light: #e8f2fc;
+  --gold: #c9922a;
+  --gold-light: #fdf3e3;
+  --cream: #f9f7f4;
+  --surface: #ffffff;
+  --text: #1a2744;
+  --text-muted: #5a6a8a;
+  --border: rgba(26,39,68,0.1);
+  --green: #1e6e4e;
+  --green-light: #e8f5ee;
+  --red: #b91c1c;
+  --red-light: #fef2f2;
+  --radius: 16px;
+  --radius-lg: 24px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden}
+body{font-family:'DM Sans',sans-serif;color:var(--text);background:var(--cream);display:flex;flex-direction:column}
 
-        #hl-btn { position: absolute; display: none; background: #000; color: #fff; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; z-index: 500; }
-        .highlighted { background: var(--highlight); color: #000; }
+/* ── AUTH OVERLAY ── */
+#auth-overlay{
+  position:fixed;inset:0;z-index:9999;
+  background:rgba(26,39,68,0.85);backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;
+}
+.auth-card{
+  background:#fff;border-radius:var(--radius-lg);padding:2.5rem;
+  width:100%;max-width:420px;text-align:center;
+  box-shadow:0 32px 64px rgba(0,0,0,0.3);
+}
+.auth-card h2{font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--navy);margin-bottom:.5rem}
+.auth-card p{color:var(--text-muted);font-size:.9rem;margin-bottom:1.5rem}
+.auth-input{
+  width:100%;padding:.75rem 1rem;border:1.5px solid var(--border);
+  border-radius:50px;font-family:'DM Sans',sans-serif;font-size:.95rem;
+  color:var(--text);outline:none;margin-bottom:.75rem;transition:.2s;
+}
+.auth-input:focus{border-color:var(--sky)}
+.auth-btn{
+  width:100%;padding:.8rem;background:var(--navy);color:#fff;
+  border:none;border-radius:50px;font-family:'DM Sans',sans-serif;
+  font-size:1rem;font-weight:600;cursor:pointer;transition:.2s;margin-top:.25rem;
+}
+.auth-btn:hover{background:var(--navy-mid)}
+.auth-btn:disabled{opacity:.6;cursor:default}
+.auth-msg{font-size:.85rem;margin-top:.75rem;padding:.5rem 1rem;border-radius:50px}
+.auth-msg.error{background:#fef2f2;color:var(--red)}
+.auth-msg.success{background:var(--green-light);color:var(--green)}
 
-        .q-block { margin-bottom: 35px; padding: 15px; border-radius: 8px; background: rgba(0,0,0,0.03); }
-        input[type="text"] { border: 1px solid #ccc; padding: 8px; border-radius: 4px; width: 220px; background: var(--bg); color: var(--text); }
-        .feedback { display: none; margin-top: 10px; font-weight: bold; }
-        .explanation { display: none; margin-top: 10px; font-style: italic; color: #666; font-size: 0.9em; border-left: 3px solid var(--accent); padding-left: 10px; background: rgba(37, 99, 235, 0.05); padding: 10px; }
+/* ── TOP BAR ── */
+#top-bar{
+  background:linear-gradient(135deg,var(--navy),var(--navy-mid));
+  color:#fff;padding:.75rem 1.5rem;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;z-index:100;
+}
+.logo{font-family:'DM Serif Display',serif;font-size:1.4rem;color:#fff;letter-spacing:.01em}
+.logo .dot{color:var(--gold)}
+.timer-wrap{display:flex;align-items:center;gap:.5rem}
+.timer-label{font-size:.75rem;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.08em}
+#timer-display{
+  font-family:'DM Serif Display',serif;font-size:1.6rem;
+  color:var(--gold);letter-spacing:.05em;min-width:70px;text-align:center;
+}
+#timer-display.warning{color:#ff8c42;animation:blink .8s infinite}
+#timer-display.danger{color:#ff4444;animation:blink .5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
+.user-area{display:flex;align-items:center;gap:.75rem}
+.user-pill{
+  background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);
+  border-radius:50px;padding:.35rem .9rem;font-size:.85rem;font-weight:500;color:#fff;
+}
+.signout-btn{
+  background:transparent;border:1px solid rgba(255,255,255,.3);color:rgba(255,255,255,.8);
+  border-radius:50px;padding:.35rem .85rem;font-family:'DM Sans',sans-serif;
+  font-size:.8rem;cursor:pointer;transition:.2s;
+}
+.signout-btn:hover{background:rgba(255,255,255,.1);color:#fff}
 
-        .btn-submit { background: #16a34a; color: white; padding: 15px 40px; border: none; border-radius: 6px; cursor: pointer; font-size: 18px; margin: 40px 0; width: 100%; }
-        strong { color: var(--accent); }
-    </style>
+/* ── BREADCRUMB ── */
+#breadcrumb{
+  background:#fff;border-bottom:1px solid var(--border);
+  padding:.6rem 1.5rem;display:flex;align-items:center;gap:1rem;
+  flex-shrink:0;font-size:.85rem;
+}
+#breadcrumb a{color:var(--sky);text-decoration:none;font-weight:500;transition:.15s}
+#breadcrumb a:hover{color:var(--navy)}
+.crumb-sep{color:var(--text-muted)}
+.crumb-active{
+  background:var(--navy);color:#fff;
+  border-radius:50px;padding:.2rem .75rem;font-size:.8rem;font-weight:600;
+}
+
+/* ── SPLIT LAYOUT ── */
+#split-layout{
+  display:flex;flex:1;overflow:hidden;
+}
+#passage-col{
+  width:55%;background:var(--cream);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+#questions-col{
+  width:45%;background:var(--cream);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+
+/* ── HIGHLIGHT TOOLBAR ── */
+#highlight-toolbar{
+  background:#fff;border-bottom:1px solid var(--border);
+  padding:.6rem 1.5rem;display:flex;align-items:center;gap:.75rem;
+  flex-shrink:0;
+}
+.hl-label{font-size:.8rem;color:var(--text-muted);font-weight:500}
+.hl-btn{
+  width:26px;height:26px;border-radius:50%;border:2px solid rgba(0,0,0,.15);
+  cursor:pointer;transition:transform .15s;
+}
+.hl-btn:hover{transform:scale(1.2)}
+.hl-btn.active{border-color:rgba(0,0,0,.45);transform:scale(1.15)}
+#hl-yellow{background:#fff176}
+#hl-green{background:#c8e6c9}
+#hl-pink{background:#f8bbd0}
+.hl-clear{
+  background:transparent;border:1px solid var(--border);color:var(--text-muted);
+  border-radius:50px;padding:.25rem .7rem;font-family:'DM Sans',sans-serif;
+  font-size:.75rem;cursor:pointer;transition:.15s;
+}
+.hl-clear:hover{background:var(--red-light);color:var(--red);border-color:var(--red)}
+
+/* ── PASSAGE TEXT ── */
+#passage-scroll{
+  padding:1.75rem 2rem;overflow-y:auto;flex:1;
+}
+.passage-title-row{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.passage-title{font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--navy);line-height:1.3}
+.diff-badge{
+  padding:.25rem .75rem;border-radius:50px;font-size:.75rem;font-weight:700;
+  letter-spacing:.05em;text-transform:uppercase;flex-shrink:0;margin-top:.25rem;
+}
+.diff-medium{background:var(--gold-light);color:var(--gold)}
+#passage-text{font-size:1rem;line-height:1.85;color:var(--text)}
+#passage-text p{margin-bottom:1.1rem}
+
+/* ── QUESTIONS ── */
+#progress-bar-wrap{
+  background:#fff;border-bottom:1px solid var(--border);
+  padding:.75rem 1.5rem;flex-shrink:0;
+}
+.progress-label{
+  display:flex;justify-content:space-between;
+  font-size:.8rem;color:var(--text-muted);margin-bottom:.4rem;font-weight:500;
+}
+.progress-track{
+  height:6px;background:rgba(26,39,68,.08);border-radius:3px;overflow:hidden;
+}
+#progress-fill{
+  height:100%;background:linear-gradient(90deg,var(--sky),var(--navy));
+  border-radius:3px;transition:width .4s ease;width:0%;
+}
+#questions-scroll{padding:1.25rem 1.5rem;overflow-y:auto;flex:1}
+
+/* ── SECTION HEADER ── */
+.q-section-hdr{
+  background:var(--navy);color:#fff;
+  border-radius:var(--radius) var(--radius) 0 0;
+  padding:.9rem 1.25rem;margin-top:1.5rem;
+}
+.q-section-hdr:first-child{margin-top:0}
+.q-section-type{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;opacity:.7;margin-bottom:.2rem}
+.q-section-title{font-family:'DM Serif Display',serif;font-size:1.1rem}
+.q-section-instr{font-size:.82rem;opacity:.8;margin-top:.4rem;line-height:1.5}
+
+/* ── NOTES COMPLETION BOX ── */
+.notes-box{
+  background:#fff;border:1.5px solid var(--border);
+  border-top:none;border-radius:0 0 var(--radius) var(--radius);
+  padding:1.25rem 1.5rem;margin-bottom:1rem;
+}
+.notes-box-title{
+  font-weight:700;font-size:.95rem;color:var(--navy);
+  border-bottom:1px solid var(--border);padding-bottom:.6rem;margin-bottom:.9rem;
+}
+.notes-section-title{font-weight:600;font-size:.88rem;color:var(--navy);margin:1rem 0 .5rem}
+.notes-item{display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem;font-size:.88rem;line-height:1.5}
+.notes-item .bullet{color:var(--sky);font-size:.6rem;flex-shrink:0;margin-top:1px}
+.notes-item .sub-item{padding-left:1.2rem}
+.notes-item .dash{color:var(--text-muted);flex-shrink:0}
+.blank-input{
+  border:none;border-bottom:2px solid var(--sky);
+  background:transparent;font-family:'DM Sans',sans-serif;
+  font-size:.88rem;color:var(--navy);outline:none;
+  width:160px;padding:.1rem .3rem;transition:.2s;text-align:center;
+}
+.blank-input:focus{border-color:var(--navy);background:var(--sky-light)}
+.blank-input.answered{border-color:var(--green)}
+
+/* ── TFNG QUESTIONS ── */
+.question-card{
+  background:#fff;border:1.5px solid var(--border);
+  border-radius:var(--radius);padding:1.1rem 1.25rem;
+  margin-bottom:.75rem;transition:.2s;
+}
+.question-card.flagged{border-color:var(--gold);background:var(--gold-light)}
+.q-header{display:flex;align-items:flex-start;justify-content:space-between;gap:.75rem;margin-bottom:.8rem}
+.q-num{
+  background:var(--navy);color:#fff;border-radius:50%;
+  width:26px;height:26px;display:flex;align-items:center;justify-content:center;
+  font-size:.75rem;font-weight:700;flex-shrink:0;margin-top:.1rem;
+}
+.q-text{font-size:.9rem;line-height:1.55;flex:1;color:var(--text)}
+.flag-btn{
+  background:transparent;border:1px solid var(--border);
+  border-radius:50px;padding:.2rem .55rem;font-size:.8rem;cursor:pointer;
+  flex-shrink:0;transition:.15s;color:var(--text-muted);
+}
+.flag-btn:hover{background:var(--gold-light);border-color:var(--gold)}
+.flag-btn.active{background:var(--gold-light);border-color:var(--gold);color:var(--gold)}
+.options-row{display:flex;gap:.5rem;flex-wrap:wrap}
+.opt-label{
+  display:flex;align-items:center;gap:.45rem;
+  cursor:pointer;font-size:.85rem;
+  background:var(--cream);border:1.5px solid var(--border);
+  border-radius:50px;padding:.35rem .85rem;transition:.2s;
+  user-select:none;
+}
+.opt-label:hover{background:var(--sky-light);border-color:var(--sky)}
+.opt-label input[type=radio]{display:none}
+.opt-label.selected{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+/* ── SUBMIT ── */
+#submit-wrap{
+  padding:1rem 1.5rem;border-top:1px solid var(--border);
+  background:#fff;flex-shrink:0;
+}
+#submit-btn{
+  width:100%;padding:.85rem;background:var(--navy);color:#fff;
+  border:none;border-radius:50px;font-family:'DM Sans',sans-serif;
+  font-size:1rem;font-weight:700;cursor:pointer;transition:.2s;letter-spacing:.02em;
+}
+#submit-btn:hover{background:var(--navy-mid);transform:translateY(-1px);box-shadow:0 4px 16px rgba(26,39,68,.25)}
+
+/* ── RESULTS ── */
+#results-screen{
+  display:none;position:fixed;inset:0;background:var(--cream);
+  z-index:500;overflow-y:auto;padding:2rem 1rem;
+}
+.results-inner{max-width:760px;margin:0 auto}
+.results-hero{text-align:center;margin-bottom:2.5rem}
+.results-hero h1{font-family:'DM Serif Display',serif;font-size:2rem;color:var(--navy);margin-bottom:.5rem}
+.band-ring{
+  width:140px;height:140px;border-radius:50%;margin:1.5rem auto;
+  background:conic-gradient(var(--gold) 0%,var(--gold) var(--fill),rgba(26,39,68,.08) var(--fill));
+  display:flex;align-items:center;justify-content:center;position:relative;
+  box-shadow:0 0 40px rgba(201,146,42,.2);
+}
+.band-ring::before{
+  content:'';position:absolute;inset:12px;border-radius:50%;
+  background:var(--cream);
+}
+.band-inner{position:relative;z-index:1;text-align:center}
+.band-num{font-family:'DM Serif Display',serif;font-size:2.4rem;color:var(--gold);line-height:1}
+.band-lbl{font-size:.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em;margin-top:.1rem}
+.score-raw{font-size:1.1rem;color:var(--text-muted);margin-top:.5rem}
+.score-raw strong{color:var(--navy);font-size:1.4rem}
+
+.review-list{display:flex;flex-direction:column;gap:1rem;margin-bottom:2rem}
+.review-item{
+  background:#fff;border:1.5px solid var(--border);
+  border-radius:var(--radius);padding:1.1rem 1.25rem;
+}
+.review-item.correct-item{border-color:var(--green)}
+.review-item.wrong-item{border-color:var(--red)}
+.review-q-num{font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.4rem}
+.review-item.correct-item .review-q-num{color:var(--green)}
+.review-item.wrong-item .review-q-num{color:var(--red)}
+.review-q-text{font-size:.9rem;color:var(--text-muted);margin-bottom:.6rem;line-height:1.5}
+.review-answer-row{display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:.5rem}
+.ra-block{font-size:.85rem}
+.ra-label{font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);margin-bottom:.2rem}
+.ra-val.correct{color:var(--green);font-weight:700}
+.ra-val.wrong{color:var(--red);font-weight:700}
+.ra-val.answer{color:var(--navy);font-weight:700}
+.review-exp{
+  font-size:.82rem;color:var(--text-muted);line-height:1.6;
+  padding:.6rem .9rem;background:var(--cream);border-radius:8px;margin-top:.5rem;
+}
+.back-btn{
+  display:inline-block;background:var(--navy);color:#fff;
+  border-radius:50px;padding:.75rem 2rem;font-family:'DM Sans',sans-serif;
+  font-size:1rem;font-weight:600;text-decoration:none;transition:.2s;
+}
+.back-btn:hover{background:var(--navy-mid)}
+
+/* ── CONFIRM DIALOG ── */
+#confirm-overlay{
+  position:fixed;inset:0;z-index:800;background:rgba(26,39,68,.7);
+  backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;
+}
+#confirm-overlay.show{display:flex}
+.confirm-card{
+  background:#fff;border-radius:var(--radius-lg);padding:2rem;
+  max-width:400px;width:90%;text-align:center;
+}
+.confirm-card h3{font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--navy);margin-bottom:.75rem}
+.confirm-card p{font-size:.9rem;color:var(--text-muted);margin-bottom:1.5rem;line-height:1.6}
+.confirm-btns{display:flex;gap:.75rem;justify-content:center}
+.confirm-yes{
+  background:var(--navy);color:#fff;border:none;border-radius:50px;
+  padding:.65rem 1.75rem;font-family:'DM Sans',sans-serif;font-weight:600;cursor:pointer;transition:.2s;
+}
+.confirm-yes:hover{background:var(--navy-mid)}
+.confirm-no{
+  background:transparent;color:var(--text-muted);border:1.5px solid var(--border);
+  border-radius:50px;padding:.65rem 1.75rem;font-family:'DM Sans',sans-serif;
+  font-weight:500;cursor:pointer;transition:.2s;
+}
+.confirm-no:hover{border-color:var(--navy);color:var(--navy)}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(26,39,68,.18);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:rgba(26,39,68,.32)}
+
+/* ── MOBILE ── */
+@media(max-width:768px){
+  html,body{overflow:auto;height:auto}
+  #split-layout{flex-direction:column;overflow:visible}
+  #passage-col,#questions-col{width:100%;overflow:visible;height:auto}
+  #passage-scroll,#questions-scroll{overflow:visible;height:auto}
+}
+</style>
 </head>
 <body>
 
-<div class="toolbar">
-    <div>
-        <button onclick="document.body.classList.toggle('dark-mode')">🌓 Theme</button>
-        <button onclick="adjustFont(1)">A+</button>
-        <button onclick="adjustFont(-1)">A-</button>
-    </div>
-    <div id="timer" style="font-weight: bold; font-size: 20px; color: #d97706;">20:00</div>
-    <button onclick="window.location.href='index.html'">Main Menu</button>
+<!-- AUTH OVERLAY -->
+<div id="auth-overlay">
+  <div class="auth-card">
+    <div style="font-size:2.5rem;margin-bottom:.5rem">📖</div>
+    <h2>Sign in to read</h2>
+    <p>You need an English Flow account to access this passage and track your scores.</p>
+    <input type="email" id="auth-email" class="auth-input" placeholder="Email address"
+      onkeydown="if(event.key==='Enter')doSignIn()">
+    <input type="password" id="auth-pass" class="auth-input" placeholder="Password"
+      onkeydown="if(event.key==='Enter')doSignIn()">
+    <button class="auth-btn" id="auth-btn" onclick="doSignIn()">Sign In</button>
+    <div id="auth-msg" class="auth-msg" style="display:none"></div>
+    <p style="margin-top:1rem;font-size:.8rem;color:var(--text-muted)">
+      No account? <a href="../ielts.html" style="color:var(--sky)">Sign up on the IELTS page</a>
+    </p>
+  </div>
 </div>
 
-<button id="hl-btn">Highlight</button>
+<!-- CONFIRM DIALOG -->
+<div id="confirm-overlay">
+  <div class="confirm-card">
+    <h3>Submit Answers?</h3>
+    <p>You cannot change your answers after submitting. Make sure you've answered all questions.</p>
+    <div class="confirm-btns">
+      <button class="confirm-yes" onclick="submitAnswers()">Yes, Submit</button>
+      <button class="confirm-no" onclick="closeConfirm()">Go Back</button>
+    </div>
+  </div>
+</div>
 
-<div class="container">
-    <div class="passage-area" id="passage-content">
-        <h1>The Importance of Children’s Play</h1>
-        <p>Brick by brick, six-year-old Alice is building a magical kingdom. Imagining fairy-tale turrets and fire-breathing dragons, wicked witches and gallant heroes, she’s creating an enchanting world. Although she isn’t aware of it, this fantasy is helping her take her first steps towards her capacity for <strong>creativity</strong> and so it will have important repercussions in her adult life.</p>
-        <p>Minutes later, Alice has abandoned the kingdom in favour of playing schools with her younger brother. When she bosses him around as his ‘teacher’, she’s practising how to regulate her emotions through pretence. Later on, when they tire of this and settle down with a board game, she’s learning about the need to follow <strong>rules</strong> and take turns with a partner.</p>
-        <p>‘Play in all its rich variety is one of the highest achievements of the human species,’ says Dr David Whitebread from the Faculty of Education at the University of Cambridge, UK. ‘It underpins how we develop as intellectual, problem-solving adults and is crucial to our success as a highly adaptable species.’</p>
+<!-- TOP BAR -->
+<div id="top-bar">
+  <div class="logo">English <span class="dot">Flow</span></div>
+  <div class="timer-wrap">
+    <div>
+      <div class="timer-label">Time remaining</div>
+      <div id="timer-display">20:00</div>
+    </div>
+  </div>
+  <div class="user-area">
+    <div class="user-pill" id="user-pill">Student</div>
+    <button class="signout-btn" onclick="doSignOut()">Sign out</button>
+  </div>
+</div>
+
+<!-- BREADCRUMB -->
+<div id="breadcrumb">
+  <a href="../index.html">← Home</a>
+  <span class="crumb-sep">/</span>
+  <a href="../free-reading/index.html">← Reading</a>
+  <span class="crumb-sep">/</span>
+  <span class="crumb-active">The Importance of Children's Play</span>
+</div>
+
+<!-- SPLIT LAYOUT -->
+<div id="split-layout">
+
+  <!-- PASSAGE COLUMN -->
+  <div id="passage-col">
+    <div id="highlight-toolbar">
+      <span class="hl-label">Highlight:</span>
+      <div class="hl-btn" id="hl-yellow" title="Yellow" onclick="setColor('#fff176')"></div>
+      <div class="hl-btn" id="hl-green"  title="Green"  onclick="setColor('#c8e6c9')"></div>
+      <div class="hl-btn" id="hl-pink"   title="Pink"   onclick="setColor('#f8bbd0')"></div>
+      <button class="hl-clear" onclick="clearHighlights()">✕ Clear all</button>
+    </div>
+    <div id="passage-scroll">
+      <div class="passage-title-row">
+        <h1 class="passage-title">The Importance of Children's Play</h1>
+        <span class="diff-badge diff-medium">Medium</span>
+      </div>
+      <div id="passage-text">
+        <p>Brick by brick, six-year-old Alice is building a magical kingdom. Imagining fairy-tale turrets and fire-breathing dragons, wicked witches and gallant heroes, she's creating an enchanting world. Although she isn't aware of it, this fantasy is helping her take her first steps towards her capacity for <strong>creativity</strong> and so it will have important repercussions in her adult life.</p>
+        <p>Minutes later, Alice has abandoned the kingdom in favour of playing schools with her younger brother. When she bosses him around as his 'teacher', she's practising how to regulate her emotions through pretence. Later on, when they tire of this and settle down with a board game, she's learning about the need to follow <strong>rules</strong> and take turns with a partner.</p>
+        <p>'Play in all its rich variety is one of the highest achievements of the human species,' says Dr David Whitebread from the Faculty of Education at the University of Cambridge, UK. 'It underpins how we develop as intellectual, problem-solving adults and is crucial to our success as a highly adaptable species.'</p>
         <p>Recognizing the importance of play is not new: over two millennia ago, the Greek philosopher Plato extolled its virtues as a means of developing skills for adult life, and ideas about play-based learning have been developing since the 19th century.</p>
-        <p>But we live in changing times, and Whitebread is mindful of a worldwide decline in play, pointing out that over half the people in the world now live in <strong>cities</strong>. ‘The opportunities for free play, which I experienced almost every day of my childhood, are becoming increasingly scarce,’ he says. Outdoor play is curtailed by perceptions of risk to do with <strong>traffic</strong>, as well as parents’ increased wish to protect their children from being the victims of <strong>crime</strong>, and by the emphasis on ‘earlier is better’ which is leading to greater <strong>competition</strong> in academic learning and schools.</p>
-        <p>International bodies like the United Nations and the European Union have begun to develop policies concerned with children’s right to play, and to consider implications for leisure facilities and educational programmes. But what they often lack is the <strong>evidence</strong> to base policies on.</p>
-        <p>‘The type of play we are interested in is child-initiated, spontaneous and unpredictable – but, as soon as you ask a five-year-old “to play”, then you as the researcher have intervened,’ explains Dr Sara Baker. ‘And we want to know what the long-term impact of play is. It’s a real challenge.’</p>
-        <p>Dr Jenny Gibson agrees, pointing out that although some of the steps in the puzzle of how and why play is important have been looked at, there is very little data on the impact it has on the child’s later <strong>life</strong>.</p>
-        <p>Now, thanks to the university’s new Centre for Research on Play in Education, Development and Learning (PEDAL), Whitebread, Baker, Gibson and a team of researchers hope to provide evidence on the role played by play in how a child develops.</p>
-        <p>‘A strong possibility is that play supports the early development of children’s self-control,’ explains Baker. ‘This is our ability to develop awareness of our own thinking progresses – it influences how effectively we go about undertaking challenging activities.’</p>
-        <p>In a study carried out by Baker with toddlers and young pre-schoolers, she found that children with greater self-control solved problems more quickly when exploring an unfamiliar set-up requiring scientific reasoning. ‘This sort of evidence makes up think that giving children the chance to play will make them more successful problem-solvers in the long run.’</p>
+        <p>But we live in changing times, and Whitebread is mindful of a worldwide decline in play, pointing out that over half the people in the world now live in <strong>cities</strong>. 'The opportunities for free play, which I experienced almost every day of my childhood, are becoming increasingly scarce,' he says. Outdoor play is curtailed by perceptions of risk to do with <strong>traffic</strong>, as well as parents' increased wish to protect their children from being the victims of <strong>crime</strong>, and by the emphasis on 'earlier is better' which is leading to greater <strong>competition</strong> in academic learning and schools.</p>
+        <p>International bodies like the United Nations and the European Union have begun to develop policies concerned with children's right to play, and to consider implications for leisure facilities and educational programmes. But what they often lack is the <strong>evidence</strong> to base policies on.</p>
+        <p>'The type of play we are interested in is child-initiated, spontaneous and unpredictable – but, as soon as you ask a five-year-old "to play", then you as the researcher have intervened,' explains Dr Sara Baker. 'And we want to know what the long-term impact of play is. It's a real challenge.'</p>
+        <p>Dr Jenny Gibson agrees, pointing out that although some of the steps in the puzzle of how and why play is important have been looked at, there is very little data on the impact it has on the child's later <strong>life</strong>.</p>
+        <p>Now, thanks to the university's new Centre for Research on Play in Education, Development and Learning (PEDAL), Whitebread, Baker, Gibson and a team of researchers hope to provide evidence on the role played by play in how a child develops.</p>
+        <p>'A strong possibility is that play supports the early development of children's self-control,' explains Baker. 'This is our ability to develop awareness of our own thinking progresses – it influences how effectively we go about undertaking challenging activities.'</p>
+        <p>In a study carried out by Baker with toddlers and young pre-schoolers, she found that children with greater self-control solved problems more quickly when exploring an unfamiliar set-up requiring scientific reasoning. 'This sort of evidence makes us think that giving children the chance to play will make them more successful problem-solvers in the long run.'</p>
         <p>If playful experiences do facilitate this aspect of development, say the researchers, it could be extremely significant for educational practices, because the ability to self-regulate has been shown to be a key predictor of academic performance.</p>
-        <p>Gibson adds: ‘Playful behavior is also an important indicator of healthy social and emotional development. In my previous research, I investigated how observing children at play can give us important clues about their well-being and can even be useful in the diagnosis of neurodevelopmental disorders like autism.’</p>
-        <p>Whitebread’s recent research has involved developing a play-based approach to supporting children’s writing. ‘Many primary school children find writing difficult, but we showed in a previous study that a playful stimulus was far more effective than an instructional one.’ Children wrote longer and better-structured stories when they first played with dolls representing characters in the story. In the latest study, children first created their story with Lego*, with similar results. ‘Many teachers commented that they had always previously had children saying they didn’t know what to write about. With the Lego building, however, not a single child said this through the whole year of the project.’</p>
-        <p>Whitebread, who directs PEDAL, trained as a primary school teacher in the early 1970s, when, as he describes, ‘the teaching of young children was largely a quiet backwater, untroubled by any serious intellectual debate or controversy.’ Now, the landscape is very different, with hotly debated topics such as school starting age.</p>
-        <p>‘Somehow the importance of play has been lost in recent decades. It’s regarded as something trivial, or even as something negative that contrasts with “work”. Let’s not lose sight of its benefits, and the fundamental contributions it makes to human achievements in the arts, sciences and technology. Let’s make sure children have a rich diet of play experiences.’</p>
+        <p>Gibson adds: 'Playful behaviour is also an important indicator of healthy social and emotional development. In my previous research, I investigated how observing children at play can give us important clues about their well-being and can even be useful in the diagnosis of neurodevelopmental disorders like autism.'</p>
+        <p>Whitebread's recent research has involved developing a play-based approach to supporting children's writing. 'Many primary school children find writing difficult, but we showed in a previous study that a playful stimulus was far more effective than an instructional one.' Children wrote longer and better-structured stories when they first played with dolls representing characters in the story. In the latest study, children first created their story with Lego, with similar results. 'Many teachers commented that they had always previously had children saying they didn't know what to write about. With the Lego building, however, not a single child said this through the whole year of the project.'</p>
+        <p>Whitebread, who directs PEDAL, trained as a primary school teacher in the early 1970s, when, as he describes, 'the teaching of young children was largely a quiet backwater, untroubled by any serious intellectual debate or controversy.' Now, the landscape is very different, with hotly debated topics such as school starting age.</p>
+        <p>'Somehow the importance of play has been lost in recent decades. It's regarded as something trivial, or even as something negative that contrasts with "work". Let's not lose sight of its benefits, and the fundamental contributions it makes to human achievements in the arts, sciences and technology. Let's make sure children have a rich diet of play experiences.'</p>
+      </div>
+    </div>
+  </div><!-- /passage-col -->
+
+  <!-- QUESTIONS COLUMN -->
+  <div id="questions-col">
+    <div id="progress-bar-wrap">
+      <div class="progress-label">
+        <span>Questions answered</span>
+        <span id="progress-text">0 / 13</span>
+      </div>
+      <div class="progress-track"><div id="progress-fill"></div></div>
     </div>
 
-    <div class="question-area">
-        <h2>Questions 1-8 (One Word Only)</h2>
-        <div class="q-block">1. building a ‘magical kingdom’ may help develop <input type="text" id="q1"> <div class="feedback" id="f1"></div><div class="explanation">Para 1: "...this fantasy is helping her take her first steps towards her capacity for creativity."</div></div>
-        <div class="q-block">2. board games involve <input type="text" id="q2"> and turn-taking <div class="feedback" id="f2"></div><div class="explanation">Para 2: "...learning about the need to follow rules and take turns."</div></div>
-        <div class="q-block">3. population of <input type="text" id="q3"> have grown <div class="feedback" id="f3"></div><div class="explanation">Para 5: "...over half the people in the world now live in cities."</div></div>
-        <div class="q-block">4. fear of <input type="text" id="q4"> <div class="feedback" id="f4"></div><div class="explanation">Para 5: "...curtailed by perceptions of risk to do with traffic."</div></div>
-        <div class="q-block">5. fear of <input type="text" id="q5"> <div class="feedback" id="f5"></div><div class="explanation">Para 5: "...protect their children from being the victims of crime."</div></div>
-        <div class="q-block">6. increased <input type="text" id="q6"> in schools <div class="feedback" id="f6"></div><div class="explanation">Para 5: "...leading to greater competition in academic learning."</div></div>
-        <div class="q-block">7. difficult to find <input type="text" id="q7"> to support policies <div class="feedback" id="f7"></div><div class="explanation">Para 6: "...what they often lack is the evidence."</div></div>
-        <div class="q-block">8. impact of play on the rest of the child’s <input type="text" id="q8"> <div class="feedback" id="f8"></div><div class="explanation">Para 8: "...little data on the impact it has on the child’s later life."</div></div>
+    <div id="questions-scroll">
 
-        <h2>Questions 9-13 (TRUE / FALSE / NOT GIVEN)</h2>
-        <div class="q-block">9. Self-control is a predictor of school success. <br><input type="checkbox" name="q9" value="TRUE"> T <input type="checkbox" name="q9" value="FALSE"> F <input type="checkbox" name="q9" value="NOT GIVEN"> NG <div class="feedback" id="f9"></div><div class="explanation">Para 13: Self-regulation is a key predictor of academic performance.</div></div>
-        <div class="q-block">10. Play helps diagnose medical problems. <br><input type="checkbox" name="q10" value="TRUE"> T <input type="checkbox" name="q10" value="FALSE"> F <input type="checkbox" name="q10" value="NOT GIVEN"> NG <div class="feedback" id="f10"></div><div class="explanation">Para 14: Useful in the diagnosis of neurodevelopmental disorders.</div></div>
-        <div class="q-block">11. Dolls benefit girls more than boys. <br><input type="checkbox" name="q11" value="TRUE"> T <input type="checkbox" name="q11" value="FALSE"> F <input type="checkbox" name="q11" value="NOT GIVEN"> NG <div class="feedback" id="f11"></div><div class="explanation">The passage does not compare genders for doll play.</div></div>
-        <div class="q-block">12. Lego created problems for ideas. <br><input type="checkbox" name="q12" value="TRUE"> T <input type="checkbox" name="q12" value="FALSE"> F <input type="checkbox" name="q12" value="NOT GIVEN"> NG <div class="feedback" id="f12"></div><div class="explanation">Para 15: Not a single child said they didn't know what to write.</div></div>
-        <div class="q-block">13. Play is seen as less significant today. <br><input type="checkbox" name="q13" value="TRUE"> T <input type="checkbox" name="q13" value="FALSE"> F <input type="checkbox" name="q13" value="NOT GIVEN"> NG <div class="feedback" id="f13"></div><div class="explanation">Para 17: "Somehow the importance of play has been lost in recent decades."</div></div>
+      <!-- ── SECTION 1: Notes Completion Q1–8 ── -->
+      <div class="q-section-hdr">
+        <div class="q-section-type">Questions 1–8</div>
+        <div class="q-section-title">Complete the notes below</div>
+        <div class="q-section-instr">Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</div>
+      </div>
 
-        <button class="btn-submit" onclick="finishExam()">Finish Exam</button>
+      <div class="notes-box">
+        <div class="notes-box-title">Children's play</div>
+
+        <div class="notes-section-title">Uses of children's play</div>
+        <div class="notes-item">
+          <span class="bullet">●</span>
+          <span>building a 'magical kingdom' may help develop <strong>1</strong>
+          <input class="blank-input" id="q1" data-q="1" placeholder="…" oninput="onInput(this)" autocomplete="off" autocorrect="off" spellcheck="false">
+          </span>
+        </div>
+        <div class="notes-item">
+          <span class="bullet">●</span>
+          <span>board games involve <strong>2</strong>
+          <input class="blank-input" id="q2" data-q="2" placeholder="…" oninput="onInput(this)" autocomplete="off" autocorrect="off" spellcheck="false">
+          and turn-taking</span>
+        </div>
+
+        <div class="notes-section-title">Recent changes affecting children's play</div>
+        <div class="notes-item">
+          <span class="bullet">●</span>
+          <span>populations of <strong>3</strong>
+          <input class="blank-input" id="q3" data-q="3" placeholder="…" oninput="onInput(this)" autocomplete="off" autocorrect="off" spellcheck="false">
+          have grown</span>
+        </div>
+        <div class="notes-item">
+          <span class="bullet">●</span>
+          <span>opportunities for free play are limited due to:</span>
+        </div>
+        <div class="notes-item" style="padding-left:1.5rem">
+          <span class="dash">–</span>
+          <span>fear of <strong>4</strong>
+          <input class="blank-input" id="q4" data-q="4" placeholder="…" oninput="onInput(this)" autocomplete="off" autocorrect="off" spellcheck="false">
+          </span>
+        </div>
+        <div class="notes-item" style="padding-left:1.5rem">
+          <span class="dash">–</span>
+          <span>fear of <strong>5</strong>
+          <input class="blank-input" id="q5" data-q="5" placeholder="…" oninput="onInput(this)" autocomplete="off" autocorrect="off" spellcheck="false">
+          </span>
+        </div>
+        <div class="notes-item" style="padding-left:1.5rem">
+          <span class="dash">–</span>
+          <span>increased <strong>6</strong>
+          <input class="blank-input" id="q6" data-q="6" placeholder="…" oninput="onInput(this)" autocomplete="off" autocorrect="off" spellcheck="false">
+          in schools</span>
+        </div>
+
+        <div class="notes-section-title">International policies on children's play</div>
+        <div class="notes-item">
+          <span class="bullet">●</span>
+          <span>it is difficult to find <strong>7</strong>
+          <input class="blank-input" id="q7" data-q="7" placeholder="…" oninput="onInput(this)" autocomplete="off" autocorrect="off" spellcheck="false">
+          to support new policies</span>
+        </div>
+        <div class="notes-item">
+          <span class="bullet">●</span>
+          <span>research needs to study the impact of play on the rest of the child's <strong>8</strong>
+          <input class="blank-input" id="q8" data-q="8" placeholder="…" oninput="onInput(this)" autocomplete="off" autocorrect="off" spellcheck="false">
+          </span>
+        </div>
+      </div><!-- /notes-box -->
+
+      <!-- ── SECTION 2: True/False/Not Given Q9–13 ── -->
+      <div class="q-section-hdr">
+        <div class="q-section-type">Questions 9–13</div>
+        <div class="q-section-title">True / False / Not Given</div>
+        <div class="q-section-instr">
+          Do the following statements agree with the information?<br>
+          <strong>TRUE</strong> — statement agrees &nbsp;|&nbsp;
+          <strong>FALSE</strong> — statement contradicts &nbsp;|&nbsp;
+          <strong>NOT GIVEN</strong> — no information
+        </div>
+      </div>
+
+      <!-- Q9 -->
+      <div class="question-card" id="card-9">
+        <div class="q-header">
+          <div class="q-num">9</div>
+          <div class="q-text">Children with good self-control are known to be likely to do well at school later on.</div>
+          <button class="flag-btn" onclick="toggleFlag(9)">🚩</button>
+        </div>
+        <div class="options-row" id="opts-9">
+          <label class="opt-label"><input type="radio" name="q9" value="TRUE" onchange="selectOpt(9,'TRUE')">TRUE</label>
+          <label class="opt-label"><input type="radio" name="q9" value="FALSE" onchange="selectOpt(9,'FALSE')">FALSE</label>
+          <label class="opt-label"><input type="radio" name="q9" value="NOT GIVEN" onchange="selectOpt(9,'NOT GIVEN')">NOT GIVEN</label>
+        </div>
+      </div>
+
+      <!-- Q10 -->
+      <div class="question-card" id="card-10">
+        <div class="q-header">
+          <div class="q-num">10</div>
+          <div class="q-text">The way a child plays may provide information about possible medical problems.</div>
+          <button class="flag-btn" onclick="toggleFlag(10)">🚩</button>
+        </div>
+        <div class="options-row" id="opts-10">
+          <label class="opt-label"><input type="radio" name="q10" value="TRUE" onchange="selectOpt(10,'TRUE')">TRUE</label>
+          <label class="opt-label"><input type="radio" name="q10" value="FALSE" onchange="selectOpt(10,'FALSE')">FALSE</label>
+          <label class="opt-label"><input type="radio" name="q10" value="NOT GIVEN" onchange="selectOpt(10,'NOT GIVEN')">NOT GIVEN</label>
+        </div>
+      </div>
+
+      <!-- Q11 -->
+      <div class="question-card" id="card-11">
+        <div class="q-header">
+          <div class="q-num">11</div>
+          <div class="q-text">Playing with dolls was found to benefit girls' writing more than boys' writing.</div>
+          <button class="flag-btn" onclick="toggleFlag(11)">🚩</button>
+        </div>
+        <div class="options-row" id="opts-11">
+          <label class="opt-label"><input type="radio" name="q11" value="TRUE" onchange="selectOpt(11,'TRUE')">TRUE</label>
+          <label class="opt-label"><input type="radio" name="q11" value="FALSE" onchange="selectOpt(11,'FALSE')">FALSE</label>
+          <label class="opt-label"><input type="radio" name="q11" value="NOT GIVEN" onchange="selectOpt(11,'NOT GIVEN')">NOT GIVEN</label>
+        </div>
+      </div>
+
+      <!-- Q12 -->
+      <div class="question-card" id="card-12">
+        <div class="q-header">
+          <div class="q-num">12</div>
+          <div class="q-text">Children had problems thinking up ideas when they first created the story with Lego.</div>
+          <button class="flag-btn" onclick="toggleFlag(12)">🚩</button>
+        </div>
+        <div class="options-row" id="opts-12">
+          <label class="opt-label"><input type="radio" name="q12" value="TRUE" onchange="selectOpt(12,'TRUE')">TRUE</label>
+          <label class="opt-label"><input type="radio" name="q12" value="FALSE" onchange="selectOpt(12,'FALSE')">FALSE</label>
+          <label class="opt-label"><input type="radio" name="q12" value="NOT GIVEN" onchange="selectOpt(12,'NOT GIVEN')">NOT GIVEN</label>
+        </div>
+      </div>
+
+      <!-- Q13 -->
+      <div class="question-card" id="card-13">
+        <div class="q-header">
+          <div class="q-num">13</div>
+          <div class="q-text">People nowadays regard children's play as less significant than they did in the past.</div>
+          <button class="flag-btn" onclick="toggleFlag(13)">🚩</button>
+        </div>
+        <div class="options-row" id="opts-13">
+          <label class="opt-label"><input type="radio" name="q13" value="TRUE" onchange="selectOpt(13,'TRUE')">TRUE</label>
+          <label class="opt-label"><input type="radio" name="q13" value="FALSE" onchange="selectOpt(13,'FALSE')">FALSE</label>
+          <label class="opt-label"><input type="radio" name="q13" value="NOT GIVEN" onchange="selectOpt(13,'NOT GIVEN')">NOT GIVEN</label>
+        </div>
+      </div>
+
+    </div><!-- /questions-scroll -->
+
+    <div id="submit-wrap">
+      <button id="submit-btn" onclick="showConfirm()">Submit Answers</button>
     </div>
+  </div><!-- /questions-col -->
 
-    <div class="nav-grid" id="nav-grid"></div>
+</div><!-- /split-layout -->
+
+<!-- RESULTS SCREEN -->
+<div id="results-screen">
+  <div class="results-inner">
+    <div class="results-hero">
+      <h1>Your Results</h1>
+      <div class="band-ring" id="band-ring">
+        <div class="band-inner">
+          <div class="band-num" id="band-num">—</div>
+          <div class="band-lbl">Band</div>
+        </div>
+      </div>
+      <div class="score-raw"><strong id="raw-score">0</strong> / 13 correct</div>
+    </div>
+    <div class="review-list" id="review-list"></div>
+    <div style="text-align:center;margin-bottom:2rem">
+      <a href="../free-reading/index.html" class="back-btn">← Back to Reading</a>
+    </div>
+  </div>
 </div>
 
 <script>
-    const sb = supabase.createClient('https://evhceswvapszaghnvmxl.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGNlc3d2YXBzemFnaG52bXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3OTQwNzMsImV4cCI6MjA5MzM3MDA3M30.yV7tavgR7JKc45uSGtS8Lf6m1ZMuuvQ23hmAb8n6k3A');
-    
-    const keys = {
-        q1: btoa('creativity'), q2: btoa('rules'), q3: btoa('cities'), q4: btoa('traffic|crime'), q5: btoa('traffic|crime'), 
-        q6: btoa('competition'), q7: btoa('evidence'), q8: btoa('life'), q9: btoa('TRUE'), q10: btoa('TRUE'), 
-        q11: btoa('NOT GIVEN'), q12: btoa('FALSE'), q13: btoa('TRUE')
-    };
+// ── CONFIG ──
+const PASSAGE_ID  = 'childrens-play';
+const SUPABASE_URL = 'https://evhceswvapszaghnvmxl.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGNlc3d2YXBzemFnaG52bXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3OTQwNzMsImV4cCI6MjA5MzM3MDA3M30.yV7tavgR7JKc45uSGtS8Lf6m1ZMuuvQ23hmAb8n6k3A';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    let fSize = 18;
-    function adjustFont(v) { fSize = Math.min(24, Math.max(14, fSize + v)); document.getElementById('passage-content').style.fontSize = fSize + 'px'; }
+// ── ANSWER KEY ──
+const ANSWERS = {
+  1:  { correct: ['creativity'],  type: 'fill', text: "building a 'magical kingdom' may help develop ___",                exp: "Paragraph 1: 'this fantasy is helping her take her first steps towards her capacity for creativity'" },
+  2:  { correct: ['rules'],       type: 'fill', text: 'board games involve ___ and turn-taking',                          exp: "Paragraph 2: 'she's learning about the need to follow rules and take turns with a partner'" },
+  3:  { correct: ['cities'],      type: 'fill', text: 'populations of ___ have grown',                                    exp: "Paragraph 5: 'over half the people in the world now live in cities'" },
+  4:  { correct: ['traffic'],     type: 'fill', text: 'fear of ___',                                                      exp: "Paragraph 5: 'Outdoor play is curtailed by perceptions of risk to do with traffic'" },
+  5:  { correct: ['crime'],       type: 'fill', text: 'fear of ___',                                                      exp: "Paragraph 5: 'parents' increased wish to protect their children from being the victims of crime'" },
+  6:  { correct: ['competition'], type: 'fill', text: 'increased ___ in schools',                                         exp: "Paragraph 5: 'leading to greater competition in academic learning and schools'" },
+  7:  { correct: ['evidence'],    type: 'fill', text: 'it is difficult to find ___ to support new policies',              exp: "Paragraph 6: 'But what they often lack is the evidence to base policies on'" },
+  8:  { correct: ['life'],        type: 'fill', text: "research needs to study the impact of play on the rest of the child's ___", exp: "Paragraph 8: 'there is very little data on the impact it has on the child's later life'" },
+  9:  { correct: 'TRUE',        type: 'tfng', text: 'Children with good self-control are known to be likely to do well at school later on.',      exp: "The passage states self-regulation 'has been shown to be a key predictor of academic performance'" },
+  10: { correct: 'TRUE',        type: 'tfng', text: 'The way a child plays may provide information about possible medical problems.',             exp: "Gibson says observing play 'can even be useful in the diagnosis of neurodevelopmental disorders like autism'" },
+  11: { correct: 'NOT GIVEN',   type: 'tfng', text: "Playing with dolls was found to benefit girls' writing more than boys' writing.",           exp: "The passage mentions dolls helped children write better but makes no comparison between girls and boys" },
+  12: { correct: 'FALSE',       type: 'tfng', text: 'Children had problems thinking up ideas when they first created the story with Lego.',     exp: "'not a single child said this [they didn't know what to write about] through the whole year of the project'" },
+  13: { correct: 'TRUE',        type: 'tfng', text: "People nowadays regard children's play as less significant than they did in the past.",     exp: "'Somehow the importance of play has been lost in recent decades. It's regarded as something trivial'" }
+};
 
-    const hlBtn = document.getElementById('hl-btn');
-    document.addEventListener('mouseup', e => {
-        const sel = window.getSelection();
-        if (sel.toString().length > 0) { hlBtn.style.display='block'; hlBtn.style.left=e.pageX+'px'; hlBtn.style.top=e.pageY+'px'; }
-        else hlBtn.style.display='none';
-    });
-    hlBtn.onclick = () => {
-        const range = window.getSelection().getRangeAt(0);
-        const span = document.createElement('span'); span.className='highlighted';
-        range.surroundContents(span); hlBtn.style.display='none';
-    };
+const BAND_TABLE = [
+  [12,13,9.0],[11,11,8.5],[10,10,8.0],[9,9,7.5],[8,8,7.0],
+  [7,7,6.5],[6,6,6.0],[5,5,5.5],[4,4,5.0],[3,3,4.5],[2,2,4.0]
+];
 
-    const grid = document.getElementById('nav-grid');
-    for(let i=1; i<=13; i++) {
-        const d = document.createElement('div'); d.className='q-num'; d.innerText=i; d.id='nav'+i;
-        grid.appendChild(d);
+function getBand(raw, total) {
+  const scale = raw / total * 40;
+  if (scale >= 39) return 9.0;
+  if (scale >= 37) return 8.5;
+  if (scale >= 35) return 8.0;
+  if (scale >= 33) return 7.5;
+  if (scale >= 30) return 7.0;
+  if (scale >= 27) return 6.5;
+  if (scale >= 23) return 6.0;
+  if (scale >= 19) return 5.5;
+  if (scale >= 15) return 5.0;
+  if (scale >= 13) return 4.5;
+  if (scale >= 10) return 4.0;
+  return 3.5;
+}
+
+// ── STATE ──
+let currentUser = null;
+let timerInterval = null;
+let secondsLeft = 20 * 60;
+let userAnswers = {};
+let flagged = {};
+let activeHlColor = null;
+let totalAnswered = 0;
+
+// ── AUTH ──
+async function initAuth() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) {
+    currentUser = session.user;
+    showApp();
+  }
+  // Auth overlay stays visible until sign-in
+}
+
+async function doSignIn() {
+  const email = document.getElementById('auth-email').value.trim();
+  const pass  = document.getElementById('auth-pass').value;
+  const btn   = document.getElementById('auth-btn');
+  const msg   = document.getElementById('auth-msg');
+  if (!email || !pass) { showAuthMsg('Please enter email and password.', true); return; }
+  btn.disabled = true; btn.textContent = 'Signing in…';
+  const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+  btn.disabled = false; btn.textContent = 'Sign In';
+  if (error) { showAuthMsg(error.message, true); return; }
+  currentUser = data.user;
+  showApp();
+}
+
+function showAuthMsg(text, isErr) {
+  const el = document.getElementById('auth-msg');
+  el.textContent = text;
+  el.className = 'auth-msg ' + (isErr ? 'error' : 'success');
+  el.style.display = 'block';
+}
+
+function showApp() {
+  document.getElementById('auth-overlay').style.display = 'none';
+  const name = currentUser.user_metadata?.name || currentUser.email.split('@')[0];
+  const first = name.split(' ')[0];
+  document.getElementById('user-pill').textContent = '👤 ' + first;
+  startTimer();
+}
+
+async function doSignOut() {
+  await sb.auth.signOut();
+  location.reload();
+}
+
+// ── TIMER ──
+function startTimer() {
+  updateTimerDisplay();
+  timerInterval = setInterval(() => {
+    secondsLeft--;
+    updateTimerDisplay();
+    if (secondsLeft <= 0) {
+      clearInterval(timerInterval);
+      submitAnswers();
+    }
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const m = Math.floor(secondsLeft / 60);
+  const s = secondsLeft % 60;
+  const el = document.getElementById('timer-display');
+  el.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  el.className = '';
+  if (secondsLeft <= 60) el.classList.add('danger');
+  else if (secondsLeft <= 180) el.classList.add('warning');
+}
+
+// ── HIGHLIGHT ──
+function setColor(color) {
+  activeHlColor = color;
+  document.querySelectorAll('.hl-btn').forEach(b => b.classList.remove('active'));
+  const map = {'#fff176':'hl-yellow','#c8e6c9':'hl-green','#f8bbd0':'hl-pink'};
+  if (map[color]) document.getElementById(map[color]).classList.add('active');
+}
+
+document.getElementById('passage-text').addEventListener('mouseup', () => {
+  if (!activeHlColor) return;
+  const sel = window.getSelection();
+  if (!sel || sel.isCollapsed) return;
+  const range = sel.getRangeAt(0);
+  const span = document.createElement('span');
+  span.style.backgroundColor = activeHlColor;
+  span.style.borderRadius = '3px';
+  span.style.padding = '1px 0';
+  try { range.surroundContents(span); } catch(e) {}
+  sel.removeAllRanges();
+});
+
+function clearHighlights() {
+  document.querySelectorAll('#passage-text span[style*="background"]').forEach(s => {
+    const parent = s.parentNode;
+    while (s.firstChild) parent.insertBefore(s.firstChild, s);
+    parent.removeChild(s);
+  });
+}
+
+// ── INPUTS / ANSWERS ──
+function onInput(el) {
+  const q = parseInt(el.dataset.q);
+  const val = el.value.trim();
+  userAnswers[q] = val;
+  el.classList.toggle('answered', val.length > 0);
+  updateProgress();
+}
+
+function selectOpt(q, val) {
+  userAnswers[q] = val;
+  document.querySelectorAll(`#opts-${q} .opt-label`).forEach(l => {
+    l.classList.toggle('selected', l.querySelector('input').value === val);
+  });
+  updateProgress();
+}
+
+function updateProgress() {
+  let count = 0;
+  for (let i = 1; i <= 13; i++) {
+    const v = userAnswers[i];
+    if (v && v.trim() !== '') count++;
+  }
+  totalAnswered = count;
+  document.getElementById('progress-text').textContent = `${count} / 13`;
+  document.getElementById('progress-fill').style.width = `${(count/13)*100}%`;
+}
+
+// ── FLAG ──
+function toggleFlag(q) {
+  flagged[q] = !flagged[q];
+  const card = document.getElementById(`card-${q}`);
+  const btn  = card?.querySelector('.flag-btn');
+  if (card) card.classList.toggle('flagged', !!flagged[q]);
+  if (btn)  btn.classList.toggle('active', !!flagged[q]);
+}
+
+// ── CONFIRM / SUBMIT ──
+function showConfirm() { document.getElementById('confirm-overlay').classList.add('show'); }
+function closeConfirm() { document.getElementById('confirm-overlay').classList.remove('show'); }
+
+async function submitAnswers() {
+  closeConfirm();
+  clearInterval(timerInterval);
+
+  // Score
+  let correct = 0;
+  for (let i = 1; i <= 13; i++) {
+    const a = ANSWERS[i];
+    const given = (userAnswers[i] || '').trim().toLowerCase();
+    if (a.type === 'fill') {
+      if (a.correct.some(c => c.toLowerCase() === given)) correct++;
+    } else {
+      if (given.toUpperCase() === a.correct.toUpperCase()) correct++;
+    }
+  }
+
+  const band = getBand(correct, 13);
+
+  // Save to Supabase
+  if (currentUser) {
+    try {
+      await sb.from('reading_scores').upsert({
+        user_id:      currentUser.id,
+        passage_id:   PASSAGE_ID,
+        band_score:   band,
+        score_raw:    correct,
+        total:        13,
+        completed_at: new Date().toISOString()
+      }, { onConflict: 'user_id,passage_id' });
+    } catch(e) { console.warn('Score save failed:', e); }
+  }
+
+  showResults(correct, band);
+}
+
+function showResults(correct, band) {
+  document.getElementById('results-screen').style.display = 'block';
+  document.getElementById('results-screen').scrollTop = 0;
+  document.getElementById('band-num').textContent = band.toFixed(1);
+  document.getElementById('raw-score').textContent = correct;
+
+  // Ring fill
+  const pct = Math.min(100, (band / 9) * 100);
+  document.getElementById('band-ring').style.setProperty('--fill', pct + '%');
+
+  // Review
+  const list = document.getElementById('review-list');
+  list.innerHTML = '';
+  for (let i = 1; i <= 13; i++) {
+    const a = ANSWERS[i];
+    const given = (userAnswers[i] || '').trim();
+    let isCorrect;
+    if (a.type === 'fill') {
+      isCorrect = a.correct.some(c => c.toLowerCase() === given.toLowerCase());
+    } else {
+      isCorrect = (given.toUpperCase() === a.correct.toUpperCase());
     }
 
-    document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
-        cb.onchange = () => {
-            document.getElementsByName(cb.name).forEach(o => { if(o!==cb) o.checked=false; });
-            document.getElementById('nav'+cb.name.substring(1)).classList.add('filled');
-        };
-    });
-    document.querySelectorAll('input[type="text"]').forEach(ti => {
-        ti.oninput = () => { if(ti.value.length > 0) document.getElementById('nav'+ti.id.substring(1)).classList.add('filled'); };
-    });
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (isCorrect ? 'correct-item' : 'wrong-item');
 
-    async function finishExam() {
-        let score = 0;
-        for(let i=1; i<=13; i++) {
-            let val = "";
-            const textInput = document.getElementById('q'+i);
-            if(textInput) val = textInput.value.trim().toLowerCase();
-            else {
-                const checked = document.querySelector(`input[name="q${i}"]:checked`);
-                if(checked) val = checked.value;
-            }
+    const givenDisplay = given || '(no answer)';
+    const correctDisplay = Array.isArray(a.correct) ? a.correct[0] : a.correct;
 
-            const correct = atob(keys['q'+i]).toLowerCase().split('|');
-            if(correct.includes(val)) {
-                score++;
-                document.getElementById('f'+i).innerText = "✅ Correct";
-                document.getElementById('f'+i).style.color = "green";
-            } else {
-                document.getElementById('f'+i).innerText = "❌ Incorrect";
-                document.getElementById('f'+i).style.color = "red";
-                document.querySelectorAll('.explanation')[i-1].style.display = "block";
-            }
-            document.getElementById('f'+i).style.display = "block";
-        }
+    div.innerHTML = `
+      <div class="review-q-num">${isCorrect ? '✓' : '✗'} Question ${i}</div>
+      <div class="review-q-text">${a.text}</div>
+      <div class="review-answer-row">
+        <div class="ra-block">
+          <div class="ra-label">Your answer</div>
+          <div class="ra-val ${isCorrect ? 'correct' : 'wrong'}">${givenDisplay}</div>
+        </div>
+        ${!isCorrect ? `<div class="ra-block">
+          <div class="ra-label">Correct answer</div>
+          <div class="ra-val answer">${correctDisplay}</div>
+        </div>` : ''}
+      </div>
+      <div class="review-exp">💡 ${a.exp}</div>
+    `;
+    list.appendChild(div);
+  }
+}
 
-        const band = ((score/13)*9).toFixed(1);
-        const { data: { user } } = await sb.auth.getUser();
-        if(user) {
-            await sb.from('scores').upsert({ user_id: user.id, passage_id: 4, score: band });
-        }
-        alert("Your Estimated Band Score: " + band);
-        document.querySelectorAll('input').forEach(i => i.disabled = true);
-    }
-
-    let t = 1200;
-    setInterval(() => { if(t>0) { t--; let m=Math.floor(t/60), s=t%60; document.getElementById('timer').innerText=`${m}:${s<10?'0'+s:s}`; } }, 1000);
+// ── BOOT ──
+initAuth();
 </script>
 </body>
 </html>
