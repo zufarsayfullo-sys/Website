@@ -1,20 +1,16 @@
 [
   {
-    "id": 4,
+    "id": 1,
     "title": "The Importance of Children’s Play",
     "description": "Exploration of how play underpins human development and the current decline in play opportunities.",
-    "type": "Academic",
-    "difficulty": "Medium",
-    "questions": 13,
-    "time": "20 min",
-    "topic": "Education",
-    "file": "the-importance-of-childrens-play.html"
+    "fileName": "the-importance-of-childrens-play.html",
+    "totalQuestions": 13
+  },
+  {
+    "id": 2,
+    "title": "The growth of bike-sharing schemes around the world",
+    "description": "IELTS Academic Reading passage about the history of bike-sharing, with 13 questions covering paragraph matching, multiple choice, and fill-in-the-blank.",
+    "fileName": "bike-sharing-schemes.html",
+    "totalQuestions": 13
   }
 ]
-{
-  "id": 4,
-  "title": "The growth of bike-sharing schemes around the world",
-  "description": "IELTS Academic Reading passage about the history of bike-sharing, with 13 questions covering paragraph matching, multiple choice, and fill-in-the-blank.",
-  "fileName": "bike-sharing-schemes.html",
-  "totalQuestions": 13
-}
