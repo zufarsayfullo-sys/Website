@@ -1,16 +1,32 @@
 [
   {
-    "id": 1,
-    "title": "The Importance of Children’s Play",
-    "description": "Exploration of how play underpins human development and the current decline in play opportunities.",
-    "fileName": "the-importance-of-childrens-play.html",
-    "totalQuestions": 13
+    "id": "childrens-play",
+    "file": "childrens-play.html",
+    "title": "The Importance of Children's Play",
+    "description": "Explore how play shapes creativity, emotional development, and academic performance in children.",
+    "topic": "Education & Development",
+    "difficulty": "Medium",
+    "questions": 13,
+    "time": 20
   },
   {
-    "id": 2,
-    "title": "The growth of bike-sharing schemes around the world",
-    "description": "IELTS Academic Reading passage about the history of bike-sharing, with 13 questions covering paragraph matching, multiple choice, and fill-in-the-blank.",
-    "fileName": "bike-sharing-schemes.html",
-    "totalQuestions": 13
+    "id": "bike-sharing-schemes",
+    "file": "bike-sharing-schemes.html",
+    "title": "The Growth of Bike-Sharing Schemes",
+    "description": "How Dutch engineer Luud Schimmelpennink helped to devise urban bike-sharing schemes around the world.",
+    "topic": "Society & Urban Planning",
+    "difficulty": "Medium",
+    "questions": 13,
+    "time": 20
+  },
+  {
+    "id": "motivational-factors-hospitality",
+    "file": "motivational-factors.html",
+    "title": "Motivational Factors and the Hospitality Industry",
+    "description": "A look at HRM practices, staff retention, and what motivates employees in the hotel industry.",
+    "topic": "Business & Management",
+    "difficulty": "Hard",
+    "questions": 14,
+    "time": 20
   }
 ]
