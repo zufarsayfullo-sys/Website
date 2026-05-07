@@ -471,20 +471,41 @@
   <div class="footer-copy">📖 English Flow — free IELTS preparation for every learner</div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+  const SUPABASE_URL = 'https://evhceswvapszaghnvmxl.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGNlc3d2YXBzemFnaG52bXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3OTQwNzMsImV4cCI6MjA5MzM3MDA3M30.yV7tavgR7JKc45uSGtS8Lf6m1ZMuuvQ23hmAb8n6k3A';
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
   let allPassages = [];
   let activeFilter = 'all';
+  let userScores = {};
 
   async function loadPassages() {
     try {
       const res = await fetch('passages.json');
       allPassages = await res.json();
-      renderPassages();
     } catch (e) {
       document.getElementById('passagesGrid').innerHTML =
         '<div class="empty-state"><div class="empty-icon">⚠️</div><p>Could not load passages. Please try again.</p></div>';
       document.getElementById('passageCount').textContent = '0 passages';
+      return;
     }
+    await loadScores();
+    renderPassages();
+  }
+
+  async function loadScores() {
+    try {
+      const { data: { session } } = await sb.auth.getSession();
+      if (!session) return;
+      const { data } = await sb.from('reading_scores')
+        .select('passage_id, band_score')
+        .eq('user_id', session.user.id);
+      if (data) {
+        data.forEach(row => { userScores[row.passage_id] = row.band_score; });
+      }
+    } catch (e) {}
   }
 
   function renderPassages() {
@@ -505,30 +526,37 @@
       return;
     }
 
-    grid.innerHTML = filtered.map((p, i) => `
-      <a href="${p.file}" class="passage-card">
-        <div class="card-top">
-          <div class="card-badges">
-            <span class="badge badge-${p.type.toLowerCase()}">${p.type}</span>
-            <span class="badge badge-${p.difficulty.toLowerCase()}">${p.difficulty}</span>
+    grid.innerHTML = filtered.map(p => {
+      const slug = p.file.replace('.html', '');
+      const score = userScores[slug];
+      const scoreBadge = score !== undefined
+        ? `<span class="badge" style="background:#fdf3e3;color:#c9922a;border:1px solid rgba(201,146,42,0.3)">Band ${score.toFixed(1)} ✓</span>`
+        : '';
+
+      return `
+        <a href="${p.file}" class="passage-card">
+          <div class="card-top">
+            <div class="card-badges">
+              <span class="badge badge-${p.type.toLowerCase()}">${p.type}</span>
+              <span class="badge badge-${p.difficulty.toLowerCase()}">${p.difficulty}</span>
+              ${scoreBadge}
+            </div>
+            <span class="card-number">#${p.id}</span>
           </div>
-          <span class="card-number">#${p.id}</span>
-        </div>
-        <div class="card-title">${p.title}</div>
-        <div class="card-desc">${p.description}</div>
-        <div class="card-meta">
-          <span class="card-meta-item">📝 ${p.questions} questions</span>
-          <span class="card-meta-item">⏱ ${p.time}</span>
-        </div>
-        <div class="card-footer">
-          <span class="card-topic">📂 ${p.topic}</span>
-          <span class="card-arrow">→</span>
-        </div>
-      </a>
-    `).join('');
+          <div class="card-title">${p.title}</div>
+          <div class="card-desc">${p.description}</div>
+          <div class="card-meta">
+            <span class="card-meta-item">📝 ${p.questions} questions</span>
+            <span class="card-meta-item">⏱ ${p.time}</span>
+          </div>
+          <div class="card-footer">
+            <span class="card-topic">📂 ${p.topic}</span>
+            <span class="card-arrow">→</span>
+          </div>
+        </a>`;
+    }).join('');
   }
 
-  // Filter buttons
   document.querySelectorAll('.filter-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -539,6 +567,12 @@
   });
 
   loadPassages();
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      loadScores().then(renderPassages);
+    }
+  });
 </script>
 </body>
 </html>
