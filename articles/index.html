@@ -41,7 +41,6 @@
     position: relative;
     overflow: hidden;
   }
-
   .hero::before {
     content: '';
     position: absolute;
@@ -51,7 +50,6 @@
     background: radial-gradient(circle, rgba(46,111,173,0.25) 0%, transparent 70%);
     pointer-events: none;
   }
-
   .hero::after {
     content: '';
     position: absolute;
@@ -74,7 +72,6 @@
     position: relative;
     z-index: 10;
   }
-
   .logo {
     font-family: 'DM Serif Display', serif;
     color: white;
@@ -82,7 +79,6 @@
     letter-spacing: -0.02em;
     text-decoration: none;
   }
-
   .logo-dot { color: var(--gold); }
 
   /* === HERO CONTENT === */
@@ -91,7 +87,6 @@
     position: relative;
     z-index: 10;
   }
-
   .hero-title {
     font-family: 'DM Serif Display', serif;
     font-size: clamp(2rem, 4vw, 3rem);
@@ -100,23 +95,19 @@
     margin-bottom: 0.75rem;
     letter-spacing: -0.02em;
   }
-
   .hero-title em { font-style: italic; color: var(--gold); }
-
   .hero-subtitle {
     color: rgba(255,255,255,0.65);
     font-size: 1rem;
     max-width: 540px;
     font-weight: 300;
   }
-
   .hero-pills {
     display: flex;
     gap: 0.5rem;
     flex-wrap: wrap;
     margin-top: 1.25rem;
   }
-
   .pill {
     background: rgba(255,255,255,0.1);
     color: rgba(255,255,255,0.8);
@@ -137,7 +128,6 @@
     gap: 0.5rem;
     flex-wrap: wrap;
   }
-
   .quick-link {
     display: flex;
     align-items: center;
@@ -152,13 +142,11 @@
     border: 1px solid var(--border);
     background: var(--cream);
   }
-
   .quick-link:hover {
     background: var(--sky-light);
     color: var(--sky);
     border-color: rgba(46,111,173,0.2);
   }
-
   .quick-link.active {
     background: var(--navy);
     color: white;
@@ -171,7 +159,6 @@
     margin: 0 auto;
     padding: 2rem;
   }
-
   @media (max-width: 768px) {
     .main { padding: 1rem; }
     .hero-content { padding: 1.5rem 1rem 1.5rem; }
@@ -186,7 +173,6 @@
     flex-wrap: wrap;
     margin-bottom: 1.5rem;
   }
-
   .filter-btn {
     padding: 0.35rem 0.9rem;
     border-radius: 40px;
@@ -199,13 +185,11 @@
     font-family: 'DM Sans', sans-serif;
     transition: all 0.2s;
   }
-
   .filter-btn:hover {
     background: var(--sky-light);
     color: var(--sky);
     border-color: rgba(46,111,173,0.2);
   }
-
   .filter-btn.active {
     background: var(--navy);
     color: white;
@@ -218,7 +202,6 @@
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 1.25rem;
   }
-
   @media (max-width: 480px) {
     .articles-grid { grid-template-columns: 1fr; }
   }
@@ -237,27 +220,23 @@
     transition: all 0.22s;
     cursor: pointer;
   }
-
   .article-card:hover {
     border-color: var(--sky);
     background: var(--sky-light);
     transform: translateY(-3px);
     box-shadow: 0 8px 24px rgba(26,39,68,0.08);
   }
-
   .card-top {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 0.5rem;
   }
-
   .card-badges {
     display: flex;
     gap: 0.4rem;
     flex-wrap: wrap;
   }
-
   .badge {
     padding: 0.2rem 0.65rem;
     border-radius: 40px;
@@ -266,7 +245,6 @@
     letter-spacing: 0.03em;
     text-transform: uppercase;
   }
-
   .badge-society      { background: var(--sky-light); color: var(--sky); }
   .badge-science      { background: #e8f5ee; color: var(--green); }
   .badge-technology   { background: #f3e5f5; color: #6a1b9a; }
@@ -275,7 +253,6 @@
   .badge-health       { background: #fce4ec; color: #c2185b; }
   .badge-education    { background: #e3f2fd; color: #1565c0; }
   .badge-business     { background: #fff3e0; color: #e65100; }
-
   .badge-easy     { background: var(--green-light); color: var(--green); }
   .badge-medium   { background: #fff3e0; color: #e65100; }
   .badge-hard     { background: #fce4ec; color: #c62828; }
@@ -286,7 +263,6 @@
     font-weight: 500;
     white-space: nowrap;
   }
-
   .card-title {
     font-family: 'DM Serif Display', serif;
     font-size: 1.1rem;
@@ -294,13 +270,11 @@
     letter-spacing: -0.01em;
     line-height: 1.3;
   }
-
   .card-desc {
     font-size: 0.82rem;
     color: var(--text-muted);
     line-height: 1.5;
   }
-
   .card-meta {
     display: flex;
     align-items: center;
@@ -308,7 +282,6 @@
     margin-top: 0.25rem;
     flex-wrap: wrap;
   }
-
   .card-meta-item {
     display: flex;
     align-items: center;
@@ -316,7 +289,6 @@
     font-size: 0.78rem;
     color: var(--text-muted);
   }
-
   .card-footer {
     display: flex;
     align-items: center;
@@ -324,19 +296,16 @@
     padding-top: 0.75rem;
     border-top: 1px solid var(--border);
   }
-
   .card-author {
     font-size: 0.75rem;
     color: var(--text-muted);
     font-weight: 500;
   }
-
   .card-arrow {
     font-size: 0.85rem;
     color: var(--text-muted);
     transition: transform 0.2s;
   }
-
   .article-card:hover .card-arrow {
     transform: translateX(4px);
     color: var(--sky);
@@ -348,10 +317,8 @@
     padding: 4rem 2rem;
     color: var(--text-muted);
   }
-
   .empty-state .empty-icon { font-size: 2.5rem; margin-bottom: 1rem; }
   .empty-state p { font-size: 0.9rem; }
-
   .loading {
     text-align: center;
     padding: 4rem 2rem;
@@ -368,13 +335,11 @@
     flex-wrap: wrap;
     gap: 0.5rem;
   }
-
   .section-title {
     font-family: 'DM Serif Display', serif;
     font-size: 1.4rem;
     color: var(--text);
   }
-
   .section-count {
     font-size: 0.8rem;
     color: var(--text-muted);
@@ -396,9 +361,7 @@
     gap: 0.75rem;
     margin-top: 3rem;
   }
-
   .contact-links { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-
   .contact-link {
     display: flex;
     align-items: center;
@@ -412,9 +375,7 @@
     border: 1px solid var(--border);
     transition: all 0.2s;
   }
-
   .contact-link:hover { background: var(--sky-light); color: var(--sky); border-color: rgba(46,111,173,0.25); }
-
   .footer-copy { font-size: 0.75rem; color: var(--text-muted); }
 </style>
 </head>
@@ -475,70 +436,6 @@
   <div class="footer-copy">📖 English Flow — free IELTS preparation for every learner</div>
 </div>
 
-
-    try {
-      const res = await fetch('articles.json');
-      allArticles = await res.json();
-    } catch (e) {
-      document.getElementById('articlesGrid').innerHTML =
-        '<div class="empty-state"><div class="empty-icon">⚠️</div><p>Could not load articles. Please try again.</p></div>';
-      document.getElementById('articleCount').textContent = '0 articles';
-      return;
-    }
-    renderArticles();
-  }
-
-  function renderArticles() {
-    const grid = document.getElementById('articlesGrid');
-    const count = document.getElementById('articleCount');
-
-    let filtered = allArticles;
-    if (activeFilter !== 'all') {
-      filtered = allArticles.filter(a => a.difficulty === activeFilter);
-    }
-
-    count.textContent = filtered.length + ' article' + (filtered.length !== 1 ? 's' : '');
-
-    if (filtered.length === 0) {
-      grid.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><p>No articles found for this filter.</p></div>';
-      return;
-    }
-
-    grid.innerHTML = filtered.map(a => {
-      const topicSlug = (a.topic || 'society').toLowerCase().split(' ')[0];
-      return `
-        <a href="${a.file}" class="article-card">
-          <div class="card-top">
-            <div class="card-badges">
-              <span class="badge badge-${topicSlug}">${a.topic}</span>
-              <span class="badge badge-${a.difficulty.toLowerCase()}">${a.difficulty}</span>
-            </div>
-            <span class="card-number">#${a.id}</span>
-          </div>
-          <div class="card-title">${a.title}</div>
-          <div class="card-desc">${a.description}</div>
-          <div class="card-meta">
-            <span class="card-meta-item">📖 ${a.words} words</span>
-            <span class="card-meta-item">⏱ ${a.time}</span>
-          </div>
-          <div class="card-footer">
-            <span class="card-author">✍ ${a.author || 'English Flow'}</span>
-            <span class="card-arrow">→</span>
-          </div>
-        </a>`;
-    }).join('');
-  }
-
-  document.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      activeFilter = btn.dataset.filter;
-      renderArticles();
-    });
-  });
-
-  loadArticles();
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   const SUPABASE_URL = 'https://evhceswvapszaghnvmxl.supabase.co';
@@ -547,7 +444,7 @@
 
   let allArticles = [];
   let activeFilter = 'all';
-  let userReads = {}; // article_id → completed_at
+  let userReads = {};
 
   async function loadArticles() {
     try {
@@ -597,7 +494,7 @@
       const topicSlug = (a.topic || 'society').toLowerCase().split(' ')[0];
       const isRead = userReads[slug] !== undefined;
       const readBadge = isRead
-        ? `<span class="badge" style="background:#fdf3e3;color:#c9922a;border:1px solid rgba(201,146,42,0.3)">✓ Read</span>`
+        ? '<span class="badge" style="background:#fdf3e3;color:#c9922a;border:1px solid rgba(201,146,42,0.3)">✓ Read</span>'
         : '';
 
       return `
@@ -635,10 +532,11 @@
 
   loadArticles();
 
-  // Re-check reads when user comes back to this tab
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible') {
       loadReads().then(renderArticles);
     }
   });
 </script>
+</body>
+</html>
