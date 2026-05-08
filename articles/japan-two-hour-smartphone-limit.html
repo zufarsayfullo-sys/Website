@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Japan's Two-Hour Smartphone Limit | English Flow</title>
+<link rel="icon" href="data:,">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root {
+  --navy: #1a2744;
+  --navy-mid: #243358;
+  --sky: #2e6fad;
+  --sky-light: #e8f2fc;
+  --gold: #c9922a;
+  --gold-light: #fdf3e3;
+  --cream: #f9f7f4;
+  --surface: #ffffff;
+  --text: #1a2744;
+  --text-muted: #5a6a8a;
+  --border: rgba(26,39,68,0.1);
+  --green: #1e6e4e;
+  --green-light: #e8f5ee;
+  --red: #b91c1c;
+  --radius: 16px;
+  --radius-lg: 24px;
+  --article-font-size: 1.05rem;
+}
+
+body.dark-mode {
+  --cream: #0e1422;
+  --surface: #1a2438;
+  --text: #f0f4fa;
+  --text-muted: #95a3bf;
+  --border: rgba(255,255,255,0.1);
+  --navy: #0a1020;
+  --gold-light: rgba(201,146,42,0.15);
+  --green-light: rgba(30,110,78,0.18);
+  --sky-light: rgba(46,111,173,0.18);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--cream);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.6;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+#auth-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(26,39,68,0.88);
+  backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 1rem;
+}
+.auth-card {
+  background: #fff;
+  border-radius: var(--radius-lg);
+  padding: 2.5rem; width: 100%; max-width: 420px;
+  text-align: center;
+  box-shadow: 0 32px 64px rgba(0,0,0,0.3);
+}
+.auth-card h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.6rem; color: var(--navy);
+  margin-bottom: 0.4rem;
+}
+.auth-card p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
+.auth-input {
+  width: 100%; padding: 0.75rem 1rem;
+  border: 1.5px solid rgba(26,39,68,0.1);
+  border-radius: 50px; font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem; color: #1a2744; outline: none;
+  margin-bottom: 0.75rem; transition: 0.2s;
+}
+.auth-input:focus { border-color: var(--sky); }
+.auth-btn {
+  width: 100%; padding: 0.8rem; background: #1a2744; color: #fff;
+  border: none; border-radius: 50px; font-family: 'DM Sans', sans-serif;
+  font-size: 1rem; font-weight: 600; cursor: pointer; transition: 0.2s;
+}
+.auth-btn:hover { background: #243358; }
+.auth-btn:disabled { opacity: 0.6; cursor: default; }
+.auth-msg {
+  font-size: 0.85rem; margin-top: 0.75rem;
+  padding: 0.5rem 1rem; border-radius: 50px;
+}
+.auth-msg.error { background: #fef2f2; color: var(--red); }
+.auth-msg.success { background: #e8f5ee; color: var(--green); }
+
+#top-bar {
+  background: linear-gradient(135deg, var(--navy), var(--navy-mid));
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  display: flex; align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap; gap: 0.75rem;
+  position: sticky; top: 0; z-index: 100;
+}
+.logo {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.3rem; color: #fff;
+}
+.logo .dot { color: var(--gold); }
+
+.font-controls {
+  display: flex; align-items: center; gap: 0.4rem;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 50px; padding: 0.2rem 0.4rem;
+}
+.font-btn {
+  background: transparent; border: none; color: #fff;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem; font-weight: 600;
+  cursor: pointer; padding: 0.25rem 0.55rem;
+  border-radius: 50px; transition: 0.15s;
+  min-width: 32px;
+}
+.font-btn:hover { background: rgba(255,255,255,0.15); }
+.font-btn:disabled { opacity: 0.35; cursor: default; }
+.font-label {
+  font-size: 0.7rem; color: rgba(255,255,255,0.55);
+  letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 0 0.25rem;
+}
+
+.user-area { display: flex; align-items: center; gap: 0.5rem; }
+.theme-toggle {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #fff; border-radius: 50%;
+  width: 36px; height: 36px;
+  font-size: 1rem; cursor: pointer; transition: 0.2s;
+}
+.theme-toggle:hover { background: rgba(255,255,255,0.2); }
+
+.user-pill {
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 50px; padding: 0.35rem 0.85rem;
+  font-size: 0.85rem; color: #fff; font-weight: 500;
+}
+.signout-btn {
+  background: transparent; color: rgba(255,255,255,0.8);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 50px; padding: 0.35rem 0.85rem;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.8rem; cursor: pointer; transition: 0.2s;
+}
+.signout-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+
+#breadcrumb {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0.6rem 1.5rem;
+  display: flex; align-items: center; gap: 0.75rem;
+  font-size: 0.85rem; flex-wrap: wrap;
+}
+#breadcrumb a {
+  color: var(--sky); text-decoration: none;
+  font-weight: 500; transition: 0.15s;
+}
+#breadcrumb a:hover { color: var(--navy); }
+.crumb-sep { color: var(--text-muted); }
+.crumb-active {
+  background: var(--navy); color: #fff;
+  border-radius: 50px; padding: 0.2rem 0.75rem;
+  font-size: 0.78rem; font-weight: 600;
+  max-width: 320px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap;
+}
+
+.article-wrap {
+  max-width: 720px; margin: 0 auto;
+  padding: 3rem 1.5rem 2rem;
+}
+.cat-tag {
+  display: inline-block;
+  background: var(--sky-light);
+  color: var(--sky);
+  padding: 0.3rem 0.85rem;
+  border-radius: 50px;
+  font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  margin-bottom: 1.25rem;
+}
+.article-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  color: var(--text);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin-bottom: 1rem;
+}
+.article-deck {
+  font-family: 'DM Serif Display', serif;
+  font-style: italic;
+  font-size: 1.15rem; color: var(--text-muted);
+  line-height: 1.5; margin-bottom: 1.5rem;
+}
+.article-meta {
+  display: flex; align-items: center;
+  gap: 0.75rem; flex-wrap: wrap;
+  font-size: 0.85rem; color: var(--text-muted);
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2rem;
+}
+.meta-dot { opacity: 0.4; }
+
+#article-body {
+  font-size: var(--article-font-size);
+  line-height: 1.85; color: var(--text);
+  transition: font-size 0.2s;
+}
+#article-body p {
+  margin-bottom: 1.4rem;
+  display: flex; gap: 0.85rem;
+}
+.para-num {
+  color: var(--gold);
+  font-weight: 700;
+  flex-shrink: 0;
+  min-width: 1.5rem;
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.05em;
+  line-height: 1.85;
+}
+.para-text { flex: 1; }
+
+.pull-quote {
+  font-family: 'DM Serif Display', serif;
+  font-style: italic;
+  font-size: 1.3rem;
+  color: var(--gold);
+  border-left: 3px solid var(--gold);
+  padding: 0.5rem 1rem 0.5rem 1.5rem;
+  margin: 1.5rem 0 1.5rem 1.5rem;
+  line-height: 1.45;
+}
+
+.vocab {
+  position: relative;
+  border-bottom: 2px dotted var(--gold);
+  cursor: help;
+  color: var(--gold);
+  font-weight: 600;
+  transition: 0.15s;
+}
+.vocab:hover { background: var(--gold-light); }
+
+.vocab .tip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: var(--gold);
+  color: #fff;
+  padding: 0.65rem 0.9rem;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 400;
+  font-family: 'DM Sans', sans-serif;
+  line-height: 1.45;
+  width: max-content;
+  max-width: 280px;
+  white-space: normal;
+  text-align: left;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+  opacity: 0; visibility: hidden;
+  transition: opacity 0.18s, transform 0.18s;
+  pointer-events: none;
+  z-index: 50;
+}
+.vocab .tip::after {
+  content: '';
+  position: absolute;
+  top: 100%; left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: var(--gold);
+}
+.vocab:hover .tip,
+.vocab.tap-active .tip {
+  opacity: 1; visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+.quiz-section {
+  max-width: 720px;
+  margin: 3rem auto 2rem;
+  padding: 0 1.5rem;
+}
+.quiz-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  box-shadow: 0 4px 16px rgba(26,39,68,0.04);
+}
+.quiz-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.6rem; color: var(--text);
+  margin-bottom: 0.4rem;
+}
+.quiz-sub {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+.quiz-progress-track {
+  height: 5px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+.quiz-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--sky), var(--navy));
+  width: 0%;
+  transition: width 0.4s;
+}
+
+.quiz-q {
+  margin-bottom: 1.75rem;
+  padding-bottom: 1.75rem;
+  border-bottom: 1px dashed var(--border);
+}
+.quiz-q:last-of-type {
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+.quiz-q-num {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.4rem;
+}
+.quiz-word {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.5rem;
+  color: var(--gold);
+  margin-bottom: 1rem;
+}
+.quiz-options { display: flex; flex-direction: column; gap: 0.5rem; }
+.quiz-opt {
+  background: var(--cream);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.92rem;
+  text-align: left;
+  color: var(--text);
+  transition: 0.15s;
+}
+.quiz-opt:hover:not(:disabled) {
+  border-color: var(--sky);
+  background: var(--sky-light);
+}
+.quiz-opt:disabled { cursor: default; }
+.quiz-opt.correct {
+  background: var(--green-light);
+  border-color: var(--green);
+  color: var(--green);
+  font-weight: 600;
+}
+.quiz-opt.wrong {
+  background: #fef2f2;
+  border-color: var(--red);
+  color: var(--red);
+  font-weight: 600;
+}
+body.dark-mode .quiz-opt.wrong { background: rgba(185,28,28,0.18); }
+
+.quiz-feedback {
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  padding: 0.6rem 0.85rem;
+  border-radius: 10px;
+  display: none;
+  line-height: 1.5;
+}
+.quiz-feedback.show { display: block; }
+.quiz-feedback.ok { background: var(--green-light); color: var(--green); }
+.quiz-feedback.bad { background: rgba(185,28,28,0.1); color: var(--red); }
+
+.quiz-result {
+  display: none;
+  text-align: center;
+  padding: 1.5rem;
+  margin-top: 1.5rem;
+  background: var(--gold-light);
+  border: 1.5px solid var(--gold);
+  border-radius: var(--radius);
+}
+.quiz-result.show { display: block; }
+.quiz-result-score {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2.5rem;
+  color: var(--gold);
+  line-height: 1;
+}
+.quiz-result-label {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin: 0.4rem 0 1rem;
+}
+
+.mark-read-btn {
+  background: var(--navy); color: #fff;
+  border: none; border-radius: 50px;
+  padding: 0.75rem 2rem;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem; font-weight: 600;
+  cursor: pointer; transition: 0.2s;
+}
+.mark-read-btn:hover {
+  background: var(--navy-mid);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(26,39,68,0.25);
+}
+.mark-read-btn:disabled {
+  background: var(--green);
+  cursor: default; transform: none;
+}
+
+.article-footer {
+  max-width: 720px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border);
+}
+.article-footer a { color: var(--sky); text-decoration: none; }
+
+@media (max-width: 600px) {
+  .article-wrap { padding: 2rem 1rem 1.5rem; }
+  .article-title { font-size: 1.6rem; }
+  .quiz-card { padding: 1.5rem; }
+  .font-controls { display: none; }
+  #top-bar { padding: 0.6rem 1rem; }
+  .pull-quote { margin-left: 0.5rem; font-size: 1.1rem; }
+}
+</style>
+</head>
+<body>
+
+<div id="auth-overlay">
+  <div class="auth-card">
+    <div style="font-size:2.5rem;margin-bottom:0.5rem">📰</div>
+    <h2>Sign in to read</h2>
+    <p>You need an English Flow account to access articles.</p>
+    <input type="email" id="auth-email" class="auth-input" placeholder="Email address" onkeydown="if(event.key==='Enter')doSignIn()">
+    <input type="password" id="auth-pass" class="auth-input" placeholder="Password" onkeydown="if(event.key==='Enter')doSignIn()">
+    <button class="auth-btn" id="auth-btn" onclick="doSignIn()">Sign In</button>
+    <div id="auth-msg" class="auth-msg" style="display:none"></div>
+    <p style="margin-top:1rem;font-size:0.8rem;color:#5a6a8a">No account? <a href="../ielts.html" style="color:#2e6fad">Sign up on the IELTS page</a></p>
+  </div>
+</div>
+
+<div id="top-bar">
+  <div class="logo">English <span class="dot">Flow</span></div>
+  <div class="font-controls">
+    <button class="font-btn" id="font-down" onclick="changeFont(-1)">A−</button>
+    <span class="font-label">Aa</span>
+    <button class="font-btn" id="font-up" onclick="changeFont(1)">A+</button>
+  </div>
+  <div class="user-area">
+    <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()">🌙</button>
+    <div class="user-pill" id="user-pill">Student</div>
+    <button class="signout-btn" onclick="doSignOut()">Sign out</button>
+  </div>
+</div>
+
+<div id="breadcrumb">
+  <a href="../index.html">← Home</a>
+  <span class="crumb-sep">/</span>
+  <a href="index.html">← Articles</a>
+  <span class="crumb-sep">/</span>
+  <span class="crumb-active">Japan's 2-Hour Smartphone Limit</span>
+</div>
+
+<div class="article-wrap">
+  <span class="cat-tag">Society</span>
+  <h1 class="article-title">'It made my day more meaningful': the Japanese gen Zers attempting a two-hour limit on smartphone use</h1>
+  <p class="article-deck">Authorities in Japan are taking action against excessive phone time — but what is it like to restrict scrolling to 120 minutes a day?</p>
+  <div class="article-meta">
+    <span>✍ Justin McCurry</span>
+    <span class="meta-dot">·</span>
+    <span>📅 8 October 2025</span>
+    <span class="meta-dot">·</span>
+    <span>⏱ 5 min read</span>
+    <span class="meta-dot">·</span>
+    <span>📊 B2 Intermediate</span>
+  </div>
+
+  <div id="article-body">
+
+    <p><span class="para-num">1</span><span class="para-text">Despite working full-time for a company in Tokyo, Shoki Moriyama manages to <span class="vocab" data-def="just barely manage to do something with effort">eke out<span class="tip">just barely manage to do something with effort</span></span> eight hours a day to <span class="vocab" data-def="give time, energy, or attention to something">devote<span class="tip">give time, energy, or attention to something</span></span> to his smartphone. Moriyama, 25, is part of a generation that can't imagine life without scrolling through news and social media, messaging apps and <span class="vocab" data-def="strange, unusual, not what you'd expect">off-the-wall<span class="tip">strange, unusual, not what you'd expect</span></span> video clips.</span></p>
+
+    <p><span class="para-num">2</span><span class="para-text">He is not alone. While excessive smartphone use is a worldwide <span class="vocab" data-def="something that happens or exists in society or nature, especially something interesting or unusual">phenomenon<span class="tip">something that happens or exists in society or nature, especially something interesting or unusual</span></span>, authorities in Japan are taking action, amid growing concern over its physical and psychological <span class="vocab" data-def="serious damage or harm caused over time">toll<span class="tip">serious damage or harm caused over time</span></span>, particularly on children and young people.</span></p>
+
+    <p><span class="para-num">3</span><span class="para-text">Last week, the town of Toyoake in central Japan introduced a measure limiting smartphone use among its 69,000 residents to two hours a day, in what officials say was an attempt to <span class="vocab" data-def="deal with a difficult problem">tackle<span class="tip">deal with a difficult problem</span></span> evidence of online <span class="vocab" data-def="being unable to stop using something even though it harms you">addiction<span class="tip">being unable to stop using something even though it harms you</span></span> and sleep <span class="vocab" data-def="not having enough of something important like sleep or food">deprivation<span class="tip">not having enough of something important like sleep or food</span></span>.</span></p>
+
+    <p><span class="para-num">4</span><span class="para-text">Moriyama, who <span class="vocab" data-def="usually does as a habit or routine">habitually<span class="tip">usually does as a habit or routine</span></span> checks LINE — an instant-messaging, news and entertainment "super app" popular in Japan — as well as TikTok, Instagram and X, <span class="vocab" data-def="admitted reluctantly that something is true">conceded<span class="tip">admitted reluctantly that something is true</span></span> that staying off the sites had been a struggle. "I spend around eight hours a day on my phone, so two hours is way too little … and not enough time for me to stay up to date with everything," he says. "In the end I used my smartphone for an hour and 50 minutes, which is a <span class="vocab" data-def="extremely large in size or amount">massive<span class="tip">extremely large in size or amount</span></span> reduction on my usual screen time. I used the extra time to read a book, study a little and go to the gym, so my day wasn't wasted."</span></p>
+
+    <p><span class="para-num">5</span><span class="para-text">His colleague Tomomi Hanaoka also managed to <span class="vocab" data-def="bring under control; limit something">rein in<span class="tip">bring under control; limit something</span></span> her habit. "I spend about three hours on my phone on weekdays and six or seven hours at weekends, so two hours felt very short. Most people need at least three to four hours," says Hanaoka, who usually "can't do" without LINE, TikTok and Instagram. "I kept my usage to two hours and used the free time to read and do other things."</span></p>
+
+    <div class="pull-quote">"I spent more time enjoying conversations and taking notice of what was happening around me. It made my day feel more meaningful."</div>
+
+    <p><span class="para-num">6</span><span class="para-text">Toyoake's mayor, Masafumi Koki, defended the measure, which drew dozens of complaints from residents who accused the local government of <span class="vocab" data-def="getting involved in something that doesn't concern you">interfering<span class="tip">getting involved in something that doesn't concern you</span></span> in their private lives. Koki says he was worried that children and younger people were <span class="vocab" data-def="giving up something valuable to get something else">sacrificing<span class="tip">giving up something valuable to get something else</span></span> sleep and family time in favour of scrolling, texting and posting.</span></p>
+
+    <p><span class="para-num">7</span><span class="para-text">After a wave of online criticism, some of which wrongly claimed the two-hour limit would be strictly <span class="vocab" data-def="made to be obeyed; put into force">enforced<span class="tip">made to be obeyed; put into force</span></span>, he told the Mainichi Shimbun newspaper: "If someone hears two hours, they'll stop and think about how long they really use their smartphone for. That's the point."</span></p>
+
+    <p><span class="para-num">8</span><span class="para-text">Young Japanese spend an average of over five hours a day online on weekdays, according to a survey released this year by the Children and Families Agency.</span></p>
+
+    <p><span class="para-num">9</span><span class="para-text">Aya* spends <span class="vocab" data-def="significantly; by a large amount">considerably<span class="tip">significantly; by a large amount</span></span> more time on her device than the national average, regularly <span class="vocab" data-def="reaching a particular total or amount">clocking up<span class="tip">reaching a particular total or amount</span></span> eight hours a day. "I couldn't limit myself to just two hours, but just being <span class="vocab" data-def="aware of something; noticing it">conscious<span class="tip">aware of something; noticing it</span></span> of the challenge made a difference. In the end, I was able to cut down my usual smartphone use by about 60 per cent, which felt <span class="vocab" data-def="important; large enough to notice">significant<span class="tip">important; large enough to notice</span></span>," the university student says, <span class="vocab" data-def="admitting something while making a related point">conceding<span class="tip">admitting something while making a related point</span></span> that she had consulted a travel planner and checked her emails and texts. And she did not miss the hours she usually spends "<span class="vocab" data-def="without a clear purpose or goal">aimlessly<span class="tip">without a clear purpose or goal</span></span> scrolling".</span></p>
+
+    <p><span class="para-num">10</span><span class="para-text">"I spent more time enjoying conversations and taking notice of what was happening around me. It made my day feel more meaningful."</span></p>
+
+    <p><span class="para-num">11</span><span class="para-text">That will be music to the ears of Koki. On the eve of his town's controversial experiment in <span class="vocab" data-def="trying to influence or change how people in society behave">social engineering<span class="tip">trying to influence or change how people in society behave</span></span>, the mayor insisted it would be <span class="vocab" data-def="worth doing because it brings benefit">worthwhile<span class="tip">worth doing because it brings benefit</span></span>. "This is about sleep, family and wellbeing," he says. "If the <span class="vocab" data-def="an official rule or law made by a local government">ordinance<span class="tip">an official rule or law made by a local government</span></span> makes even a few people stop and talk about their habits, then it's working."</span></p>
+
+    <p style="font-size:0.85rem; color:var(--text-muted); font-style:italic;"><span class="para-num">　</span><span class="para-text">*Name has been changed on request.</span></p>
+
+  </div>
+</div>
+
+<div class="quiz-section">
+  <div class="quiz-card">
+    <h2 class="quiz-title">📝 Vocabulary Check</h2>
+    <p class="quiz-sub">Match each word to its meaning</p>
+    <div class="quiz-progress-track"><div class="quiz-progress-fill" id="quiz-progress"></div></div>
+    <div id="quiz-list"></div>
+    <div class="quiz-result" id="quiz-result">
+      <div class="quiz-result-score" id="result-score">0 / 0</div>
+      <div class="quiz-result-label">words correct</div>
+      <button class="mark-read-btn" id="mark-read-btn" onclick="markAsRead()">✓ Mark as Read</button>
+    </div>
+  </div>
+</div>
+
+<div class="article-footer">
+  Originally published in <a href="https://www.theguardian.com" target="_blank">The Guardian</a>, 08/10/2025 · Adapted for English Flow
+</div>
+
+<script>
+const ARTICLE_ID = 'japan-two-hour-smartphone-limit';
+const SUPABASE_URL = 'https://evhceswvapszaghnvmxl.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGNlc3d2YXBzemFnaG52bXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3OTQwNzMsImV4cCI6MjA5MzM3MDA3M30.yV7tavgR7JKc45uSGtS8Lf6m1ZMuuvQ23hmAb8n6k3A';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const VOCAB = [
+  { word: "eke out",            def: "just barely manage to do something with effort" },
+  { word: "devote",             def: "give time, energy, or attention to something" },
+  { word: "off-the-wall",       def: "strange, unusual, not what you'd expect" },
+  { word: "phenomenon",         def: "something that happens or exists in society or nature, especially something interesting or unusual" },
+  { word: "toll",               def: "serious damage or harm caused over time" },
+  { word: "tackle",             def: "deal with a difficult problem" },
+  { word: "addiction",          def: "being unable to stop using something even though it harms you" },
+  { word: "deprivation",        def: "not having enough of something important like sleep or food" },
+  { word: "habitually",         def: "usually does as a habit or routine" },
+  { word: "conceded",           def: "admitted reluctantly that something is true" },
+  { word: "massive",            def: "extremely large in size or amount" },
+  { word: "rein in",            def: "bring under control; limit something" },
+  { word: "interfering",        def: "getting involved in something that doesn't concern you" },
+  { word: "sacrificing",        def: "giving up something valuable to get something else" },
+  { word: "enforced",           def: "made to be obeyed; put into force" },
+  { word: "considerably",       def: "significantly; by a large amount" },
+  { word: "clocking up",        def: "reaching a particular total or amount" },
+  { word: "conscious",          def: "aware of something; noticing it" },
+  { word: "significant",        def: "important; large enough to notice" },
+  { word: "aimlessly",          def: "without a clear purpose or goal" },
+  { word: "social engineering", def: "trying to influence or change how people in society behave" },
+  { word: "worthwhile",         def: "worth doing because it brings benefit" },
+  { word: "ordinance",          def: "an official rule or law made by a local government" }
+];
+
+let currentUser = null;
+let quizScore = 0;
+let quizAnswered = 0;
+let quizWords = [];
+
+async function initAuth() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) { currentUser = session.user; showApp(); }
+}
+async function doSignIn() {
+  const email = document.getElementById('auth-email').value.trim();
+  const pass = document.getElementById('auth-pass').value;
+  const btn = document.getElementById('auth-btn');
+  if (!email || !pass) { showAuthMsg('Enter email and password.', true); return; }
+  btn.disabled = true; btn.textContent = 'Signing in…';
+  const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+  btn.disabled = false; btn.textContent = 'Sign In';
+  if (error) { showAuthMsg(error.message, true); return; }
+  currentUser = data.user;
+  showApp();
+}
+function showAuthMsg(text, isErr) {
+  const el = document.getElementById('auth-msg');
+  el.textContent = text;
+  el.className = 'auth-msg ' + (isErr ? 'error' : 'success');
+  el.style.display = 'block';
+}
+function showApp() {
+  document.getElementById('auth-overlay').style.display = 'none';
+  const name = currentUser.user_metadata?.name || currentUser.email.split('@')[0];
+  document.getElementById('user-pill').textContent = '👋 ' + name.split(' ')[0];
+  buildQuiz();
+}
+async function doSignOut() {
+  await sb.auth.signOut();
+  location.reload();
+}
+
+const FONT_SIZES = [0.85, 0.95, 1.05, 1.15, 1.25, 1.4];
+let fontIdx = 2;
+function loadFontPref() {
+  const saved = parseInt(localStorage.getItem('ef_font_idx'));
+  if (!isNaN(saved) && saved >= 0 && saved < FONT_SIZES.length) fontIdx = saved;
+  applyFont();
+}
+function changeFont(delta) {
+  fontIdx = Math.max(0, Math.min(FONT_SIZES.length - 1, fontIdx + delta));
+  localStorage.setItem('ef_font_idx', fontIdx);
+  applyFont();
+}
+function applyFont() {
+  document.documentElement.style.setProperty('--article-font-size', FONT_SIZES[fontIdx] + 'rem');
+  document.getElementById('font-down').disabled = (fontIdx === 0);
+  document.getElementById('font-up').disabled = (fontIdx === FONT_SIZES.length - 1);
+}
+
+function loadThemePref() {
+  if (localStorage.getItem('ef_dark') === '1') {
+    document.body.classList.add('dark-mode');
+    document.getElementById('theme-toggle').textContent = '☀';
+  }
+}
+function toggleTheme() {
+  const dark = document.body.classList.toggle('dark-mode');
+  localStorage.setItem('ef_dark', dark ? '1' : '0');
+  document.getElementById('theme-toggle').textContent = dark ? '☀' : '🌙';
+}
+
+document.addEventListener('click', (e) => {
+  const v = e.target.closest('.vocab');
+  if (v) {
+    document.querySelectorAll('.vocab.tap-active').forEach(o => { if (o !== v) o.classList.remove('tap-active'); });
+    v.classList.toggle('tap-active');
+    e.stopPropagation();
+  } else {
+    document.querySelectorAll('.vocab.tap-active').forEach(o => o.classList.remove('tap-active'));
+  }
+});
+
+function shuffle(arr) {
+  return arr.map(v => [Math.random(), v]).sort((a,b)=>a[0]-b[0]).map(p => p[1]);
+}
+
+function buildQuiz() {
+  quizWords = shuffle(VOCAB.slice()).slice(0, 12);
+  const list = document.getElementById('quiz-list');
+  list.innerHTML = '';
+  const allDefs = VOCAB.map(v => v.def);
+
+  quizWords.forEach((item, i) => {
+    const others = allDefs.filter(d => d !== item.def);
+    const distractors = shuffle(others).slice(0, 3);
+    const options = shuffle([item.def, ...distractors]);
+
+    const card = document.createElement('div');
+    card.className = 'quiz-q';
+    card.id = 'q-' + i;
+    card.innerHTML = `
+      <div class="quiz-q-num">Word ${i+1} of ${quizWords.length}</div>
+      <div class="quiz-word">${item.word}</div>
+      <div class="quiz-options">
+        ${options.map(opt => `
+          <button class="quiz-opt" data-q="${i}" data-correct="${item.def === opt ? '1' : '0'}">${opt}</button>
+        `).join('')}
+      </div>
+      <div class="quiz-feedback" id="fb-${i}"></div>
+    `;
+    list.appendChild(card);
+  });
+
+  document.querySelectorAll('.quiz-opt').forEach(btn => {
+    btn.addEventListener('click', handleAnswer);
+  });
+}
+
+function handleAnswer(e) {
+  const btn = e.currentTarget;
+  const qIdx = parseInt(btn.dataset.q);
+  const isCorrect = btn.dataset.correct === '1';
+  const card = document.getElementById('q-' + qIdx);
+
+  card.querySelectorAll('.quiz-opt').forEach(o => {
+    o.disabled = true;
+    if (o.dataset.correct === '1') o.classList.add('correct');
+  });
+  if (!isCorrect) btn.classList.add('wrong');
+
+  const fb = document.getElementById('fb-' + qIdx);
+  if (isCorrect) {
+    fb.className = 'quiz-feedback show ok';
+    fb.textContent = '✓ Correct!';
+    quizScore++;
+  } else {
+    fb.className = 'quiz-feedback show bad';
+    fb.textContent = '✗ Not quite. The correct definition is highlighted.';
+  }
+
+  quizAnswered++;
+  document.getElementById('quiz-progress').style.width = (quizAnswered / quizWords.length * 100) + '%';
+
+  if (quizAnswered === quizWords.length) {
+    setTimeout(showQuizResult, 400);
+  }
+}
+
+function showQuizResult() {
+  const r = document.getElementById('quiz-result');
+  document.getElementById('result-score').textContent = quizScore + ' / ' + quizWords.length;
+  r.classList.add('show');
+  r.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+async function markAsRead() {
+  const btn = document.getElementById('mark-read-btn');
+  btn.disabled = true;
+  btn.textContent = 'Saving…';
+  try {
+    await sb.from('article_reads').upsert({
+      user_id: currentUser.id,
+      article_id: ARTICLE_ID,
+      completed_at: new Date().toISOString()
+    }, { onConflict: 'user_id,article_id' });
+    btn.textContent = '✓ Marked as Read';
+  } catch (e) {
+    btn.disabled = false;
+    btn.textContent = 'Try again';
+    console.warn('Save failed:', e);
+  }
+}
+
+loadFontPref();
+loadThemePref();
+initAuth();
+</script>
+</body>
+</html>
