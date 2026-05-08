@@ -31,5 +31,60 @@
     "words": 670,
     "time": "5 min",
     "author": "Justin McCurry"
+  },
+  {
+    "id": "4",
+    "file": "ancient-goths-diverse.html",
+    "title": "The Ancient Goths Were More Diverse Than We Thought",
+    "description": "DNA from Gothic graves overturns the long-standing myth of a single Scandinavian people — they came from as far as North Africa and East Asia.",
+    "topic": "Culture",
+    "difficulty": "Hard",
+    "words": 620,
+    "time": "6 min",
+    "author": "Michael Marshall"
+  },
+  {
+    "id": "5",
+    "file": "war-energy-transition.html",
+    "title": "Will war in the Middle East hasten the energy transition?",
+    "description": "With oil prices spiking and the Strait of Hormuz under attack, the green revolution may be getting an unexpected boost.",
+    "topic": "Environment",
+    "difficulty": "Hard",
+    "words": 850,
+    "time": "7 min",
+    "author": "Alec Luhn"
+  },
+  {
+    "id": "6",
+    "file": "early-human-mating.html",
+    "title": "Fresh insight into early human mating",
+    "description": "Genetic evidence hints that Neanderthal-human interbreeding was strongly sex-biased — but the reason why remains a mystery.",
+    "topic": "Science",
+    "difficulty": "Hard",
+    "words": 780,
+    "time": "7 min",
+    "author": "Michael Marshall"
+  },
+  {
+    "id": "7",
+    "file": "nine-secrets-eating-us-up.html",
+    "title": "We all harbour 9 secrets and they are eating us up inside",
+    "description": "From small lies to hidden desires, the average person carries nine secrets — and they have a habit of intruding on our thoughts.",
+    "topic": "Health",
+    "difficulty": "Medium",
+    "words": 580,
+    "time": "6 min",
+    "author": "Alice Klein"
+  },
+  {
+    "id": "8",
+    "file": "what-to-eat-for-good-sleep.html",
+    "title": "What to eat for a good night's sleep",
+    "description": "A new study analyses 25 dietary factors against sleep quality. The surprising hero? Fibre.",
+    "topic": "Health",
+    "difficulty": "Medium",
+    "words": 540,
+    "time": "5 min",
+    "author": "Carissa Wong"
   }
 ]
