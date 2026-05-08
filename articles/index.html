@@ -475,11 +475,7 @@
   <div class="footer-copy">📖 English Flow — free IELTS preparation for every learner</div>
 </div>
 
-<script>
-  let allArticles = [];
-  let activeFilter = 'all';
 
-  async function loadArticles() {
     try {
       const res = await fetch('articles.json');
       allArticles = await res.json();
