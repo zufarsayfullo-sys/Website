@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elif Shafak on Why We Still Need Novels | English Flow</title>
+<link rel="icon" href="data:,">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root {
+  --navy: #1a2744;
+  --navy-mid: #243358;
+  --sky: #2e6fad;
+  --sky-light: #e8f2fc;
+  --gold: #c9922a;
+  --gold-light: #fdf3e3;
+  --cream: #f9f7f4;
+  --surface: #ffffff;
+  --text: #1a2744;
+  --text-muted: #5a6a8a;
+  --border: rgba(26,39,68,0.1);
+  --green: #1e6e4e;
+  --green-light: #e8f5ee;
+  --red: #b91c1c;
+  --radius: 16px;
+  --radius-lg: 24px;
+  --article-font-size: 1.05rem;
+}
+
+body.dark-mode {
+  --cream: #0e1422;
+  --surface: #1a2438;
+  --text: #f0f4fa;
+  --text-muted: #95a3bf;
+  --border: rgba(255,255,255,0.1);
+  --navy: #0a1020;
+  --gold-light: rgba(201,146,42,0.15);
+  --green-light: rgba(30,110,78,0.18);
+  --sky-light: rgba(46,111,173,0.18);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--cream);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.6;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* ========== AUTH OVERLAY ========== */
+#auth-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(26,39,68,0.88);
+  backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 1rem;
+}
+.auth-card {
+  background: #fff;
+  border-radius: var(--radius-lg);
+  padding: 2.5rem; width: 100%; max-width: 420px;
+  text-align: center;
+  box-shadow: 0 32px 64px rgba(0,0,0,0.3);
+}
+.auth-card h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.6rem; color: var(--navy);
+  margin-bottom: 0.4rem;
+}
+.auth-card p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
+.auth-input {
+  width: 100%; padding: 0.75rem 1rem;
+  border: 1.5px solid rgba(26,39,68,0.1);
+  border-radius: 50px; font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem; color: #1a2744; outline: none;
+  margin-bottom: 0.75rem; transition: 0.2s;
+}
+.auth-input:focus { border-color: var(--sky); }
+.auth-btn {
+  width: 100%; padding: 0.8rem; background: #1a2744; color: #fff;
+  border: none; border-radius: 50px; font-family: 'DM Sans', sans-serif;
+  font-size: 1rem; font-weight: 600; cursor: pointer; transition: 0.2s;
+}
+.auth-btn:hover { background: #243358; }
+.auth-btn:disabled { opacity: 0.6; cursor: default; }
+.auth-msg {
+  font-size: 0.85rem; margin-top: 0.75rem;
+  padding: 0.5rem 1rem; border-radius: 50px;
+}
+.auth-msg.error { background: #fef2f2; color: var(--red); }
+.auth-msg.success { background: #e8f5ee; color: var(--green); }
+
+/* ========== TOP BAR ========== */
+#top-bar {
+  background: linear-gradient(135deg, var(--navy), var(--navy-mid));
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  display: flex; align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap; gap: 0.75rem;
+  position: sticky; top: 0; z-index: 100;
+}
+.logo {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.3rem; color: #fff;
+}
+.logo .dot { color: var(--gold); }
+
+.font-controls {
+  display: flex; align-items: center; gap: 0.4rem;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 50px; padding: 0.2rem 0.4rem;
+}
+.font-btn {
+  background: transparent; border: none; color: #fff;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem; font-weight: 600;
+  cursor: pointer; padding: 0.25rem 0.55rem;
+  border-radius: 50px; transition: 0.15s;
+  min-width: 32px;
+}
+.font-btn:hover { background: rgba(255,255,255,0.15); }
+.font-btn:disabled { opacity: 0.35; cursor: default; }
+.font-label {
+  font-size: 0.7rem; color: rgba(255,255,255,0.55);
+  letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 0 0.25rem;
+}
+
+.user-area { display: flex; align-items: center; gap: 0.5rem; }
+.theme-toggle {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #fff; border-radius: 50%;
+  width: 36px; height: 36px;
+  font-size: 1rem; cursor: pointer; transition: 0.2s;
+}
+.theme-toggle:hover { background: rgba(255,255,255,0.2); }
+
+.user-pill {
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 50px; padding: 0.35rem 0.85rem;
+  font-size: 0.85rem; color: #fff; font-weight: 500;
+}
+.signout-btn {
+  background: transparent; color: rgba(255,255,255,0.8);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 50px; padding: 0.35rem 0.85rem;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.8rem; cursor: pointer; transition: 0.2s;
+}
+.signout-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+
+/* ========== BREADCRUMB ========== */
+#breadcrumb {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0.6rem 1.5rem;
+  display: flex; align-items: center; gap: 0.75rem;
+  font-size: 0.85rem; flex-wrap: wrap;
+}
+#breadcrumb a {
+  color: var(--sky); text-decoration: none;
+  font-weight: 500; transition: 0.15s;
+}
+#breadcrumb a:hover { color: var(--navy); }
+.crumb-sep { color: var(--text-muted); }
+.crumb-active {
+  background: var(--navy); color: #fff;
+  border-radius: 50px; padding: 0.2rem 0.75rem;
+  font-size: 0.78rem; font-weight: 600;
+  max-width: 320px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* ========== ARTICLE ========== */
+.article-wrap {
+  max-width: 720px; margin: 0 auto;
+  padding: 3rem 1.5rem 2rem;
+}
+.cat-tag {
+  display: inline-block;
+  background: var(--gold-light);
+  color: var(--gold);
+  padding: 0.3rem 0.85rem;
+  border-radius: 50px;
+  font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  margin-bottom: 1.25rem;
+}
+.article-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  color: var(--text);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin-bottom: 1rem;
+}
+.article-deck {
+  font-family: 'DM Serif Display', serif;
+  font-style: italic;
+  font-size: 1.15rem; color: var(--text-muted);
+  line-height: 1.5; margin-bottom: 1.5rem;
+}
+.article-meta {
+  display: flex; align-items: center;
+  gap: 0.75rem; flex-wrap: wrap;
+  font-size: 0.85rem; color: var(--text-muted);
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2rem;
+}
+.meta-dot { opacity: 0.4; }
+
+#article-body {
+  font-size: var(--article-font-size);
+  line-height: 1.85; color: var(--text);
+  transition: font-size 0.2s;
+}
+#article-body p {
+  margin-bottom: 1.4rem;
+  display: flex; gap: 0.85rem;
+}
+.para-num {
+  color: var(--gold);
+  font-weight: 700;
+  flex-shrink: 0;
+  min-width: 1.5rem;
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.05em;
+  line-height: 1.85;
+}
+.para-text { flex: 1; }
+
+.pull-quote {
+  font-family: 'DM Serif Display', serif;
+  font-style: italic;
+  font-size: 1.3rem;
+  color: var(--gold);
+  border-left: 3px solid var(--gold);
+  padding: 0.5rem 1rem 0.5rem 1.5rem;
+  margin: 1.5rem 0 1.5rem 1.5rem;
+  line-height: 1.45;
+}
+
+/* ========== VOCAB ========== */
+.vocab {
+  position: relative;
+  border-bottom: 2px dotted var(--gold);
+  cursor: help;
+  color: var(--gold);
+  font-weight: 600;
+  transition: 0.15s;
+}
+.vocab:hover { background: var(--gold-light); }
+
+.vocab .tip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: var(--gold);
+  color: #fff;
+  padding: 0.65rem 0.9rem;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 400;
+  font-family: 'DM Sans', sans-serif;
+  line-height: 1.45;
+  width: max-content;
+  max-width: 280px;
+  white-space: normal;
+  text-align: left;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+  opacity: 0; visibility: hidden;
+  transition: opacity 0.18s, transform 0.18s;
+  pointer-events: none;
+  z-index: 50;
+}
+.vocab .tip::after {
+  content: '';
+  position: absolute;
+  top: 100%; left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: var(--gold);
+}
+.vocab:hover .tip,
+.vocab.tap-active .tip {
+  opacity: 1; visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ========== QUIZ ========== */
+.quiz-section {
+  max-width: 720px;
+  margin: 3rem auto 2rem;
+  padding: 0 1.5rem;
+}
+.quiz-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  box-shadow: 0 4px 16px rgba(26,39,68,0.04);
+}
+.quiz-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.6rem; color: var(--text);
+  margin-bottom: 0.4rem;
+}
+.quiz-sub {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+.quiz-progress-track {
+  height: 5px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+.quiz-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--sky), var(--navy));
+  width: 0%;
+  transition: width 0.4s;
+}
+
+.quiz-q {
+  margin-bottom: 1.75rem;
+  padding-bottom: 1.75rem;
+  border-bottom: 1px dashed var(--border);
+}
+.quiz-q:last-of-type {
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+.quiz-q-num {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.4rem;
+}
+.quiz-word {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.5rem;
+  color: var(--gold);
+  margin-bottom: 1rem;
+}
+.quiz-options { display: flex; flex-direction: column; gap: 0.5rem; }
+.quiz-opt {
+  background: var(--cream);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.92rem;
+  text-align: left;
+  color: var(--text);
+  transition: 0.15s;
+}
+.quiz-opt:hover:not(:disabled) {
+  border-color: var(--sky);
+  background: var(--sky-light);
+}
+.quiz-opt:disabled { cursor: default; }
+.quiz-opt.correct {
+  background: var(--green-light);
+  border-color: var(--green);
+  color: var(--green);
+  font-weight: 600;
+}
+.quiz-opt.wrong {
+  background: #fef2f2;
+  border-color: var(--red);
+  color: var(--red);
+  font-weight: 600;
+}
+body.dark-mode .quiz-opt.wrong { background: rgba(185,28,28,0.18); }
+
+.quiz-feedback {
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  padding: 0.6rem 0.85rem;
+  border-radius: 10px;
+  display: none;
+  line-height: 1.5;
+}
+.quiz-feedback.show { display: block; }
+.quiz-feedback.ok {
+  background: var(--green-light);
+  color: var(--green);
+}
+.quiz-feedback.bad {
+  background: rgba(185,28,28,0.1);
+  color: var(--red);
+}
+
+.quiz-result {
+  display: none;
+  text-align: center;
+  padding: 1.5rem;
+  margin-top: 1.5rem;
+  background: var(--gold-light);
+  border: 1.5px solid var(--gold);
+  border-radius: var(--radius);
+}
+.quiz-result.show { display: block; }
+.quiz-result-score {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2.5rem;
+  color: var(--gold);
+  line-height: 1;
+}
+.quiz-result-label {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin: 0.4rem 0 1rem;
+}
+
+.mark-read-btn {
+  background: var(--navy); color: #fff;
+  border: none; border-radius: 50px;
+  padding: 0.75rem 2rem;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem; font-weight: 600;
+  cursor: pointer; transition: 0.2s;
+}
+.mark-read-btn:hover {
+  background: var(--navy-mid);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(26,39,68,0.25);
+}
+.mark-read-btn:disabled {
+  background: var(--green);
+  cursor: default; transform: none;
+}
+
+/* ========== FOOTER ========== */
+.article-footer {
+  max-width: 720px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border);
+}
+.article-footer a { color: var(--sky); text-decoration: none; }
+
+@media (max-width: 600px) {
+  .article-wrap { padding: 2rem 1rem 1.5rem; }
+  .article-title { font-size: 1.6rem; }
+  .quiz-card { padding: 1.5rem; }
+  .font-controls { display: none; }
+  #top-bar { padding: 0.6rem 1rem; }
+  .pull-quote { margin-left: 0.5rem; font-size: 1.1rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== AUTH OVERLAY ===== -->
+<div id="auth-overlay">
+  <div class="auth-card">
+    <div style="font-size:2.5rem;margin-bottom:0.5rem">📰</div>
+    <h2>Sign in to read</h2>
+    <p>You need an English Flow account to access articles.</p>
+    <input type="email" id="auth-email" class="auth-input" placeholder="Email address" onkeydown="if(event.key==='Enter')doSignIn()">
+    <input type="password" id="auth-pass" class="auth-input" placeholder="Password" onkeydown="if(event.key==='Enter')doSignIn()">
+    <button class="auth-btn" id="auth-btn" onclick="doSignIn()">Sign In</button>
+    <div id="auth-msg" class="auth-msg" style="display:none"></div>
+    <p style="margin-top:1rem;font-size:0.8rem;color:#5a6a8a">No account? <a href="../ielts.html" style="color:#2e6fad">Sign up on the IELTS page</a></p>
+  </div>
+</div>
+
+<!-- ===== TOP BAR ===== -->
+<div id="top-bar">
+  <div class="logo">English <span class="dot">Flow</span></div>
+  <div class="font-controls">
+    <button class="font-btn" id="font-down" onclick="changeFont(-1)">A−</button>
+    <span class="font-label">Aa</span>
+    <button class="font-btn" id="font-up" onclick="changeFont(1)">A+</button>
+  </div>
+  <div class="user-area">
+    <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()">🌙</button>
+    <div class="user-pill" id="user-pill">Student</div>
+    <button class="signout-btn" onclick="doSignOut()">Sign out</button>
+  </div>
+</div>
+
+<!-- ===== BREADCRUMB ===== -->
+<div id="breadcrumb">
+  <a href="../index.html">← Home</a>
+  <span class="crumb-sep">/</span>
+  <a href="index.html">← Articles</a>
+  <span class="crumb-sep">/</span>
+  <span class="crumb-active">Why We Still Need Novels</span>
+</div>
+
+<!-- ===== ARTICLE ===== -->
+<div class="article-wrap">
+  <span class="cat-tag">Culture</span>
+  <h1 class="article-title">Given up on reading? Elif Shafak on why we still need novels</h1>
+  <p class="article-deck">Recent studies suggest we've fallen out of love with reading — but the more chaotic our times, the deeper is our need to slow down and read fiction.</p>
+  <div class="article-meta">
+    <span>✍ Elif Shafak</span>
+    <span class="meta-dot">·</span>
+    <span>📅 11 May 2025</span>
+    <span class="meta-dot">·</span>
+    <span>⏱ 6 min read</span>
+    <span class="meta-dot">·</span>
+    <span>📊 C1 Advanced</span>
+  </div>
+
+  <div id="article-body">
+
+    <p><span class="para-num">1</span><span class="para-text">A recent YouGov poll found that 40 per cent of Britons have not read a book in the last year. "The literary era has come to an end," Philip Roth <span class="vocab" data-def="predicted something would happen, often as a warning">prophesied<span class="tip">predicted something would happen, often as a warning</span></span> in 2000. "The evidence is the culture, the evidence is the society, the evidence is the screen." Roth believed that the habit of mind that literature required was bound to disappear. People would no longer have the concentration or the <span class="vocab" data-def="being alone, separated from others">isolation<span class="tip">being alone, separated from others</span></span> needed to read novels.</span></p>
+
+    <p><span class="para-num">2</span><span class="para-text">Several studies seem to support Roth's conclusion. The average time that a person can focus on one thing has dropped in recent decades from approximately 2.5 minutes to about 45 seconds. I witnessed this when I gave two Ted talks almost 10 years apart. In 2010, we were asked to keep our talks to 20 minutes; in 2017, that was reduced to around 13 minutes. When I asked why, the organisers informed me that the average <span class="vocab" data-def="how long someone can pay attention to something">attention span<span class="tip">how long someone can pay attention to something</span></span> had <span class="vocab" data-def="became smaller; reduced in size">shrunk<span class="tip">became smaller; reduced in size</span></span>. Still, I kept my talk to 20 minutes. And I would similarly like to push back on the idea that people no longer need novels.</span></p>
+
+    <p><span class="para-num">3</span><span class="para-text">The same YouGov polling shows that among those who read, more than 55 per cent prefer fiction. Talk to any publisher or bookseller and they will confirm it: the appetite for reading novels is still widespread. That the long form <span class="vocab" data-def="continues to exist; survives over time">endures<span class="tip">continues to exist; survives over time</span></span> is no small <span class="vocab" data-def="something amazing or surprising, especially if hard to achieve">miracle<span class="tip">something amazing or surprising, especially if hard to achieve</span></span> in a world shaped by hyper information, fast consumption and the cult of <span class="vocab" data-def="immediate satisfaction with no waiting">instant gratification<span class="tip">immediate satisfaction with no waiting</span></span>.</span></p>
+
+    <div class="pull-quote">"That the long form endures is no small miracle in a world shaped by hyper information."</div>
+
+    <p><span class="para-num">5</span><span class="para-text">We live in an era in which there is too much information but not enough knowledge, and even less <span class="vocab" data-def="deep understanding gained from experience and reflection">wisdom<span class="tip">deep understanding gained from experience and reflection</span></span>. This excess of information makes us <span class="vocab" data-def="having too high an opinion of yourself; proud in an unpleasant way">arrogant<span class="tip">having too high an opinion of yourself; proud in an unpleasant way</span></span> and then it makes us numb. We must change this ratio and focus more on knowledge and wisdom. For knowledge we need books, slow journalism, podcasts, in-depth analyses and cultural events. And for wisdom, among other things, we need the art of storytelling. We need the long form.</span></p>
+
+    <p><span class="para-num">6</span><span class="para-text">I am not claiming that novelists are wise. If anything, quite the opposite: we are a walking mess. But the long form contains insight, <span class="vocab" data-def="the ability to understand and share another person's feelings">empathy<span class="tip">the ability to understand and share another person's feelings</span></span>, emotional intelligence and compassion. This is what Milan Kundera meant when he said, "the novel's wisdom is very different from that of philosophy". Ultimately, though, it is the art of storytelling that's older and wiser than we are. Writers know this in their guts — and so do readers.</span></p>
+
+    <p><span class="para-num">7</span><span class="para-text">In recent years, I have noticed a change in the <span class="vocab" data-def="the make-up of a population (age, gender, etc.)">demographics<span class="tip">the make-up of a population (age, gender, etc.)</span></span> of book events and literary festivals across the UK. I am seeing more and more young people. Some are coming with their parents, but many more come alone or with friends. There are noticeably more young men attending fiction events. It seems to me that the more chaotic our times, the deeper is our need to slow down and read fiction. In an age of anger and anxiety, clashing certainties, rising <span class="vocab" data-def="extreme support for your own country, often hostile to others">jingoism<span class="tip">extreme support for your own country, often hostile to others</span></span> and <span class="vocab" data-def="a political approach that claims to represent ordinary people against the elite">populism<span class="tip">a political approach that claims to represent ordinary people against the elite</span></span>, the division between "us" and "them" also deepens. The novel, however, <span class="vocab" data-def="takes apart; breaks down a structure or idea">dismantles<span class="tip">takes apart; breaks down a structure or idea</span></span> dualities.</span></p>
+
+    <p><span class="para-num">8</span><span class="para-text">The long narrative, ever since the Epic of Gilgamesh, has quietly cast its spell. One of the oldest surviving works of literature, at least 4,000 years old, Gilgamesh <span class="vocab" data-def="came before in time; existed earlier than">predates<span class="tip">came before in time; existed earlier than</span></span> Ovid's Metamorphoses, Homer's Odyssey and the Iliad. It is also an unusual story with an unlikely hero at its centre. In the poem, King Gilgamesh emerges as a restless spirit, <span class="vocab" data-def="weighed down by something difficult; deeply troubled">burdened<span class="tip">weighed down by something difficult; deeply troubled</span></span> by the storm of his heart. He is a brute, a selfish creature motivated by greed, power and possession until he got a companion: Enkidu. Together they <span class="vocab" data-def="begin a journey or new venture">embark on<span class="tip">begin a journey or new venture</span></span> journeys far and wide, discovering other lands, but also rediscovering themselves.</span></p>
+
+    <p><span class="para-num">9</span><span class="para-text">It is a story about friendship, but also about many things besides, such as the power of water and floods to destroy or renew our environment, our desire to <span class="vocab" data-def="make something last longer">prolong<span class="tip">make something last longer</span></span> youth, and our fear of death. In many classical myths, the hero returns home <span class="vocab" data-def="having achieved a great victory; celebrating success">triumphant<span class="tip">having achieved a great victory; celebrating success</span></span> — but not in the Epic of Gilgamesh. Here we have a <span class="vocab" data-def="the main character in a story">protagonist<span class="tip">the main character in a story</span></span> who has lost his dear friend, failed in almost everything, and has achieved no clear victory. But having experienced failure, defeat, grief and fear, Gilgamesh <span class="vocab" data-def="changes gradually into something better or more developed">evolves<span class="tip">changes gradually into something better or more developed</span></span> into a kinder, wiser being. The ancient poem is about the potential for change and our need to <span class="vocab" data-def="achieve or reach (a goal, level)">attain<span class="tip">achieve or reach (a goal, level)</span></span> wisdom.</span></p>
+
+    <p><span class="para-num">10</span><span class="para-text">Since the Epic of Gilgamesh was narrated and written down, so many empires have come and gone, so many mighty kings — "strong men" — have <span class="vocab" data-def="died, especially in a sudden or violent way">perished<span class="tip">died, especially in a sudden or violent way</span></span>, and some of the tallest monuments have crumbled to dust. Yet this poem has survived the tides of history — and here we are, thousands of years later, still learning from it. King Gilgamesh, after journeys and failures, reconnects with his own vulnerability and <span class="vocab" data-def="the ability to recover from difficulties; toughness of mind">resilience<span class="tip">the ability to recover from difficulties; toughness of mind</span></span>. He learns to become human. Just as we do when we read novels about other people.</span></p>
+
+  </div>
+</div>
+
+<!-- ===== QUIZ ===== -->
+<div class="quiz-section">
+  <div class="quiz-card">
+    <h2 class="quiz-title">📝 Vocabulary Check</h2>
+    <p class="quiz-sub">Match each word to its meaning</p>
+    <div class="quiz-progress-track"><div class="quiz-progress-fill" id="quiz-progress"></div></div>
+    <div id="quiz-list"></div>
+    <div class="quiz-result" id="quiz-result">
+      <div class="quiz-result-score" id="result-score">0 / 0</div>
+      <div class="quiz-result-label">words correct</div>
+      <button class="mark-read-btn" id="mark-read-btn" onclick="markAsRead()">✓ Mark as Read</button>
+    </div>
+  </div>
+</div>
+
+<div class="article-footer">
+  Originally published in <a href="https://www.theguardian.com" target="_blank">The Guardian</a>, 11/05/2025 · Adapted for English Flow
+</div>
+
+<script>
+const ARTICLE_ID = 'why-we-still-need-novels';
+const SUPABASE_URL = 'https://evhceswvapszaghnvmxl.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGNlc3d2YXBzemFnaG52bXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3OTQwNzMsImV4cCI6MjA5MzM3MDA3M30.yV7tavgR7JKc45uSGtS8Lf6m1ZMuuvQ23hmAb8n6k3A';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const VOCAB = [
+  { word: "prophesied",        def: "predicted something would happen, often as a warning" },
+  { word: "isolation",         def: "being alone, separated from others" },
+  { word: "attention span",    def: "how long someone can pay attention to something" },
+  { word: "shrunk",            def: "became smaller; reduced in size" },
+  { word: "endures",           def: "continues to exist; survives over time" },
+  { word: "miracle",           def: "something amazing or surprising, especially if hard to achieve" },
+  { word: "instant gratification", def: "immediate satisfaction with no waiting" },
+  { word: "wisdom",            def: "deep understanding gained from experience and reflection" },
+  { word: "arrogant",          def: "having too high an opinion of yourself; proud in an unpleasant way" },
+  { word: "empathy",           def: "the ability to understand and share another person's feelings" },
+  { word: "demographics",      def: "the make-up of a population (age, gender, etc.)" },
+  { word: "jingoism",          def: "extreme support for your own country, often hostile to others" },
+  { word: "populism",          def: "a political approach that claims to represent ordinary people against the elite" },
+  { word: "dismantles",        def: "takes apart; breaks down a structure or idea" },
+  { word: "predates",          def: "came before in time; existed earlier than" },
+  { word: "burdened",          def: "weighed down by something difficult; deeply troubled" },
+  { word: "embark on",         def: "begin a journey or new venture" },
+  { word: "prolong",           def: "make something last longer" },
+  { word: "triumphant",        def: "having achieved a great victory; celebrating success" },
+  { word: "protagonist",       def: "the main character in a story" },
+  { word: "evolves",           def: "changes gradually into something better or more developed" },
+  { word: "attain",            def: "achieve or reach (a goal, level)" },
+  { word: "perished",          def: "died, especially in a sudden or violent way" },
+  { word: "resilience",        def: "the ability to recover from difficulties; toughness of mind" }
+];
+
+let currentUser = null;
+let quizScore = 0;
+let quizAnswered = 0;
+let quizWords = [];
+
+// ===== AUTH =====
+async function initAuth() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) { currentUser = session.user; showApp(); }
+}
+async function doSignIn() {
+  const email = document.getElementById('auth-email').value.trim();
+  const pass = document.getElementById('auth-pass').value;
+  const btn = document.getElementById('auth-btn');
+  if (!email || !pass) { showAuthMsg('Enter email and password.', true); return; }
+  btn.disabled = true; btn.textContent = 'Signing in…';
+  const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+  btn.disabled = false; btn.textContent = 'Sign In';
+  if (error) { showAuthMsg(error.message, true); return; }
+  currentUser = data.user;
+  showApp();
+}
+function showAuthMsg(text, isErr) {
+  const el = document.getElementById('auth-msg');
+  el.textContent = text;
+  el.className = 'auth-msg ' + (isErr ? 'error' : 'success');
+  el.style.display = 'block';
+}
+function showApp() {
+  document.getElementById('auth-overlay').style.display = 'none';
+  const name = currentUser.user_metadata?.name || currentUser.email.split('@')[0];
+  document.getElementById('user-pill').textContent = '👋 ' + name.split(' ')[0];
+  buildQuiz();
+}
+async function doSignOut() {
+  await sb.auth.signOut();
+  location.reload();
+}
+
+// ===== FONT SIZE =====
+const FONT_SIZES = [0.85, 0.95, 1.05, 1.15, 1.25, 1.4];
+let fontIdx = 2;
+function loadFontPref() {
+  const saved = parseInt(localStorage.getItem('ef_font_idx'));
+  if (!isNaN(saved) && saved >= 0 && saved < FONT_SIZES.length) fontIdx = saved;
+  applyFont();
+}
+function changeFont(delta) {
+  fontIdx = Math.max(0, Math.min(FONT_SIZES.length - 1, fontIdx + delta));
+  localStorage.setItem('ef_font_idx', fontIdx);
+  applyFont();
+}
+function applyFont() {
+  document.documentElement.style.setProperty('--article-font-size', FONT_SIZES[fontIdx] + 'rem');
+  document.getElementById('font-down').disabled = (fontIdx === 0);
+  document.getElementById('font-up').disabled = (fontIdx === FONT_SIZES.length - 1);
+}
+
+// ===== DARK MODE =====
+function loadThemePref() {
+  if (localStorage.getItem('ef_dark') === '1') {
+    document.body.classList.add('dark-mode');
+    document.getElementById('theme-toggle').textContent = '☀';
+  }
+}
+function toggleTheme() {
+  const dark = document.body.classList.toggle('dark-mode');
+  localStorage.setItem('ef_dark', dark ? '1' : '0');
+  document.getElementById('theme-toggle').textContent = dark ? '☀' : '🌙';
+}
+
+// ===== VOCAB TAP (mobile) =====
+document.addEventListener('click', (e) => {
+  const v = e.target.closest('.vocab');
+  if (v) {
+    document.querySelectorAll('.vocab.tap-active').forEach(o => { if (o !== v) o.classList.remove('tap-active'); });
+    v.classList.toggle('tap-active');
+    e.stopPropagation();
+  } else {
+    document.querySelectorAll('.vocab.tap-active').forEach(o => o.classList.remove('tap-active'));
+  }
+});
+
+// ===== QUIZ =====
+function shuffle(arr) {
+  return arr.map(v => [Math.random(), v]).sort((a,b)=>a[0]-b[0]).map(p => p[1]);
+}
+
+function buildQuiz() {
+  // pick 12 random vocab words (out of 24) to keep quiz manageable
+  quizWords = shuffle(VOCAB.slice()).slice(0, 12);
+
+  const list = document.getElementById('quiz-list');
+  list.innerHTML = '';
+  const allDefs = VOCAB.map(v => v.def);
+
+  quizWords.forEach((item, i) => {
+    const others = allDefs.filter(d => d !== item.def);
+    const distractors = shuffle(others).slice(0, 3);
+    const options = shuffle([item.def, ...distractors]);
+
+    const card = document.createElement('div');
+    card.className = 'quiz-q';
+    card.id = 'q-' + i;
+    card.innerHTML = `
+      <div class="quiz-q-num">Word ${i+1} of ${quizWords.length}</div>
+      <div class="quiz-word">${item.word}</div>
+      <div class="quiz-options">
+        ${options.map(opt => `
+          <button class="quiz-opt" data-q="${i}" data-correct="${item.def === opt ? '1' : '0'}">${opt}</button>
+        `).join('')}
+      </div>
+      <div class="quiz-feedback" id="fb-${i}"></div>
+    `;
+    list.appendChild(card);
+  });
+
+  document.querySelectorAll('.quiz-opt').forEach(btn => {
+    btn.addEventListener('click', handleAnswer);
+  });
+}
+
+function handleAnswer(e) {
+  const btn = e.currentTarget;
+  const qIdx = parseInt(btn.dataset.q);
+  const isCorrect = btn.dataset.correct === '1';
+  const card = document.getElementById('q-' + qIdx);
+
+  card.querySelectorAll('.quiz-opt').forEach(o => {
+    o.disabled = true;
+    if (o.dataset.correct === '1') o.classList.add('correct');
+  });
+  if (!isCorrect) btn.classList.add('wrong');
+
+  const fb = document.getElementById('fb-' + qIdx);
+  if (isCorrect) {
+    fb.className = 'quiz-feedback show ok';
+    fb.textContent = '✓ Correct!';
+    quizScore++;
+  } else {
+    fb.className = 'quiz-feedback show bad';
+    fb.textContent = '✗ Not quite. The correct definition is highlighted.';
+  }
+
+  quizAnswered++;
+  document.getElementById('quiz-progress').style.width = (quizAnswered / quizWords.length * 100) + '%';
+
+  if (quizAnswered === quizWords.length) {
+    setTimeout(showQuizResult, 400);
+  }
+}
+
+function showQuizResult() {
+  const r = document.getElementById('quiz-result');
+  document.getElementById('result-score').textContent = quizScore + ' / ' + quizWords.length;
+  r.classList.add('show');
+  r.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+// ===== MARK AS READ =====
+async function markAsRead() {
+  const btn = document.getElementById('mark-read-btn');
+  btn.disabled = true;
+  btn.textContent = 'Saving…';
+  try {
+    await sb.from('article_reads').upsert({
+      user_id: currentUser.id,
+      article_id: ARTICLE_ID,
+      completed_at: new Date().toISOString()
+    }, { onConflict: 'user_id,article_id' });
+    btn.textContent = '✓ Marked as Read';
+  } catch (e) {
+    btn.disabled = false;
+    btn.textContent = 'Try again';
+    console.warn('Save failed:', e);
+  }
+}
+
+// ===== BOOT =====
+loadFontPref();
+loadThemePref();
+initAuth();
+</script>
+</body>
+</html>
