@@ -86,5 +86,38 @@
     "words": 540,
     "time": "5 min",
     "author": "Carissa Wong"
+  },
+  {
+    "id": "9",
+    "file": "birdwatching-reshapes-brain.html",
+    "title": "Birdwatching may reshape the brain",
+    "description": "A study of 48 birdwatchers finds that expert birders show structural changes in the brain that may protect against cognitive decline.",
+    "topic": "Science",
+    "difficulty": "Medium",
+    "words": 540,
+    "time": "5 min",
+    "author": "Grace Wade"
+  },
+  {
+    "id": "10",
+    "file": "tattoos-immune-system.html",
+    "title": "The effect of tattoos on the body is more than skin deep",
+    "description": "New research finds tattoo ink causes long-term changes in the immune system that may affect how your body fights off disease.",
+    "topic": "Health",
+    "difficulty": "Hard",
+    "words": 720,
+    "time": "6 min",
+    "author": "Christa Lesté-Lasserre"
+  },
+  {
+    "id": "11",
+    "file": "if-only-they-could-talk.html",
+    "title": "If only they could talk: communicating with animals",
+    "description": "AI may soon let us talk to whales, cats and pigs — but the RSPCA's chief executive wonders if we're ready for what they'll say.",
+    "topic": "Society",
+    "difficulty": "Hard",
+    "words": 760,
+    "time": "6 min",
+    "author": "Chris Sherwood"
   }
 ]
