@@ -543,6 +543,106 @@
   });
 
   loadArticles();
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = 'https://evhceswvapszaghnvmxl.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGNlc3d2YXBzemFnaG52bXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3OTQwNzMsImV4cCI6MjA5MzM3MDA3M30.yV7tavgR7JKc45uSGtS8Lf6m1ZMuuvQ23hmAb8n6k3A';
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  let allArticles = [];
+  let activeFilter = 'all';
+  let userReads = {}; // article_id → completed_at
+
+  async function loadArticles() {
+    try {
+      const res = await fetch('articles.json');
+      allArticles = await res.json();
+    } catch (e) {
+      document.getElementById('articlesGrid').innerHTML =
+        '<div class="empty-state"><div class="empty-icon">⚠️</div><p>Could not load articles. Please try again.</p></div>';
+      document.getElementById('articleCount').textContent = '0 articles';
+      return;
+    }
+    await loadReads();
+    renderArticles();
+  }
+
+  async function loadReads() {
+    try {
+      const { data: { session } } = await sb.auth.getSession();
+      if (!session) return;
+      const { data } = await sb.from('article_reads')
+        .select('article_id, completed_at')
+        .eq('user_id', session.user.id);
+      if (data) {
+        data.forEach(row => { userReads[row.article_id] = row.completed_at; });
+      }
+    } catch(e) {}
+  }
+
+  function renderArticles() {
+    const grid = document.getElementById('articlesGrid');
+    const count = document.getElementById('articleCount');
+
+    let filtered = allArticles;
+    if (activeFilter !== 'all') {
+      filtered = allArticles.filter(a => a.difficulty === activeFilter);
+    }
+
+    count.textContent = filtered.length + ' article' + (filtered.length !== 1 ? 's' : '');
+
+    if (filtered.length === 0) {
+      grid.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><p>No articles found for this filter.</p></div>';
+      return;
+    }
+
+    grid.innerHTML = filtered.map(a => {
+      const slug = a.file.replace('.html', '');
+      const topicSlug = (a.topic || 'society').toLowerCase().split(' ')[0];
+      const isRead = userReads[slug] !== undefined;
+      const readBadge = isRead
+        ? `<span class="badge" style="background:#fdf3e3;color:#c9922a;border:1px solid rgba(201,146,42,0.3)">✓ Read</span>`
+        : '';
+
+      return `
+        <a href="${a.file}" class="article-card">
+          <div class="card-top">
+            <div class="card-badges">
+              <span class="badge badge-${topicSlug}">${a.topic}</span>
+              <span class="badge badge-${a.difficulty.toLowerCase()}">${a.difficulty}</span>
+              ${readBadge}
+            </div>
+            <span class="card-number">#${a.id}</span>
+          </div>
+          <div class="card-title">${a.title}</div>
+          <div class="card-desc">${a.description}</div>
+          <div class="card-meta">
+            <span class="card-meta-item">📖 ${a.words} words</span>
+            <span class="card-meta-item">⏱ ${a.time}</span>
+          </div>
+          <div class="card-footer">
+            <span class="card-author">✍ ${a.author || 'English Flow'}</span>
+            <span class="card-arrow">→</span>
+          </div>
+        </a>`;
+    }).join('');
+  }
+
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      renderArticles();
+    });
+  });
+
+  loadArticles();
+
+  // Re-check reads when user comes back to this tab
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      loadReads().then(renderArticles);
+    }
+  });
 </script>
-</body>
-</html>
