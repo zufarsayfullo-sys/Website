@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Should My Partner Use a Co-Working Space? | English Flow</title>
+<link rel="icon" href="data:,">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root {
+  --navy: #1a2744;
+  --navy-mid: #243358;
+  --sky: #2e6fad;
+  --sky-light: #e8f2fc;
+  --gold: #c9922a;
+  --gold-light: #fdf3e3;
+  --cream: #f9f7f4;
+  --surface: #ffffff;
+  --text: #1a2744;
+  --text-muted: #5a6a8a;
+  --border: rgba(26,39,68,0.1);
+  --green: #1e6e4e;
+  --green-light: #e8f5ee;
+  --red: #b91c1c;
+  --radius: 16px;
+  --radius-lg: 24px;
+  --article-font-size: 1.05rem;
+}
+
+body.dark-mode {
+  --cream: #0e1422;
+  --surface: #1a2438;
+  --text: #f0f4fa;
+  --text-muted: #95a3bf;
+  --border: rgba(255,255,255,0.1);
+  --navy: #0a1020;
+  --gold-light: rgba(201,146,42,0.15);
+  --green-light: rgba(30,110,78,0.18);
+  --sky-light: rgba(46,111,173,0.18);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--cream);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.6;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* ========== AUTH OVERLAY ========== */
+#auth-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(26,39,68,0.88);
+  backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 1rem;
+}
+.auth-card {
+  background: #fff;
+  border-radius: var(--radius-lg);
+  padding: 2.5rem; width: 100%; max-width: 420px;
+  text-align: center;
+  box-shadow: 0 32px 64px rgba(0,0,0,0.3);
+}
+.auth-card h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.6rem; color: var(--navy);
+  margin-bottom: 0.4rem;
+}
+.auth-card p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
+.auth-input {
+  width: 100%; padding: 0.75rem 1rem;
+  border: 1.5px solid rgba(26,39,68,0.1);
+  border-radius: 50px; font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem; color: #1a2744; outline: none;
+  margin-bottom: 0.75rem; transition: 0.2s;
+}
+.auth-input:focus { border-color: var(--sky); }
+.auth-btn {
+  width: 100%; padding: 0.8rem; background: #1a2744; color: #fff;
+  border: none; border-radius: 50px; font-family: 'DM Sans', sans-serif;
+  font-size: 1rem; font-weight: 600; cursor: pointer; transition: 0.2s;
+}
+.auth-btn:hover { background: #243358; }
+.auth-btn:disabled { opacity: 0.6; cursor: default; }
+.auth-msg {
+  font-size: 0.85rem; margin-top: 0.75rem;
+  padding: 0.5rem 1rem; border-radius: 50px;
+}
+.auth-msg.error { background: #fef2f2; color: var(--red); }
+.auth-msg.success { background: #e8f5ee; color: var(--green); }
+
+/* ========== TOP BAR ========== */
+#top-bar {
+  background: linear-gradient(135deg, var(--navy), var(--navy-mid));
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  display: flex; align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap; gap: 0.75rem;
+  position: sticky; top: 0; z-index: 100;
+}
+.logo {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.3rem; color: #fff;
+}
+.logo .dot { color: var(--gold); }
+
+.font-controls {
+  display: flex; align-items: center; gap: 0.4rem;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 50px; padding: 0.2rem 0.4rem;
+}
+.font-btn {
+  background: transparent; border: none; color: #fff;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem; font-weight: 600;
+  cursor: pointer; padding: 0.25rem 0.55rem;
+  border-radius: 50px; transition: 0.15s;
+  min-width: 32px;
+}
+.font-btn:hover { background: rgba(255,255,255,0.15); }
+.font-btn:disabled { opacity: 0.35; cursor: default; }
+.font-label {
+  font-size: 0.7rem; color: rgba(255,255,255,0.55);
+  letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 0 0.25rem;
+}
+
+.user-area { display: flex; align-items: center; gap: 0.5rem; }
+.theme-toggle {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #fff; border-radius: 50%;
+  width: 36px; height: 36px;
+  font-size: 1rem; cursor: pointer; transition: 0.2s;
+}
+.theme-toggle:hover { background: rgba(255,255,255,0.2); }
+
+.user-pill {
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 50px; padding: 0.35rem 0.85rem;
+  font-size: 0.85rem; color: #fff; font-weight: 500;
+}
+.signout-btn {
+  background: transparent; color: rgba(255,255,255,0.8);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 50px; padding: 0.35rem 0.85rem;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.8rem; cursor: pointer; transition: 0.2s;
+}
+.signout-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+
+/* ========== BREADCRUMB ========== */
+#breadcrumb {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0.6rem 1.5rem;
+  display: flex; align-items: center; gap: 0.75rem;
+  font-size: 0.85rem; flex-wrap: wrap;
+}
+#breadcrumb a {
+  color: var(--sky); text-decoration: none;
+  font-weight: 500; transition: 0.15s;
+}
+#breadcrumb a:hover { color: var(--navy); }
+.crumb-sep { color: var(--text-muted); }
+.crumb-active {
+  background: var(--navy); color: #fff;
+  border-radius: 50px; padding: 0.2rem 0.75rem;
+  font-size: 0.78rem; font-weight: 600;
+  max-width: 320px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* ========== ARTICLE ========== */
+.article-wrap {
+  max-width: 720px; margin: 0 auto;
+  padding: 3rem 1.5rem 2rem;
+}
+.cat-tag {
+  display: inline-block;
+  background: var(--sky-light);
+  color: var(--sky);
+  padding: 0.3rem 0.85rem;
+  border-radius: 50px;
+  font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  margin-bottom: 1.25rem;
+}
+.article-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  color: var(--text);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin-bottom: 1rem;
+}
+.article-deck {
+  font-family: 'DM Serif Display', serif;
+  font-style: italic;
+  font-size: 1.15rem; color: var(--text-muted);
+  line-height: 1.5; margin-bottom: 1.5rem;
+}
+.article-meta {
+  display: flex; align-items: center;
+  gap: 0.75rem; flex-wrap: wrap;
+  font-size: 0.85rem; color: var(--text-muted);
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2rem;
+}
+.meta-dot { opacity: 0.4; }
+
+.section-head {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.5rem; color: var(--text);
+  margin: 2rem 0 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--gold);
+  display: inline-block;
+}
+
+#article-body {
+  font-size: var(--article-font-size);
+  line-height: 1.85; color: var(--text);
+  transition: font-size 0.2s;
+}
+#article-body p {
+  margin-bottom: 1.4rem;
+  display: flex; gap: 0.85rem;
+}
+.para-num {
+  color: var(--gold);
+  font-weight: 700;
+  flex-shrink: 0;
+  min-width: 1.5rem;
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.05em;
+  line-height: 1.85;
+}
+.para-text { flex: 1; }
+
+/* ========== VOCAB ========== */
+.vocab {
+  position: relative;
+  border-bottom: 2px dotted var(--gold);
+  cursor: help;
+  color: var(--gold);
+  font-weight: 600;
+  transition: 0.15s;
+}
+.vocab:hover { background: var(--gold-light); }
+
+.vocab .tip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: var(--gold);
+  color: #fff;
+  padding: 0.65rem 0.9rem;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 400;
+  font-family: 'DM Sans', sans-serif;
+  line-height: 1.45;
+  width: max-content;
+  max-width: 280px;
+  white-space: normal;
+  text-align: left;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+  opacity: 0; visibility: hidden;
+  transition: opacity 0.18s, transform 0.18s;
+  pointer-events: none;
+  z-index: 50;
+}
+.vocab .tip::after {
+  content: '';
+  position: absolute;
+  top: 100%; left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: var(--gold);
+}
+.vocab:hover .tip,
+.vocab.tap-active .tip {
+  opacity: 1; visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ========== QUIZ ========== */
+.quiz-section {
+  max-width: 720px;
+  margin: 3rem auto 2rem;
+  padding: 0 1.5rem;
+}
+.quiz-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  box-shadow: 0 4px 16px rgba(26,39,68,0.04);
+}
+.quiz-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.6rem; color: var(--text);
+  margin-bottom: 0.4rem;
+}
+.quiz-sub {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+.quiz-progress-track {
+  height: 5px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+.quiz-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--sky), var(--navy));
+  width: 0%;
+  transition: width 0.4s;
+}
+
+.quiz-q {
+  margin-bottom: 1.75rem;
+  padding-bottom: 1.75rem;
+  border-bottom: 1px dashed var(--border);
+}
+.quiz-q:last-of-type {
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+.quiz-q-num {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.4rem;
+}
+.quiz-word {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.5rem;
+  color: var(--gold);
+  margin-bottom: 1rem;
+}
+.quiz-options { display: flex; flex-direction: column; gap: 0.5rem; }
+.quiz-opt {
+  background: var(--cream);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.92rem;
+  text-align: left;
+  color: var(--text);
+  transition: 0.15s;
+}
+.quiz-opt:hover:not(:disabled) {
+  border-color: var(--sky);
+  background: var(--sky-light);
+}
+.quiz-opt:disabled { cursor: default; }
+.quiz-opt.correct {
+  background: var(--green-light);
+  border-color: var(--green);
+  color: var(--green);
+  font-weight: 600;
+}
+.quiz-opt.wrong {
+  background: #fef2f2;
+  border-color: var(--red);
+  color: var(--red);
+  font-weight: 600;
+}
+body.dark-mode .quiz-opt.wrong { background: rgba(185,28,28,0.18); }
+
+.quiz-feedback {
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  padding: 0.6rem 0.85rem;
+  border-radius: 10px;
+  display: none;
+  line-height: 1.5;
+}
+.quiz-feedback.show { display: block; }
+.quiz-feedback.ok {
+  background: var(--green-light);
+  color: var(--green);
+}
+.quiz-feedback.bad {
+  background: rgba(185,28,28,0.1);
+  color: var(--red);
+}
+
+.quiz-result {
+  display: none;
+  text-align: center;
+  padding: 1.5rem;
+  margin-top: 1.5rem;
+  background: var(--gold-light);
+  border: 1.5px solid var(--gold);
+  border-radius: var(--radius);
+}
+.quiz-result.show { display: block; }
+.quiz-result-score {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2.5rem;
+  color: var(--gold);
+  line-height: 1;
+}
+.quiz-result-label {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin: 0.4rem 0 1rem;
+}
+
+.mark-read-btn {
+  background: var(--navy); color: #fff;
+  border: none; border-radius: 50px;
+  padding: 0.75rem 2rem;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem; font-weight: 600;
+  cursor: pointer; transition: 0.2s;
+}
+.mark-read-btn:hover {
+  background: var(--navy-mid);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(26,39,68,0.25);
+}
+.mark-read-btn:disabled {
+  background: var(--green);
+  cursor: default; transform: none;
+}
+
+/* ========== FOOTER ========== */
+.article-footer {
+  max-width: 720px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border);
+}
+.article-footer a { color: var(--sky); text-decoration: none; }
+
+.hidden { display: none !important; }
+
+@media (max-width: 600px) {
+  .article-wrap { padding: 2rem 1rem 1.5rem; }
+  .article-title { font-size: 1.6rem; }
+  .quiz-card { padding: 1.5rem; }
+  .font-controls { display: none; }
+  .top-bar { padding: 0.6rem 1rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== AUTH OVERLAY ===== -->
+<div id="auth-overlay">
+  <div class="auth-card">
+    <div style="font-size:2.5rem;margin-bottom:0.5rem">📰</div>
+    <h2>Sign in to read</h2>
+    <p>You need an English Flow account to access articles.</p>
+    <input type="email" id="auth-email" class="auth-input" placeholder="Email address" onkeydown="if(event.key==='Enter')doSignIn()">
+    <input type="password" id="auth-pass" class="auth-input" placeholder="Password" onkeydown="if(event.key==='Enter')doSignIn()">
+    <button class="auth-btn" id="auth-btn" onclick="doSignIn()">Sign In</button>
+    <div id="auth-msg" class="auth-msg" style="display:none"></div>
+    <p style="margin-top:1rem;font-size:0.8rem;color:#5a6a8a">No account? <a href="../ielts.html" style="color:#2e6fad">Sign up on the IELTS page</a></p>
+  </div>
+</div>
+
+<!-- ===== TOP BAR ===== -->
+<div id="top-bar">
+  <div class="logo">English <span class="dot">Flow</span></div>
+  <div class="font-controls">
+    <button class="font-btn" id="font-down" onclick="changeFont(-1)">A−</button>
+    <span class="font-label">Aa</span>
+    <button class="font-btn" id="font-up" onclick="changeFont(1)">A+</button>
+  </div>
+  <div class="user-area">
+    <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()">🌙</button>
+    <div class="user-pill" id="user-pill">Student</div>
+    <button class="signout-btn" onclick="doSignOut()">Sign out</button>
+  </div>
+</div>
+
+<!-- ===== BREADCRUMB ===== -->
+<div id="breadcrumb">
+  <a href="../index.html">← Home</a>
+  <span class="crumb-sep">/</span>
+  <a href="index.html">← Articles</a>
+  <span class="crumb-sep">/</span>
+  <span class="crumb-active">Co-working Space Dilemma</span>
+</div>
+
+<!-- ===== ARTICLE ===== -->
+<div class="article-wrap">
+  <span class="cat-tag">Society</span>
+  <h1 class="article-title">You be the judge: should my partner use a co-working space so I can have our flat to myself?</h1>
+  <p class="article-deck">When Xavier moved into Claire's flat, he agreed he wouldn't work there — but would still prefer to WFH. You decide if Claire's right to play the boss.</p>
+  <div class="article-meta">
+    <span>✍ Interviews by Georgina Lawton</span>
+    <span class="meta-dot">·</span>
+    <span>📅 7 August 2025</span>
+    <span class="meta-dot">·</span>
+    <span>⏱ 4 min read</span>
+    <span class="meta-dot">·</span>
+    <span>📊 B2 Intermediate</span>
+  </div>
+
+  <div id="article-body">
+
+    <h2 class="section-head">The prosecution: Claire</h2>
+
+    <p><span class="para-num">1</span><span class="para-text">Before Xavier moved into my flat, I lived alone for three years. Before he moved in, I said we could live together but that he needed to find somewhere else to work so we weren't <span class="vocab" data-def="too close to each other in a way that feels uncomfortable or annoying">on top of each other<span class="tip">too close to each other in a way that feels uncomfortable or annoying</span></span>. I asked him to find a co-working space to help us keep a healthy relationship.</span></p>
+
+    <p><span class="para-num">2</span><span class="para-text">Also, when I wake up, I don't want to speak for a while. Because I <span class="vocab" data-def="work from home or another location, not the office">work remotely<span class="tip">work from home or another location, not the office</span></span> for a <span class="vocab" data-def="a person or company that pays you for your work">client<span class="tip">a person or company that pays you for your work</span></span> who doesn't need me until 1pm, my mornings are my own. Having Xavier in my flat all day every day isn't an option.</span></p>
+
+    <p><span class="para-num">3</span><span class="para-text">My job is 90 per cent phone calls, so Xavier had to leave. Also, it's my flat, and he was the one who suggested moving in. Luckily, we are good as <span class="vocab" data-def="people who share a flat or house but are not romantic partners">flatmates<span class="tip">people who share a flat or house but are not romantic partners</span></span>, but I like to have different spaces for work, sleep and socialising. Xavier doesn't think like that. He can get up, start work <span class="vocab" data-def="immediately, with no delay">straight away<span class="tip">immediately, with no delay</span></span> and then leave the house.</span></p>
+
+    <p><span class="para-num">4</span><span class="para-text">It took Xavier a while to organise a <span class="vocab" data-def="a shared office that people from different companies pay to use">co-working space<span class="tip">a shared office that people from different companies pay to use</span></span>. Before that, he was hanging around at home. One day, a month after we started living together, he wanted to take a call at the flat. I said it was fine, but actually it was annoying. Later, we had to have a conversation, and he joined a co-working space right after that.</span></p>
+
+    <p><span class="para-num">5</span><span class="para-text">I like to talk about things that come up straight away, but Xavier will <span class="vocab" data-def="stay away from something or refuse to deal with it">avoid<span class="tip">stay away from something or refuse to deal with it</span></span> things and hope they'll disappear. Luckily, there are no other issues between us. But I think it's important to have rules.</span></p>
+
+    <p><span class="para-num">6</span><span class="para-text">Xavier <em>can</em> work from home, but I'd prefer it if he stuck to the routine and came back in the afternoon while I'm working and not when I want to relax alone in the morning. It's important to have separation as a couple.</span></p>
+
+    <h2 class="section-head">The defence: Xavier</h2>
+
+    <p><span class="para-num">7</span><span class="para-text">About a month after I moved into Claire's flat, she told me I needed to go to a co-working space. We both work remotely, and when I moved in she did <span class="vocab" data-def="say or talk about something briefly">mention<span class="tip">say or talk about something briefly</span></span> this.</span></p>
+
+    <p><span class="para-num">8</span><span class="para-text">I'd never been to a co-working space; I'd always worked at home. I'm more <span class="vocab" data-def="able to do or finish a lot of work in a short time">productive<span class="tip">able to do or finish a lot of work in a short time</span></span> that way. I wake up, have a coffee and start work straight away. I like starting early and finishing by 2 or 3pm, and having my own space.</span></p>
+
+    <p><span class="para-num">9</span><span class="para-text">Claire starts at 1pm, so I thought: great, I'll work in our flat until she needs the office, and pop into a co-working space <span class="vocab" data-def="from time to time, occasionally">now and again<span class="tip">from time to time, occasionally</span></span>. But then, after about 10 days, she said it wasn't working, that she wanted me to work outside of the flat all the time.</span></p>
+
+    <p><span class="para-num">10</span><span class="para-text">Claire said she wanted her space in the mornings. She doesn't talk much, but I am a morning person. I didn't like having to find a co-working spot straight away. I needed to work out what I liked and what I wanted out of one. I tried one place, and it was too social, and it affected my productivity.</span></p>
+
+    <p><span class="para-num">11</span><span class="para-text">Claire is very good at communicating, and I'm glad she told me she wanted me out of the flat. And I have managed to find a better co-working space that is less <span class="vocab" data-def="enjoying being with other people, friendly and talkative">sociable<span class="tip">enjoying being with other people, friendly and talkative</span></span>.</span></p>
+
+    <p><span class="para-num">12</span><span class="para-text">In some ways, my working there makes our lives more interesting, because I come home with news about my day. But sometimes I wish I had a bit more <span class="vocab" data-def="the right or ability to do what you want without being controlled">freedom<span class="tip">the right or ability to do what you want without being controlled</span></span> to be in the flat because it's my home, too.</span></p>
+
+  </div>
+</div>
+
+<!-- ===== QUIZ ===== -->
+<div class="quiz-section">
+  <div class="quiz-card">
+    <h2 class="quiz-title">📝 Vocabulary Check</h2>
+    <p class="quiz-sub">Match each word to its meaning</p>
+    <div class="quiz-progress-track"><div class="quiz-progress-fill" id="quiz-progress"></div></div>
+    <div id="quiz-list"></div>
+    <div class="quiz-result" id="quiz-result">
+      <div class="quiz-result-score" id="result-score">0 / 11</div>
+      <div class="quiz-result-label">words correct</div>
+      <button class="mark-read-btn" id="mark-read-btn" onclick="markAsRead()">✓ Mark as Read</button>
+    </div>
+  </div>
+</div>
+
+<div class="article-footer">
+  Originally published in <a href="https://www.theguardian.com" target="_blank">The Guardian</a>, 07/08/2025 · Adapted for English Flow
+</div>
+
+<script>
+const ARTICLE_ID = 'co-working-space-dilemma';
+const SUPABASE_URL = 'https://evhceswvapszaghnvmxl.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGNlc3d2YXBzemFnaG52bXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3OTQwNzMsImV4cCI6MjA5MzM3MDA3M30.yV7tavgR7JKc45uSGtS8Lf6m1ZMuuvQ23hmAb8n6k3A';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ===== VOCAB DATA (used for quiz) =====
+const VOCAB = [
+  { word: "on top of each other", def: "too close to each other in a way that feels uncomfortable or annoying" },
+  { word: "work remotely",        def: "work from home or another location, not the office" },
+  { word: "client",                def: "a person or company that pays you for your work" },
+  { word: "flatmates",             def: "people who share a flat or house but are not romantic partners" },
+  { word: "straight away",         def: "immediately, with no delay" },
+  { word: "co-working space",      def: "a shared office that people from different companies pay to use" },
+  { word: "avoid",                 def: "stay away from something or refuse to deal with it" },
+  { word: "mention",               def: "say or talk about something briefly" },
+  { word: "productive",            def: "able to do or finish a lot of work in a short time" },
+  { word: "now and again",         def: "from time to time, occasionally" },
+  { word: "sociable",              def: "enjoying being with other people, friendly and talkative" },
+  { word: "freedom",               def: "the right or ability to do what you want without being controlled" }
+];
+
+let currentUser = null;
+let quizScore = 0;
+let quizAnswered = 0;
+
+// ===== AUTH =====
+async function initAuth() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) { currentUser = session.user; showApp(); }
+}
+async function doSignIn() {
+  const email = document.getElementById('auth-email').value.trim();
+  const pass = document.getElementById('auth-pass').value;
+  const btn = document.getElementById('auth-btn');
+  if (!email || !pass) { showAuthMsg('Enter email and password.', true); return; }
+  btn.disabled = true; btn.textContent = 'Signing in…';
+  const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+  btn.disabled = false; btn.textContent = 'Sign In';
+  if (error) { showAuthMsg(error.message, true); return; }
+  currentUser = data.user;
+  showApp();
+}
+function showAuthMsg(text, isErr) {
+  const el = document.getElementById('auth-msg');
+  el.textContent = text;
+  el.className = 'auth-msg ' + (isErr ? 'error' : 'success');
+  el.style.display = 'block';
+}
+function showApp() {
+  document.getElementById('auth-overlay').style.display = 'none';
+  const name = currentUser.user_metadata?.name || currentUser.email.split('@')[0];
+  document.getElementById('user-pill').textContent = '👋 ' + name.split(' ')[0];
+  buildQuiz();
+}
+async function doSignOut() {
+  await sb.auth.signOut();
+  location.reload();
+}
+
+// ===== FONT SIZE =====
+const FONT_SIZES = [0.85, 0.95, 1.05, 1.15, 1.25, 1.4];
+let fontIdx = 2;
+
+function loadFontPref() {
+  const saved = parseInt(localStorage.getItem('ef_font_idx'));
+  if (!isNaN(saved) && saved >= 0 && saved < FONT_SIZES.length) fontIdx = saved;
+  applyFont();
+}
+function changeFont(delta) {
+  fontIdx = Math.max(0, Math.min(FONT_SIZES.length - 1, fontIdx + delta));
+  localStorage.setItem('ef_font_idx', fontIdx);
+  applyFont();
+}
+function applyFont() {
+  document.documentElement.style.setProperty('--article-font-size', FONT_SIZES[fontIdx] + 'rem');
+  document.getElementById('font-down').disabled = (fontIdx === 0);
+  document.getElementById('font-up').disabled = (fontIdx === FONT_SIZES.length - 1);
+}
+
+// ===== DARK MODE =====
+function loadThemePref() {
+  if (localStorage.getItem('ef_dark') === '1') {
+    document.body.classList.add('dark-mode');
+    document.getElementById('theme-toggle').textContent = '☀';
+  }
+}
+function toggleTheme() {
+  const dark = document.body.classList.toggle('dark-mode');
+  localStorage.setItem('ef_dark', dark ? '1' : '0');
+  document.getElementById('theme-toggle').textContent = dark ? '☀' : '🌙';
+}
+
+// ===== VOCAB TAP (mobile) =====
+document.addEventListener('click', (e) => {
+  const v = e.target.closest('.vocab');
+  if (v) {
+    document.querySelectorAll('.vocab.tap-active').forEach(o => { if (o !== v) o.classList.remove('tap-active'); });
+    v.classList.toggle('tap-active');
+    e.stopPropagation();
+  } else {
+    document.querySelectorAll('.vocab.tap-active').forEach(o => o.classList.remove('tap-active'));
+  }
+});
+
+// ===== QUIZ =====
+function shuffle(arr) {
+  return arr.map(v => [Math.random(), v]).sort((a,b)=>a[0]-b[0]).map(p => p[1]);
+}
+
+function buildQuiz() {
+  const list = document.getElementById('quiz-list');
+  list.innerHTML = '';
+  const allDefs = VOCAB.map(v => v.def);
+  const shuffled = shuffle(VOCAB.slice());
+
+  shuffled.forEach((item, i) => {
+    // build 4 options: 1 correct + 3 distractors
+    const others = allDefs.filter(d => d !== item.def);
+    const distractors = shuffle(others).slice(0, 3);
+    const options = shuffle([item.def, ...distractors]);
+
+    const card = document.createElement('div');
+    card.className = 'quiz-q';
+    card.id = 'q-' + i;
+    card.innerHTML = `
+      <div class="quiz-q-num">Word ${i+1} of ${shuffled.length}</div>
+      <div class="quiz-word">${item.word}</div>
+      <div class="quiz-options">
+        ${options.map(opt => `
+          <button class="quiz-opt" data-q="${i}" data-correct="${item.def === opt ? '1' : '0'}">${opt}</button>
+        `).join('')}
+      </div>
+      <div class="quiz-feedback" id="fb-${i}"></div>
+    `;
+    list.appendChild(card);
+  });
+
+  // attach listeners
+  document.querySelectorAll('.quiz-opt').forEach(btn => {
+    btn.addEventListener('click', handleAnswer);
+  });
+}
+
+function handleAnswer(e) {
+  const btn = e.currentTarget;
+  const qIdx = parseInt(btn.dataset.q);
+  const isCorrect = btn.dataset.correct === '1';
+  const card = document.getElementById('q-' + qIdx);
+
+  // disable all options for this question
+  card.querySelectorAll('.quiz-opt').forEach(o => {
+    o.disabled = true;
+    if (o.dataset.correct === '1') o.classList.add('correct');
+  });
+
+  if (!isCorrect) btn.classList.add('wrong');
+
+  const fb = document.getElementById('fb-' + qIdx);
+  if (isCorrect) {
+    fb.className = 'quiz-feedback show ok';
+    fb.textContent = '✓ Correct!';
+    quizScore++;
+  } else {
+    fb.className = 'quiz-feedback show bad';
+    fb.textContent = '✗ Not quite. The correct definition is highlighted.';
+  }
+
+  quizAnswered++;
+  document.getElementById('quiz-progress').style.width = (quizAnswered / VOCAB.length * 100) + '%';
+
+  if (quizAnswered === VOCAB.length) {
+    setTimeout(showQuizResult, 400);
+  }
+}
+
+function showQuizResult() {
+  const r = document.getElementById('quiz-result');
+  document.getElementById('result-score').textContent = quizScore + ' / ' + VOCAB.length;
+  r.classList.add('show');
+  r.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+// ===== MARK AS READ =====
+async function markAsRead() {
+  const btn = document.getElementById('mark-read-btn');
+  btn.disabled = true;
+  btn.textContent = 'Saving…';
+  try {
+    await sb.from('article_reads').upsert({
+      user_id: currentUser.id,
+      article_id: ARTICLE_ID,
+      completed_at: new Date().toISOString()
+    }, { onConflict: 'user_id,article_id' });
+    btn.textContent = '✓ Marked as Read';
+  } catch (e) {
+    btn.disabled = false;
+    btn.textContent = 'Try again';
+    console.warn('Save failed:', e);
+  }
+}
+
+// ===== BOOT =====
+loadFontPref();
+loadThemePref();
+initAuth();
+</script>
+</body>
+</html>
