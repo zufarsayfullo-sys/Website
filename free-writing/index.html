@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Writing Practice | English Flow</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root {
+    --navy: #1a2744;
+    --navy-mid: #243358;
+    --sky: #2e6fad;
+    --sky-light: #e8f2fc;
+    --gold: #c9922a;
+    --gold-light: #fdf3e3;
+    --cream: #f9f7f4;
+    --surface: #ffffff;
+    --text: #1a2744;
+    --text-muted: #5a6a8a;
+    --border: rgba(26,39,68,0.1);
+    --green: #1e6e4e;
+    --green-light: #e8f5ee;
+    --red: #b91c1c;
+    --red-light: #fef2f2;
+    --radius: 16px;
+    --radius-lg: 24px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 60%, #1f4a7a 100%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -40%; right: -10%;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(46,111,173,0.25) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -30%; left: 5%;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,146,42,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* TOP BAR */
+  .top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.55rem 1.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    position: relative;
+    z-index: 10;
+  }
+
+  .logo {
+    font-family: 'DM Serif Display', serif;
+    color: white;
+    font-size: 1.15rem;
+    letter-spacing: -0.02em;
+    text-decoration: none;
+  }
+  .logo-dot { color: var(--gold); }
+
+  .auth-zone { display: flex; gap: 0.4rem; align-items: center; }
+
+  .btn-auth {
+    padding: 0.35rem 0.9rem;
+    border-radius: 40px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+    border: none;
+  }
+  .btn-signin { background: transparent; color: rgba(255,255,255,0.85); border: 1px solid rgba(255,255,255,0.3); }
+  .btn-signin:hover { background: rgba(255,255,255,0.1); color: white; }
+  .btn-signup { background: var(--gold); color: white; }
+  .btn-signup:hover { background: #b8821e; }
+  .btn-signout { background: transparent; color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.2); font-size: 0.75rem; padding: 0.3rem 0.7rem; }
+  .btn-signout:hover { color: white; background: rgba(255,255,255,0.1); }
+  .user-pill { background: rgba(255,255,255,0.15); color: white; padding: 0.3rem 0.9rem; border-radius: 40px; font-size: 0.78rem; font-weight: 500; }
+
+  /* HERO CONTENT */
+  .hero-content {
+    padding: 2.5rem 2rem 2rem;
+    position: relative;
+    z-index: 10;
+  }
+
+  .hero-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    color: white;
+    line-height: 1.15;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.02em;
+  }
+  .hero-title em { font-style: italic; color: var(--gold); }
+
+  .hero-subtitle {
+    color: rgba(255,255,255,0.65);
+    font-size: 1rem;
+    max-width: 540px;
+    font-weight: 300;
+  }
+
+  .hero-pills {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 1.25rem;
+  }
+
+  .pill {
+    background: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.8);
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 0.3rem 0.85rem;
+    border-radius: 40px;
+    font-size: 0.78rem;
+    font-weight: 500;
+  }
+
+  /* QUICK LINKS */
+  .quick-links {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0.6rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .quick-link {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 40px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    background: var(--cream);
+    transition: all 0.2s;
+  }
+  .quick-link:hover { background: var(--sky-light); color: var(--sky); border-color: rgba(46,111,173,0.2); }
+  .quick-link.active { background: var(--navy); color: white; border-color: var(--navy); }
+
+  /* MAIN */
+  .main {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 768px) {
+    .main { grid-template-columns: 1fr; padding: 1rem; }
+    .hero-content { padding: 1.5rem 1rem; }
+    .top-bar { padding: 0.5rem 1rem; }
+  }
+
+  /* PANELS */
+  .panel {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .panel-header {
+    padding: 1.25rem 1.5rem 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .panel-badge {
+    padding: 0.3rem 0.8rem;
+    border-radius: 40px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    background: var(--sky-light);
+    color: var(--sky);
+  }
+
+  .panel-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.2rem;
+    color: var(--text);
+    letter-spacing: -0.01em;
+    margin-top: 0.4rem;
+  }
+
+  .panel-subtitle { color: var(--text-muted); font-size: 0.8rem; margin-top: 0.2rem; }
+
+  .panel-body { padding: 1.25rem 1.5rem; }
+
+  /* STATS ROW */
+  .stats-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+  }
+
+  .stat-item {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.75rem 1rem;
+    flex: 1;
+    min-width: 80px;
+    text-align: center;
+  }
+
+  .stat-number {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.6rem;
+    color: var(--navy);
+    line-height: 1;
+  }
+
+  .stat-label { font-size: 0.72rem; color: var(--text-muted); margin-top: 0.25rem; font-weight: 500; }
+
+  /* TOPIC LIST */
+  .topics-wrap {
+    margin-bottom: 1.25rem;
+  }
+
+  .topics-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.5rem;
+  }
+
+  .topics-list {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+  }
+
+  .topic-tag {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 40px;
+    padding: 0.2rem 0.65rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  /* GO BUTTON */
+  .btn-go {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.9rem 1.25rem;
+    background: var(--navy);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+  .btn-go:hover { background: #111c36; transform: translateY(-2px); box-shadow: 0 4px 16px rgba(26,39,68,0.2); }
+  .btn-go-arrow { font-size: 1rem; transition: transform 0.2s; }
+  .btn-go:hover .btn-go-arrow { transform: translateX(4px); }
+
+  /* RECENT QUESTIONS PREVIEW */
+  .recent-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .recent-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border);
+    gap: 0.5rem;
+  }
+  .recent-item:last-child { border-bottom: none; }
+
+  .recent-topic {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .recent-date {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  /* FOOTER */
+  .contact-bar {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 0.75rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+
+  .contact-links { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+  .contact-link {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.9rem;
+    border-radius: 40px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+  }
+  .contact-link:hover { background: var(--sky-light); color: var(--sky); border-color: rgba(46,111,173,0.25); }
+  .footer-copy { font-size: 0.75rem; color: var(--text-muted); }
+
+  /* AUTH MODAL */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(10,20,40,0.55);
+    backdrop-filter: blur(6px);
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    padding: 1rem;
+  }
+  .modal-overlay.active { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border-radius: 28px;
+    width: 100%;
+    max-width: 420px;
+    padding: 2rem;
+    animation: popIn 0.25s ease;
+    box-shadow: 0 24px 48px rgba(0,0,0,0.18);
+    border: 1px solid var(--border);
+  }
+  @keyframes popIn {
+    from { opacity:0; transform:scale(0.95) translateY(10px); }
+    to   { opacity:1; transform:scale(1) translateY(0); }
+  }
+
+  .modal-header { text-align: center; margin-bottom: 1.5rem; }
+  .modal-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+  .modal-title { font-family: 'DM Serif Display', serif; font-size: 1.5rem; color: var(--text); }
+  .modal-sub { font-size: 0.82rem; color: var(--text-muted); margin-top: 0.25rem; }
+
+  .form-group { margin-bottom: 0.75rem; }
+  .form-label { display: block; font-size: 0.78rem; font-weight: 500; color: var(--text-muted); margin-bottom: 0.35rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  .form-input { width: 100%; padding: 0.7rem 1rem; border-radius: 12px; border: 1.5px solid var(--border); font-size: 0.92rem; font-family: 'DM Sans', sans-serif; color: var(--text); background: var(--cream); outline: none; transition: border-color 0.2s; }
+  .form-input:focus { border-color: var(--sky); background: white; }
+
+  .form-actions { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1.25rem; }
+  .btn-form { width: 100%; padding: 0.75rem; border-radius: 12px; border: none; font-size: 0.92rem; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
+  .btn-form-primary { background: var(--navy); color: white; }
+  .btn-form-primary:hover { background: #111c36; }
+  .btn-form-ghost { background: transparent; color: var(--text-muted); border: 1.5px solid var(--border); }
+  .btn-form-ghost:hover { background: var(--cream); color: var(--text); }
+
+  .form-msg { font-size: 0.8rem; text-align: center; padding: 0.5rem; border-radius: 8px; margin-top: 0.5rem; display: none; }
+  .form-msg.show { display: block; }
+  .form-msg.error { background: var(--red-light); color: var(--red); }
+  .form-msg.success { background: var(--green-light); color: var(--green); }
+
+  .modal-switch { text-align: center; font-size: 0.8rem; color: var(--text-muted); margin-top: 1rem; }
+  .modal-switch a { color: var(--sky); cursor: pointer; text-decoration: none; font-weight: 500; }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--navy);
+    color: white;
+    padding: 0.7rem 1.5rem;
+    border-radius: 40px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    z-index: 3000;
+    opacity: 0;
+    transition: all 0.3s;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.success { background: var(--green); }
+
+  .loading-text { font-size: 0.82rem; color: var(--text-muted); text-align: center; padding: 1rem 0; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="top-bar">
+    <a href="../index.html" class="logo">English<span class="logo-dot">Flow</span></a>
+    <div class="auth-zone" id="authZone">
+      <button class="btn-auth btn-signin" id="signinBtn">Sign in</button>
+      <button class="btn-auth btn-signup" id="signupBtn">Sign up free</button>
+    </div>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-title">Writing <em>Question Bank</em></div>
+    <div class="hero-subtitle">
+      Real IELTS Academic writing questions reported by students worldwide. Task 1 and Task 2 with sample answers.
+    </div>
+    <div class="hero-pills">
+      <span class="pill">Task 1 — Academic</span>
+      <span class="pill">Task 2 — Essay</span>
+      <span class="pill">Sample Answers</span>
+      <span class="pill">Updated Regularly</span>
+    </div>
+  </div>
+</div>
+
+<div class="quick-links">
+  <a href="../index.html" class="quick-link">← Home</a>
+  <a href="../ielts.html" class="quick-link">← IELTS Menu</a>
+  <span class="quick-link active">Writing</span>
+</div>
+
+<div class="main">
+
+  <!-- TASK 1 PANEL -->
+  <div class="panel">
+    <div class="panel-header">
+      <span class="panel-badge">Task 1</span>
+      <div class="panel-title">Academic Task 1</div>
+      <div class="panel-subtitle">Graphs, charts, maps & diagrams — describe in 150+ words</div>
+    </div>
+    <div class="panel-body">
+      <div class="stats-row">
+        <div class="stat-item">
+          <div class="stat-number" id="t1Count">—</div>
+          <div class="stat-label">Questions</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">20</div>
+          <div class="stat-label">Min</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">150+</div>
+          <div class="stat-label">Words</div>
+        </div>
+      </div>
+
+      <div class="topics-wrap">
+        <div class="topics-label">Common topics</div>
+        <div class="topics-list">
+          <span class="topic-tag">Bar Chart</span>
+          <span class="topic-tag">Line Graph</span>
+          <span class="topic-tag">Pie Chart</span>
+          <span class="topic-tag">Table</span>
+          <span class="topic-tag">Map</span>
+          <span class="topic-tag">Process</span>
+        </div>
+      </div>
+
+      <div class="recent-label">Recent questions</div>
+      <div id="t1Recent"><div class="loading-text">Loading…</div></div>
+
+      <a href="task1.html" class="btn-go" style="margin-top:1.25rem;">
+        Browse Task 1 Questions
+        <span class="btn-go-arrow">→</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- TASK 2 PANEL -->
+  <div class="panel">
+    <div class="panel-header">
+      <span class="panel-badge" style="background:var(--gold-light);color:var(--gold);">Task 2</span>
+      <div class="panel-title">Academic Task 2</div>
+      <div class="panel-subtitle">Opinion, discussion & problem-solution essays — 250+ words</div>
+    </div>
+    <div class="panel-body">
+      <div class="stats-row">
+        <div class="stat-item">
+          <div class="stat-number" id="t2Count">—</div>
+          <div class="stat-label">Questions</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">40</div>
+          <div class="stat-label">Min</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">250+</div>
+          <div class="stat-label">Words</div>
+        </div>
+      </div>
+
+      <div class="topics-wrap">
+        <div class="topics-label">Common topics</div>
+        <div class="topics-list">
+          <span class="topic-tag">Technology</span>
+          <span class="topic-tag">Environment</span>
+          <span class="topic-tag">Education</span>
+          <span class="topic-tag">Health</span>
+          <span class="topic-tag">Society</span>
+          <span class="topic-tag">Work</span>
+        </div>
+      </div>
+
+      <div class="recent-label">Recent questions</div>
+      <div id="t2Recent"><div class="loading-text">Loading…</div></div>
+
+      <a href="task2.html" class="btn-go" style="margin-top:1.25rem;background:linear-gradient(135deg,#b8821e,var(--gold));">
+        Browse Task 2 Questions
+        <span class="btn-go-arrow">→</span>
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<div class="contact-bar">
+  <div class="contact-links">
+    <a href="https://t.me/SAYFULLAEV_ZUFAR" target="_blank" class="contact-link">📱 Telegram</a>
+    <a href="https://www.instagram.com/sayfullaev.zufar/" target="_blank" class="contact-link">📸 Instagram</a>
+  </div>
+  <div class="footer-copy">📖 English Flow — free IELTS preparation for every learner</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- SIGN IN MODAL -->
+<div class="modal-overlay" id="signinModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-icon">🔐</div>
+      <div class="modal-title">Welcome back</div>
+      <div class="modal-sub">Sign in to track your progress</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email</label>
+      <input type="email" id="siEmail" class="form-input" placeholder="you@example.com">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <input type="password" id="siPass" class="form-input" placeholder="••••••••">
+    </div>
+    <div class="form-actions">
+      <button class="btn-form btn-form-primary" id="doSignin">Sign in</button>
+      <button class="btn-form btn-form-ghost" id="closeSignin">Cancel</button>
+    </div>
+    <div class="form-msg" id="siMsg"></div>
+    <div class="modal-switch">No account? <a id="switchToSignup">Create one free →</a></div>
+  </div>
+</div>
+
+<!-- SIGN UP MODAL -->
+<div class="modal-overlay" id="signupModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-icon">🎓</div>
+      <div class="modal-title">Join English Flow</div>
+      <div class="modal-sub">Free to join — track your IELTS journey</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Full name</label>
+      <input type="text" id="suName" class="form-input" placeholder="Your name">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email</label>
+      <input type="email" id="suEmail" class="form-input" placeholder="you@example.com">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <input type="password" id="suPass" class="form-input" placeholder="At least 6 characters">
+    </div>
+    <div class="form-actions">
+      <button class="btn-form btn-form-primary" id="doSignup">Create account</button>
+      <button class="btn-form btn-form-ghost" id="closeSignup">Maybe later</button>
+    </div>
+    <div class="form-msg" id="suMsg"></div>
+    <div class="modal-switch">Already have an account? <a id="switchToSignin">Sign in →</a></div>
+  </div>
+</div>
+
+<script>
+(function() {
+  const SUPABASE_URL = 'https://evhceswvapszaghnvmxl.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGNlc3d2YXBzemFnaG52bXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3OTQwNzMsImV4cCI6MjA5MzM3MDA3M30.yV7tavgR7JKc45uSGtS8Lf6m1ZMuuvQ23hmAb8n6k3A';
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  function toast(msg, type='default') {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className = 'toast show' + (type !== 'default' ? ' ' + type : '');
+    setTimeout(() => { el.className = 'toast'; }, 3000);
+  }
+
+  function openModal(id) { document.getElementById(id).classList.add('active'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+  function showMsg(id, text, isErr) {
+    const el = document.getElementById(id);
+    el.textContent = text;
+    el.className = 'form-msg show ' + (isErr ? 'error' : 'success');
+    setTimeout(() => { el.className = 'form-msg'; }, 5000);
+  }
+
+  document.getElementById('signinBtn').onclick = () => openModal('signinModal');
+  document.getElementById('signupBtn').onclick = () => openModal('signupModal');
+  document.getElementById('closeSignin').onclick = () => closeModal('signinModal');
+  document.getElementById('closeSignup').onclick = () => closeModal('signupModal');
+  document.getElementById('switchToSignup').onclick = () => { closeModal('signinModal'); openModal('signupModal'); };
+  document.getElementById('switchToSignin').onclick = () => { closeModal('signupModal'); openModal('signinModal'); };
+  ['signinModal','signupModal'].forEach(id => {
+    document.getElementById(id).addEventListener('click', function(e) { if (e.target === this) closeModal(id); });
+  });
+
+  let signinBusy = false;
+  document.getElementById('doSignin').onclick = async () => {
+    if (signinBusy) return;
+    const email = document.getElementById('siEmail').value.trim();
+    const pass = document.getElementById('siPass').value;
+    if (!email || !pass) { showMsg('siMsg', 'Please fill in all fields.', true); return; }
+    signinBusy = true;
+    const btn = document.getElementById('doSignin');
+    btn.disabled = true; btn.textContent = 'Signing in…';
+    try {
+      const { error } = await sb.auth.signInWithPassword({ email, password: pass });
+      if (error) throw error;
+      showMsg('siMsg', '✓ Signed in!', false);
+      setTimeout(() => { closeModal('signinModal'); location.reload(); }, 800);
+    } catch(e) { showMsg('siMsg', e.message || 'Something went wrong.', true); }
+    finally { signinBusy = false; btn.disabled = false; btn.textContent = 'Sign in'; }
+  };
+
+  let signupBusy = false, signupCooldown = false;
+  document.getElementById('doSignup').onclick = async () => {
+    if (signupBusy || signupCooldown) { if (signupCooldown) showMsg('suMsg', 'Please wait 30 seconds.', true); return; }
+    const name = document.getElementById('suName').value.trim();
+    const email = document.getElementById('suEmail').value.trim();
+    const pass = document.getElementById('suPass').value;
+    if (!name || !email || !pass) { showMsg('suMsg', 'Please fill in all fields.', true); return; }
+    if (pass.length < 6) { showMsg('suMsg', 'Password must be at least 6 characters.', true); return; }
+    signupBusy = true; signupCooldown = true;
+    const btn = document.getElementById('doSignup');
+    btn.disabled = true; btn.textContent = 'Creating…';
+    setTimeout(() => { signupCooldown = false; }, 30000);
+    try {
+      const { error } = await sb.auth.signUp({ email, password: pass, options: { data: { name } } });
+      if (error) throw error;
+      showMsg('suMsg', '✓ Account created! Welcome to English Flow.', false);
+      setTimeout(() => { closeModal('signupModal'); location.reload(); }, 1000);
+    } catch(e) {
+      showMsg('suMsg', e.message || 'Could not create account.', true);
+      if (!e.message?.includes('Too many')) signupCooldown = false;
+    } finally { signupBusy = false; btn.disabled = false; btn.textContent = 'Create account'; }
+  };
+
+  async function checkSession() {
+    try {
+      const { data: { session } } = await sb.auth.getSession();
+      if (session?.user) {
+        const name = session.user.user_metadata?.name || session.user.email;
+        const short = name.split(' ')[0];
+        document.getElementById('authZone').innerHTML = `
+          <span class="user-pill">👋 ${short}</span>
+          <button class="btn-auth btn-signout" id="signoutBtn">Sign out</button>
+        `;
+        document.getElementById('signoutBtn').onclick = async () => { await sb.auth.signOut(); location.reload(); };
+      }
+    } catch(e) {}
+  }
+  checkSession();
+
+  async function loadStats() {
+    try {
+      const { count: c1 } = await sb.from('writing_questions').select('*', { count: 'exact', head: true }).eq('task_type', 1);
+      const { count: c2 } = await sb.from('writing_questions').select('*', { count: 'exact', head: true }).eq('task_type', 2);
+      document.getElementById('t1Count').textContent = c1 ?? 0;
+      document.getElementById('t2Count').textContent = c2 ?? 0;
+    } catch(e) {}
+  }
+
+  async function loadRecent(taskType, containerId) {
+    const el = document.getElementById(containerId);
+    try {
+      const { data } = await sb.from('writing_questions')
+        .select('id, topic, exam_date')
+        .eq('task_type', taskType)
+        .order('created_at', { ascending: false })
+        .limit(3);
+      if (!data || data.length === 0) {
+        el.innerHTML = '<div class="loading-text">No questions yet.</div>';
+        return;
+      }
+      el.innerHTML = data.map(q => `
+        <div class="recent-item">
+          <span class="recent-topic">${q.topic}</span>
+          <span class="recent-date">${q.exam_date || ''}</span>
+        </div>
+      `).join('');
+    } catch(e) {
+      el.innerHTML = '<div class="loading-text">Could not load.</div>';
+    }
+  }
+
+  loadStats();
+  loadRecent(1, 't1Recent');
+  loadRecent(2, 't2Recent');
+})();
+</script>
+</body>
+</html>
