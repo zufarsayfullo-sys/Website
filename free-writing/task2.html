@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Task 2 Questions | English Flow</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root {
+    --navy: #1a2744;
+    --navy-mid: #243358;
+    --sky: #2e6fad;
+    --sky-light: #e8f2fc;
+    --gold: #c9922a;
+    --gold-light: #fdf3e3;
+    --cream: #f9f7f4;
+    --surface: #ffffff;
+    --text: #1a2744;
+    --text-muted: #5a6a8a;
+    --border: rgba(26,39,68,0.1);
+    --green: #1e6e4e;
+    --green-light: #e8f5ee;
+    --red: #b91c1c;
+    --red-light: #fef2f2;
+    --radius: 16px;
+    --radius-lg: 24px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--text); min-height: 100vh; line-height: 1.6; }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 60%, #1f4a7a 100%);
+    position: relative; overflow: hidden;
+  }
+  .hero::before { content:''; position:absolute; top:-40%; right:-10%; width:600px; height:600px; border-radius:50%; background:radial-gradient(circle, rgba(46,111,173,0.25) 0%, transparent 70%); pointer-events:none; }
+
+  .top-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.55rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1);
+    flex-wrap: wrap; gap: 0.5rem; position: relative; z-index: 10;
+  }
+
+  .logo { font-family: 'DM Serif Display', serif; color: white; font-size: 1.15rem; letter-spacing: -0.02em; text-decoration: none; }
+  .logo-dot { color: var(--gold); }
+
+  .auth-zone { display: flex; gap: 0.4rem; align-items: center; }
+  .btn-auth { padding: 0.35rem 0.9rem; border-radius: 40px; font-size: 0.78rem; font-weight: 500; cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif; border: none; }
+  .btn-signin { background: transparent; color: rgba(255,255,255,0.85); border: 1px solid rgba(255,255,255,0.3); }
+  .btn-signin:hover { background: rgba(255,255,255,0.1); color: white; }
+  .btn-signup { background: var(--gold); color: white; }
+  .btn-signup:hover { background: #b8821e; }
+  .btn-signout { background: transparent; color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.2); font-size: 0.75rem; padding: 0.3rem 0.7rem; }
+  .btn-signout:hover { color: white; background: rgba(255,255,255,0.1); }
+  .user-pill { background: rgba(255,255,255,0.15); color: white; padding: 0.3rem 0.9rem; border-radius: 40px; font-size: 0.78rem; font-weight: 500; }
+
+  .hero-content { padding: 2rem 2rem 1.75rem; position: relative; z-index: 10; }
+  .hero-title { font-family: 'DM Serif Display', serif; font-size: clamp(1.8rem, 3vw, 2.5rem); color: white; line-height: 1.15; margin-bottom: 0.5rem; letter-spacing: -0.02em; }
+  .hero-title em { font-style: italic; color: var(--gold); }
+  .hero-subtitle { color: rgba(255,255,255,0.65); font-size: 0.95rem; font-weight: 300; }
+
+  .quick-links {
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    padding: 0.6rem 1.5rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+  }
+  .quick-link { display: flex; align-items: center; gap: 0.35rem; padding: 0.35rem 0.85rem; border-radius: 40px; font-size: 0.82rem; font-weight: 500; text-decoration: none; color: var(--text-muted); border: 1px solid var(--border); background: var(--cream); transition: all 0.2s; }
+  .quick-link:hover { background: var(--sky-light); color: var(--sky); border-color: rgba(46,111,173,0.2); }
+  .quick-link.active { background: var(--navy); color: white; border-color: var(--navy); }
+
+  /* MAIN */
+  .main { max-width: 900px; margin: 0 auto; padding: 2rem; }
+  @media (max-width: 768px) { .main { padding: 1rem; } .hero-content { padding: 1.5rem 1rem; } .top-bar { padding: 0.5rem 1rem; } }
+
+  /* TOOLBAR */
+  .toolbar {
+    display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;
+    margin-bottom: 1.25rem;
+  }
+
+  .search-wrap {
+    flex: 1; min-width: 200px;
+    position: relative;
+  }
+  .search-input {
+    width: 100%; padding: 0.55rem 1rem 0.55rem 2.25rem;
+    border: 1.5px solid var(--border); border-radius: 40px;
+    font-size: 0.85rem; font-family: 'DM Sans', sans-serif;
+    color: var(--text); background: var(--surface); outline: none;
+    transition: border-color 0.2s;
+  }
+  .search-input:focus { border-color: var(--sky); }
+  .search-icon { position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); font-size: 0.85rem; pointer-events: none; }
+
+  .filter-select {
+    padding: 0.5rem 0.9rem; border: 1.5px solid var(--border); border-radius: 40px;
+    font-size: 0.82rem; font-family: 'DM Sans', sans-serif;
+    color: var(--text-muted); background: var(--surface); outline: none; cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .filter-select:focus { border-color: var(--sky); }
+
+  .sort-btn {
+    padding: 0.5rem 0.9rem; border: 1.5px solid var(--border); border-radius: 40px;
+    font-size: 0.82rem; font-family: 'DM Sans', sans-serif;
+    color: var(--text-muted); background: var(--surface); cursor: pointer;
+    transition: all 0.2s;
+  }
+  .sort-btn.active { background: var(--navy); color: white; border-color: var(--navy); }
+
+  /* COUNT ROW */
+  .count-row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;
+  }
+  .count-text { font-size: 0.82rem; color: var(--text-muted); }
+  .count-text strong { color: var(--text); }
+
+  /* ADD QUESTION CARD */
+  .add-card {
+    background: var(--surface);
+    border: 1.5px dashed rgba(46,111,173,0.3);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .add-card-title {
+    font-weight: 600; font-size: 0.9rem; color: var(--text);
+    margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;
+  }
+
+  .add-form { display: flex; flex-direction: column; gap: 0.65rem; }
+
+  .add-row { display: flex; gap: 0.65rem; flex-wrap: wrap; }
+
+  .form-input-sm {
+    flex: 1; min-width: 140px;
+    padding: 0.6rem 0.9rem; border: 1.5px solid var(--border); border-radius: 12px;
+    font-size: 0.85rem; font-family: 'DM Sans', sans-serif;
+    color: var(--text); background: var(--cream); outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-input-sm:focus { border-color: var(--sky); background: white; }
+
+  .form-textarea {
+    width: 100%; padding: 0.7rem 0.9rem;
+    border: 1.5px solid var(--border); border-radius: 12px;
+    font-size: 0.85rem; font-family: 'DM Sans', sans-serif;
+    color: var(--text); background: var(--cream); outline: none;
+    transition: border-color 0.2s; resize: vertical; min-height: 80px;
+  }
+  .form-textarea:focus { border-color: var(--sky); background: white; }
+
+  .btn-add {
+    align-self: flex-start; padding: 0.6rem 1.5rem;
+    background: var(--sky); color: white; border: none; border-radius: 40px;
+    font-size: 0.85rem; font-weight: 600; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; transition: all 0.2s;
+  }
+  .btn-add:hover { background: #235d91; transform: translateY(-1px); }
+
+  /* QUESTION CARDS */
+  .q-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    margin-bottom: 1rem;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+  .q-card:hover { box-shadow: 0 4px 20px rgba(26,39,68,0.08); }
+
+  .q-card-top {
+    padding: 1.1rem 1.4rem;
+    cursor: pointer;
+  }
+
+  .q-card-meta {
+    display: flex; align-items: center; gap: 0.5rem;
+    flex-wrap: wrap; margin-bottom: 0.5rem;
+  }
+
+  .topic-badge {
+    background: var(--sky-light); color: var(--sky);
+    padding: 0.2rem 0.65rem; border-radius: 40px;
+    font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em;
+  }
+
+  .date-badge {
+    font-size: 0.75rem; color: var(--text-muted);
+    display: flex; align-items: center; gap: 0.25rem;
+  }
+
+  .q-card-text {
+    font-size: 0.9rem; color: var(--text);
+    line-height: 1.5; font-weight: 500;
+  }
+
+  .q-card-actions {
+    display: flex; align-items: center; gap: 0.75rem;
+    padding: 0.65rem 1.4rem;
+    border-top: 1px solid var(--border);
+    background: var(--cream);
+  }
+
+  .action-btn {
+    display: flex; align-items: center; gap: 0.35rem;
+    background: none; border: none; cursor: pointer;
+    font-size: 0.8rem; color: var(--text-muted);
+    font-family: 'DM Sans', sans-serif; padding: 0.25rem 0.5rem;
+    border-radius: 8px; transition: all 0.2s;
+  }
+  .action-btn:hover { background: var(--sky-light); color: var(--sky); }
+  .action-btn.liked { color: var(--red); }
+  .action-btn.liked:hover { background: var(--red-light); color: var(--red); }
+
+  /* DETAIL PANEL */
+  .detail-panel {
+    border-top: 1px solid var(--border);
+    padding: 1.25rem 1.4rem;
+    display: none;
+  }
+  .detail-panel.open { display: block; }
+
+  .sample-toggle {
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--gold-light); border: 1px solid rgba(201,146,42,0.2);
+    border-radius: var(--radius); padding: 0.75rem 1rem;
+    cursor: pointer; margin-bottom: 0.75rem; transition: all 0.2s;
+  }
+  .sample-toggle:hover { background: #fae8c0; }
+
+  .sample-toggle-left { display: flex; align-items: center; gap: 0.5rem; }
+  .sample-toggle-title { font-weight: 600; font-size: 0.85rem; color: var(--gold); }
+  .sample-meta { font-size: 0.75rem; color: var(--text-muted); }
+  .sample-arrow { font-size: 0.8rem; color: var(--gold); transition: transform 0.2s; }
+  .sample-arrow.open { transform: rotate(90deg); }
+
+  .sample-content {
+    display: none;
+    background: var(--cream); border-radius: var(--radius);
+    padding: 1rem 1.1rem; margin-bottom: 0.75rem;
+    font-size: 0.87rem; line-height: 1.75; color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .sample-content.open { display: block; }
+
+  .sample-stats {
+    display: flex; gap: 1rem; margin-bottom: 0.5rem;
+  }
+  .sample-stat {
+    font-size: 0.75rem; color: var(--text-muted);
+  }
+  .sample-stat strong { color: var(--text); }
+
+  /* COMMENTS */
+  .comments-section { margin-top: 0.75rem; }
+  .comments-title { font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.65rem; }
+
+  .comment-input-row { display: flex; gap: 0.5rem; margin-bottom: 0.75rem; }
+  .comment-input {
+    flex: 1; padding: 0.55rem 0.9rem;
+    border: 1.5px solid var(--border); border-radius: 12px;
+    font-size: 0.84rem; font-family: 'DM Sans', sans-serif;
+    color: var(--text); background: var(--cream); outline: none;
+    transition: border-color 0.2s;
+  }
+  .comment-input:focus { border-color: var(--sky); background: white; }
+
+  .btn-comment {
+    padding: 0.55rem 1rem; background: var(--navy); color: white;
+    border: none; border-radius: 12px; font-size: 0.82rem; font-weight: 600;
+    cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .btn-comment:hover { background: #111c36; }
+
+  .comment-item { padding: 0.6rem 0; border-bottom: 1px solid var(--border); }
+  .comment-item:last-child { border-bottom: none; }
+  .comment-meta { font-size: 0.72rem; color: var(--text-muted); margin-bottom: 0.15rem; }
+  .comment-meta strong { color: var(--text); }
+  .comment-text { font-size: 0.85rem; color: var(--text); }
+
+  .no-comments { font-size: 0.82rem; color: var(--text-muted); padding: 0.5rem 0; }
+
+  .sign-in-note {
+    font-size: 0.8rem; color: var(--text-muted);
+    background: var(--sky-light); border-radius: 8px;
+    padding: 0.5rem 0.75rem; margin-bottom: 0.5rem;
+  }
+  .sign-in-note a { color: var(--sky); cursor: pointer; font-weight: 500; }
+
+  /* EMPTY STATE */
+  .empty-state { text-align: center; padding: 3rem 1rem; color: var(--text-muted); }
+  .empty-state .empty-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+  .empty-state p { font-size: 0.9rem; }
+
+  /* FOOTER */
+  .contact-bar { background: var(--surface); border-top: 1px solid var(--border); padding: 0.75rem 2rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; margin-top: 1rem; }
+  .contact-links { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .contact-link { display: flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0.9rem; border-radius: 40px; font-size: 0.8rem; font-weight: 500; text-decoration: none; color: var(--text-muted); border: 1px solid var(--border); transition: all 0.2s; }
+  .contact-link:hover { background: var(--sky-light); color: var(--sky); border-color: rgba(46,111,173,0.25); }
+  .footer-copy { font-size: 0.75rem; color: var(--text-muted); }
+
+  /* MODALS */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(10,20,40,0.55); backdrop-filter: blur(6px); align-items: center; justify-content: center; z-index: 2000; padding: 1rem; }
+  .modal-overlay.active { display: flex; }
+  .modal { background: var(--surface); border-radius: 28px; width: 100%; max-width: 420px; padding: 2rem; animation: popIn 0.25s ease; box-shadow: 0 24px 48px rgba(0,0,0,0.18); border: 1px solid var(--border); }
+  @keyframes popIn { from{opacity:0;transform:scale(0.95) translateY(10px);} to{opacity:1;transform:scale(1) translateY(0);} }
+  .modal-header { text-align: center; margin-bottom: 1.5rem; }
+  .modal-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+  .modal-title { font-family: 'DM Serif Display', serif; font-size: 1.5rem; color: var(--text); }
+  .modal-sub { font-size: 0.82rem; color: var(--text-muted); margin-top: 0.25rem; }
+  .form-group { margin-bottom: 0.75rem; }
+  .form-label { display: block; font-size: 0.78rem; font-weight: 500; color: var(--text-muted); margin-bottom: 0.35rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  .form-input { width: 100%; padding: 0.7rem 1rem; border-radius: 12px; border: 1.5px solid var(--border); font-size: 0.92rem; font-family: 'DM Sans', sans-serif; color: var(--text); background: var(--cream); outline: none; transition: border-color 0.2s; }
+  .form-input:focus { border-color: var(--sky); background: white; }
+  .form-actions { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1.25rem; }
+  .btn-form { width: 100%; padding: 0.75rem; border-radius: 12px; border: none; font-size: 0.92rem; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
+  .btn-form-primary { background: var(--navy); color: white; }
+  .btn-form-primary:hover { background: #111c36; }
+  .btn-form-ghost { background: transparent; color: var(--text-muted); border: 1.5px solid var(--border); }
+  .btn-form-ghost:hover { background: var(--cream); color: var(--text); }
+  .form-msg { font-size: 0.8rem; text-align: center; padding: 0.5rem; border-radius: 8px; margin-top: 0.5rem; display: none; }
+  .form-msg.show { display: block; }
+  .form-msg.error { background: var(--red-light); color: var(--red); }
+  .form-msg.success { background: var(--green-light); color: var(--green); }
+  .modal-switch { text-align: center; font-size: 0.8rem; color: var(--text-muted); margin-top: 1rem; }
+  .modal-switch a { color: var(--sky); cursor: pointer; text-decoration: none; font-weight: 500; }
+
+  /* TOAST */
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--navy); color: white; padding: 0.7rem 1.5rem; border-radius: 40px; font-size: 0.85rem; font-weight: 500; z-index: 3000; opacity: 0; transition: all 0.3s; white-space: nowrap; pointer-events: none; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.success { background: var(--green); }
+  .toast.error { background: var(--red); }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="top-bar">
+    <a href="../index.html" class="logo">English<span class="logo-dot">Flow</span></a>
+    <div class="auth-zone" id="authZone">
+      <button class="btn-auth btn-signin" id="signinBtn">Sign in</button>
+      <button class="btn-auth btn-signup" id="signupBtn">Sign up free</button>
+    </div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-title">Task 2 — <em>Question Bank</em></div>
+    <div class="hero-subtitle">Academic Task 2: opinion, discussion and problem-solution essays from real IELTS exams</div>
+  </div>
+</div>
+
+<div class="quick-links">
+  <a href="../index.html" class="quick-link">← Home</a>
+  <a href="../ielts.html" class="quick-link">← IELTS Menu</a>
+  <a href="index.html" class="quick-link">← Writing</a>
+  <span class="quick-link active">Task 2</span>
+</div>
+
+<div class="main">
+
+  <!-- ADD QUESTION -->
+  <div class="add-card" id="addCard">
+    <div class="add-card-title">✏️ Add a Question</div>
+    <div id="addFormWrap">
+      <div class="sign-in-note" id="addSignInNote">
+        <a id="addSignInLink">Sign in</a> to add a question to the bank.
+      </div>
+      <div class="add-form" id="addForm" style="display:none;">
+        <div class="add-row">
+          <input type="text" class="form-input-sm" id="addTopic" placeholder="Topic (e.g. Bar Chart — Tourism)">
+          <input type="text" class="form-input-sm" id="addDate" placeholder="Exam date (e.g. April 2026)">
+        </div>
+        <textarea class="form-textarea" id="addQuestion" placeholder="Paste the full question text here…"></textarea>
+        <div class="add-row">
+          <textarea class="form-textarea" id="addSample" placeholder="Sample answer (optional)…" style="min-height:60px;"></textarea>
+        </div>
+        <div class="add-row">
+          <input type="number" class="form-input-sm" id="addBand" placeholder="Band score (e.g. 7.5)" step="0.5" min="1" max="9">
+          <input type="number" class="form-input-sm" id="addWords" placeholder="Word count">
+        </div>
+        <button class="btn-add" id="submitQuestion">Add Question →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOOLBAR -->
+  <div class="toolbar">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" class="search-input" id="searchInput" placeholder="Search questions…">
+    </div>
+    <select class="filter-select" id="topicFilter">
+      <option value="">All topics</option>
+    </select>
+    <button class="sort-btn active" id="sortNewest">Newest</button>
+    <button class="sort-btn" id="sortOldest">Oldest</button>
+  </div>
+
+  <!-- COUNT -->
+  <div class="count-row">
+    <span class="count-text"><strong id="countNum">0</strong> questions</span>
+  </div>
+
+  <!-- QUESTIONS LIST -->
+  <div id="questionsList">
+    <div class="empty-state"><div class="empty-icon">⏳</div><p>Loading questions…</p></div>
+  </div>
+
+</div>
+
+<div class="contact-bar">
+  <div class="contact-links">
+    <a href="https://t.me/SAYFULLAEV_ZUFAR" target="_blank" class="contact-link">📱 Telegram</a>
+    <a href="https://www.instagram.com/sayfullaev.zufar/" target="_blank" class="contact-link">📸 Instagram</a>
+  </div>
+  <div class="footer-copy">📖 English Flow — free IELTS preparation for every learner</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- SIGN IN MODAL -->
+<div class="modal-overlay" id="signinModal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-icon">🔐</div><div class="modal-title">Welcome back</div><div class="modal-sub">Sign in to like and comment</div></div>
+    <div class="form-group"><label class="form-label">Email</label><input type="email" id="siEmail" class="form-input" placeholder="you@example.com"></div>
+    <div class="form-group"><label class="form-label">Password</label><input type="password" id="siPass" class="form-input" placeholder="••••••••"></div>
+    <div class="form-actions">
+      <button class="btn-form btn-form-primary" id="doSignin">Sign in</button>
+      <button class="btn-form btn-form-ghost" id="closeSignin">Cancel</button>
+    </div>
+    <div class="form-msg" id="siMsg"></div>
+    <div class="modal-switch">No account? <a id="switchToSignup">Create one free →</a></div>
+  </div>
+</div>
+
+<!-- SIGN UP MODAL -->
+<div class="modal-overlay" id="signupModal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-icon">🎓</div><div class="modal-title">Join English Flow</div><div class="modal-sub">Free to join</div></div>
+    <div class="form-group"><label class="form-label">Full name</label><input type="text" id="suName" class="form-input" placeholder="Your name"></div>
+    <div class="form-group"><label class="form-label">Email</label><input type="email" id="suEmail" class="form-input" placeholder="you@example.com"></div>
+    <div class="form-group"><label class="form-label">Password</label><input type="password" id="suPass" class="form-input" placeholder="At least 6 characters"></div>
+    <div class="form-actions">
+      <button class="btn-form btn-form-primary" id="doSignup">Create account</button>
+      <button class="btn-form btn-form-ghost" id="closeSignup">Maybe later</button>
+    </div>
+    <div class="form-msg" id="suMsg"></div>
+    <div class="modal-switch">Already have an account? <a id="switchToSignin">Sign in →</a></div>
+  </div>
+</div>
+
+<script>
+(function() {
+  const SUPABASE_URL = 'https://evhceswvapszaghnvmxl.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGNlc3d2YXBzemFnaG52bXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3OTQwNzMsImV4cCI6MjA5MzM3MDA3M30.yV7tavgR7JKc45uSGtS8Lf6m1ZMuuvQ23hmAb8n6k3A';
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  const TASK_TYPE = 2;
+  let currentUser = null;
+  let allQuestions = [];
+  let userLikes = new Set();
+  let sortOrder = 'desc';
+  let searchVal = '';
+  let topicFilter = '';
+  let openDetailId = null;
+  let openSampleId = null;
+
+  function toast(msg, type='default') {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className = 'toast show' + (type !== 'default' ? ' ' + type : '');
+    setTimeout(() => { el.className = 'toast'; }, 3000);
+  }
+
+  function openModal(id) { document.getElementById(id).classList.add('active'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+  function showMsg(id, text, isErr) {
+    const el = document.getElementById(id);
+    el.textContent = text;
+    el.className = 'form-msg show ' + (isErr ? 'error' : 'success');
+    setTimeout(() => { el.className = 'form-msg'; }, 5000);
+  }
+
+  document.getElementById('signinBtn').onclick = () => openModal('signinModal');
+  document.getElementById('signupBtn').onclick = () => openModal('signupModal');
+  document.getElementById('closeSignin').onclick = () => closeModal('signinModal');
+  document.getElementById('closeSignup').onclick = () => closeModal('signupModal');
+  document.getElementById('switchToSignup').onclick = () => { closeModal('signinModal'); openModal('signupModal'); };
+  document.getElementById('switchToSignin').onclick = () => { closeModal('signupModal'); openModal('signinModal'); };
+  ['signinModal','signupModal'].forEach(id => {
+    document.getElementById(id).addEventListener('click', function(e) { if (e.target === this) closeModal(id); });
+  });
+
+  let signinBusy = false;
+  document.getElementById('doSignin').onclick = async () => {
+    if (signinBusy) return;
+    const email = document.getElementById('siEmail').value.trim();
+    const pass = document.getElementById('siPass').value;
+    if (!email || !pass) { showMsg('siMsg', 'Please fill in all fields.', true); return; }
+    signinBusy = true;
+    const btn = document.getElementById('doSignin');
+    btn.disabled = true; btn.textContent = 'Signing in…';
+    try {
+      const { error } = await sb.auth.signInWithPassword({ email, password: pass });
+      if (error) throw error;
+      showMsg('siMsg', '✓ Signed in!', false);
+      setTimeout(() => { closeModal('signinModal'); location.reload(); }, 800);
+    } catch(e) { showMsg('siMsg', e.message || 'Something went wrong.', true); }
+    finally { signinBusy = false; btn.disabled = false; btn.textContent = 'Sign in'; }
+  };
+
+  let signupBusy = false, signupCooldown = false;
+  document.getElementById('doSignup').onclick = async () => {
+    if (signupBusy || signupCooldown) { if (signupCooldown) showMsg('suMsg', 'Please wait 30 seconds.', true); return; }
+    const name = document.getElementById('suName').value.trim();
+    const email = document.getElementById('suEmail').value.trim();
+    const pass = document.getElementById('suPass').value;
+    if (!name || !email || !pass) { showMsg('suMsg', 'Please fill in all fields.', true); return; }
+    if (pass.length < 6) { showMsg('suMsg', 'Password must be at least 6 characters.', true); return; }
+    signupBusy = true; signupCooldown = true;
+    const btn = document.getElementById('doSignup');
+    btn.disabled = true; btn.textContent = 'Creating…';
+    setTimeout(() => { signupCooldown = false; }, 30000);
+    try {
+      const { error } = await sb.auth.signUp({ email, password: pass, options: { data: { name } } });
+      if (error) throw error;
+      showMsg('suMsg', '✓ Account created!', false);
+      setTimeout(() => { closeModal('signupModal'); location.reload(); }, 1000);
+    } catch(e) {
+      showMsg('suMsg', e.message || 'Could not create account.', true);
+      if (!e.message?.includes('Too many')) signupCooldown = false;
+    } finally { signupBusy = false; btn.disabled = false; btn.textContent = 'Create account'; }
+  };
+
+  async function checkSession() {
+    try {
+      const { data: { session } } = await sb.auth.getSession();
+      if (session?.user) {
+        currentUser = session.user;
+        const name = currentUser.user_metadata?.name || currentUser.email;
+        const short = name.split(' ')[0];
+        document.getElementById('authZone').innerHTML = `
+          <span class="user-pill">👋 ${short}</span>
+          <button class="btn-auth btn-signout" id="signoutBtn">Sign out</button>
+        `;
+        document.getElementById('signoutBtn').onclick = async () => { await sb.auth.signOut(); location.reload(); };
+        // Show add form
+        document.getElementById('addSignInNote').style.display = 'none';
+        document.getElementById('addForm').style.display = 'flex';
+        await loadUserLikes();
+      }
+    } catch(e) {}
+  }
+
+  async function loadUserLikes() {
+    if (!currentUser) return;
+    try {
+      const { data } = await sb.from('writing_likes').select('question_id').eq('user_id', currentUser.id);
+      userLikes = new Set((data || []).map(r => r.question_id));
+    } catch(e) {}
+  }
+
+  document.getElementById('addSignInLink').onclick = () => openModal('signinModal');
+
+  // ADD QUESTION
+  document.getElementById('submitQuestion').onclick = async () => {
+    if (!currentUser) { toast('Please sign in first.', 'error'); return; }
+    const topic = document.getElementById('addTopic').value.trim();
+    const date = document.getElementById('addDate').value.trim();
+    const question = document.getElementById('addQuestion').value.trim();
+    const sample = document.getElementById('addSample').value.trim();
+    const band = parseFloat(document.getElementById('addBand').value) || null;
+    const words = parseInt(document.getElementById('addWords').value) || null;
+
+    if (!topic || !question) { toast('Topic and question text are required.', 'error'); return; }
+
+    const btn = document.getElementById('submitQuestion');
+    btn.disabled = true; btn.textContent = 'Adding…';
+
+    try {
+      const { error } = await sb.from('writing_questions').insert([{
+        task_type: TASK_TYPE,
+        topic, exam_date: date,
+        question_text: question,
+        sample_answer: sample || null,
+        band_score: band,
+        word_count: words
+      }]);
+      if (error) throw error;
+      document.getElementById('addTopic').value = '';
+      document.getElementById('addDate').value = '';
+      document.getElementById('addQuestion').value = '';
+      document.getElementById('addSample').value = '';
+      document.getElementById('addBand').value = '';
+      document.getElementById('addWords').value = '';
+      toast('Question added! ✨', 'success');
+      await loadQuestions();
+    } catch(e) {
+      toast(e.message || 'Could not add question.', 'error');
+    } finally {
+      btn.disabled = false; btn.textContent = 'Add Question →';
+    }
+  };
+
+  // LOAD QUESTIONS
+  async function loadQuestions() {
+    try {
+      const { data } = await sb.from('writing_questions')
+        .select('*')
+        .eq('task_type', TASK_TYPE)
+        .order('created_at', { ascending: false });
+      allQuestions = data || [];
+      buildTopicFilter();
+      renderQuestions();
+    } catch(e) {
+      document.getElementById('questionsList').innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><p>Could not load questions.</p></div>';
+    }
+  }
+
+  function buildTopicFilter() {
+    const topics = [...new Set(allQuestions.map(q => q.topic))].sort();
+    const sel = document.getElementById('topicFilter');
+    sel.innerHTML = '<option value="">All topics</option>' + topics.map(t => `<option value="${t}">${t}</option>`).join('');
+  }
+
+  function getFiltered() {
+    let list = [...allQuestions];
+    if (topicFilter) list = list.filter(q => q.topic === topicFilter);
+    if (searchVal) {
+      const s = searchVal.toLowerCase();
+      list = list.filter(q => q.question_text.toLowerCase().includes(s) || q.topic.toLowerCase().includes(s));
+    }
+    if (sortOrder === 'asc') list.reverse();
+    return list;
+  }
+
+  function renderQuestions() {
+    const filtered = getFiltered();
+    document.getElementById('countNum').textContent = filtered.length;
+    const container = document.getElementById('questionsList');
+
+    if (filtered.length === 0) {
+      container.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><p>No questions found.</p></div>';
+      return;
+    }
+
+    container.innerHTML = filtered.map(q => {
+      const liked = userLikes.has(q.id);
+      const isOpen = openDetailId === q.id;
+      const isSampleOpen = openSampleId === q.id;
+      return `
+        <div class="q-card" id="card-${q.id}">
+          <div class="q-card-top" onclick="toggleDetail(${q.id})">
+            <div class="q-card-meta">
+              <span class="topic-badge">${q.topic}</span>
+              ${q.exam_date ? `<span class="date-badge">📅 ${q.exam_date}</span>` : ''}
+            </div>
+            <div class="q-card-text">${q.question_text}</div>
+          </div>
+          <div class="q-card-actions">
+            <button class="action-btn ${liked ? 'liked' : ''}" onclick="toggleLike(${q.id}, event)">
+              ${liked ? '❤️' : '🤍'} Like
+            </button>
+            <button class="action-btn" onclick="toggleDetail(${q.id})">
+              💬 Comment
+            </button>
+            <button class="action-btn" onclick="toggleDetail(${q.id})" style="margin-left:auto;">
+              ${isOpen ? '▲ Less' : '▼ More'}
+            </button>
+          </div>
+          <div class="detail-panel ${isOpen ? 'open' : ''}" id="detail-${q.id}">
+            ${q.sample_answer ? `
+              <div class="sample-toggle" onclick="toggleSample(${q.id})">
+                <div class="sample-toggle-left">
+                  <span class="sample-toggle-title">✍️ Sample Answer</span>
+                  ${q.band_score ? `<span class="sample-meta">Band ${q.band_score}</span>` : ''}
+                  ${q.word_count ? `<span class="sample-meta">· ${q.word_count} words</span>` : ''}
+                </div>
+                <span class="sample-arrow ${isSampleOpen ? 'open' : ''}">▶</span>
+              </div>
+              <div class="sample-content ${isSampleOpen ? 'open' : ''}" id="sample-${q.id}">
+                ${q.sample_answer.replace(/\n/g, '<br>')}
+              </div>
+            ` : ''}
+            <div class="comments-section">
+              <div class="comments-title">Comments</div>
+              ${!currentUser ? `<div class="sign-in-note"><a onclick="openModal('signinModal')">Sign in</a> to leave a comment.</div>` : `
+                <div class="comment-input-row">
+                  <input type="text" class="comment-input" id="cinput-${q.id}" placeholder="Write a comment…">
+                  <button class="btn-comment" onclick="submitComment(${q.id})">Send</button>
+                </div>
+              `}
+              <div id="comments-${q.id}"><div class="no-comments">Loading comments…</div></div>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // Load comments for open detail
+    if (openDetailId) loadComments(openDetailId);
+  }
+
+  window.toggleDetail = function(id) {
+    openDetailId = openDetailId === id ? null : id;
+    if (openDetailId !== id) openSampleId = null;
+    renderQuestions();
+    if (openDetailId === id) loadComments(id);
+  };
+
+  window.toggleSample = function(id) {
+    openSampleId = openSampleId === id ? null : id;
+    const el = document.getElementById(`sample-${id}`);
+    const arrow = el?.previousElementSibling?.querySelector('.sample-arrow');
+    if (el) el.classList.toggle('open', openSampleId === id);
+    if (arrow) arrow.classList.toggle('open', openSampleId === id);
+  };
+
+  window.toggleLike = async function(id, e) {
+    e.stopPropagation();
+    if (!currentUser) { openModal('signinModal'); return; }
+    const liked = userLikes.has(id);
+    try {
+      if (liked) {
+        await sb.from('writing_likes').delete().eq('question_id', id).eq('user_id', currentUser.id);
+        userLikes.delete(id);
+      } else {
+        await sb.from('writing_likes').insert([{ question_id: id, user_id: currentUser.id }]);
+        userLikes.add(id);
+      }
+      renderQuestions();
+    } catch(e) { toast('Could not update like.', 'error'); }
+  };
+
+  async function loadComments(questionId) {
+    const el = document.getElementById(`comments-${questionId}`);
+    if (!el) return;
+    try {
+      const { data } = await sb.from('writing_comments')
+        .select('*').eq('question_id', questionId)
+        .order('created_at', { ascending: true });
+      if (!data || data.length === 0) {
+        el.innerHTML = '<div class="no-comments">No comments yet. Be the first!</div>';
+        return;
+      }
+      el.innerHTML = data.map(c => `
+        <div class="comment-item">
+          <div class="comment-meta"><strong>${c.user_name}</strong> · ${new Date(c.created_at).toLocaleDateString()}</div>
+          <div class="comment-text">${c.comment_text}</div>
+        </div>
+      `).join('');
+    } catch(e) {}
+  }
+
+  window.submitComment = async function(questionId) {
+    if (!currentUser) { openModal('signinModal'); return; }
+    const input = document.getElementById(`cinput-${questionId}`);
+    const text = input?.value.trim();
+    if (!text) return;
+    const name = currentUser.user_metadata?.name || currentUser.email;
+    try {
+      const { error } = await sb.from('writing_comments').insert([{
+        question_id: questionId,
+        user_id: currentUser.id,
+        user_name: name.split(' ')[0],
+        comment_text: text
+      }]);
+      if (error) throw error;
+      input.value = '';
+      await loadComments(questionId);
+      toast('Comment posted!', 'success');
+    } catch(e) { toast('Could not post comment.', 'error'); }
+  };
+
+  // FILTERS & SEARCH
+  document.getElementById('searchInput').addEventListener('input', e => { searchVal = e.target.value; renderQuestions(); });
+  document.getElementById('topicFilter').addEventListener('change', e => { topicFilter = e.target.value; renderQuestions(); });
+
+  document.getElementById('sortNewest').onclick = function() {
+    sortOrder = 'desc';
+    this.classList.add('active');
+    document.getElementById('sortOldest').classList.remove('active');
+    renderQuestions();
+  };
+  document.getElementById('sortOldest').onclick = function() {
+    sortOrder = 'asc';
+    this.classList.add('active');
+    document.getElementById('sortNewest').classList.remove('active');
+    renderQuestions();
+  };
+
+  // INIT
+  window.openModal = openModal;
+  checkSession().then(loadQuestions);
+})();
+</script>
+</body>
+</html>
