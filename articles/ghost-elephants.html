@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hunting Elusive Elephants | English Flow</title>
+<link rel="icon" href="data:,">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--navy:#1a2744;--navy-mid:#243358;--sky:#2e6fad;--sky-light:#e8f2fc;--gold:#c9922a;--gold-light:#fdf3e3;--cream:#f9f7f4;--surface:#fff;--text:#1a2744;--text-muted:#5a6a8a;--border:rgba(26,39,68,0.1);--green:#1e6e4e;--green-light:#e8f5ee;--red:#b91c1c;--radius:16px;--radius-lg:24px;--article-font-size:1.05rem}
+body.dark-mode{--cream:#0e1422;--surface:#1a2438;--text:#f0f4fa;--text-muted:#95a3bf;--border:rgba(255,255,255,0.1);--navy:#0a1020;--gold-light:rgba(201,146,42,0.15);--green-light:rgba(30,110,78,0.18);--sky-light:rgba(46,111,173,0.18)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;line-height:1.6;transition:background-color .3s,color .3s}
+#auth-overlay{position:fixed;inset:0;z-index:9999;background:rgba(26,39,68,.88);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:1rem}
+.auth-card{background:#fff;border-radius:var(--radius-lg);padding:2.5rem;width:100%;max-width:420px;text-align:center;box-shadow:0 32px 64px rgba(0,0,0,.3)}
+.auth-card h2{font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--navy);margin-bottom:.4rem}
+.auth-card p{color:var(--text-muted);font-size:.9rem;margin-bottom:1.5rem}
+.auth-input{width:100%;padding:.75rem 1rem;border:1.5px solid rgba(26,39,68,.1);border-radius:50px;font-family:'DM Sans',sans-serif;font-size:.95rem;color:#1a2744;outline:none;margin-bottom:.75rem;transition:.2s}
+.auth-input:focus{border-color:var(--sky)}
+.auth-btn{width:100%;padding:.8rem;background:#1a2744;color:#fff;border:none;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:600;cursor:pointer;transition:.2s}
+.auth-btn:hover{background:#243358}
+.auth-btn:disabled{opacity:.6;cursor:default}
+.auth-msg{font-size:.85rem;margin-top:.75rem;padding:.5rem 1rem;border-radius:50px}
+.auth-msg.error{background:#fef2f2;color:var(--red)}
+.auth-msg.success{background:#e8f5ee;color:var(--green)}
+#top-bar{background:linear-gradient(135deg,var(--navy),var(--navy-mid));color:#fff;padding:.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;position:sticky;top:0;z-index:100}
+.logo{font-family:'DM Serif Display',serif;font-size:1.3rem;color:#fff}
+.logo .dot{color:var(--gold)}
+.font-controls{display:flex;align-items:center;gap:.4rem;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:50px;padding:.2rem .4rem}
+.font-btn{background:transparent;border:none;color:#fff;font-family:'DM Sans',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;padding:.25rem .55rem;border-radius:50px;transition:.15s;min-width:32px}
+.font-btn:hover{background:rgba(255,255,255,.15)}
+.font-btn:disabled{opacity:.35;cursor:default}
+.font-label{font-size:.7rem;color:rgba(255,255,255,.55);letter-spacing:.06em;text-transform:uppercase;padding:0 .25rem}
+.user-area{display:flex;align-items:center;gap:.5rem}
+.theme-toggle{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:#fff;border-radius:50%;width:36px;height:36px;font-size:1rem;cursor:pointer;transition:.2s}
+.theme-toggle:hover{background:rgba(255,255,255,.2)}
+.user-pill{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:50px;padding:.35rem .85rem;font-size:.85rem;color:#fff;font-weight:500}
+.signout-btn{background:transparent;color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.3);border-radius:50px;padding:.35rem .85rem;font-family:'DM Sans',sans-serif;font-size:.8rem;cursor:pointer;transition:.2s}
+.signout-btn:hover{background:rgba(255,255,255,.1);color:#fff}
+#breadcrumb{background:var(--surface);border-bottom:1px solid var(--border);padding:.6rem 1.5rem;display:flex;align-items:center;gap:.75rem;font-size:.85rem;flex-wrap:wrap}
+#breadcrumb a{color:var(--sky);text-decoration:none;font-weight:500;transition:.15s}
+#breadcrumb a:hover{color:var(--navy)}
+.crumb-sep{color:var(--text-muted)}
+.crumb-active{background:var(--navy);color:#fff;border-radius:50px;padding:.2rem .75rem;font-size:.78rem;font-weight:600;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.article-wrap{max-width:720px;margin:0 auto;padding:3rem 1.5rem 2rem}
+.cat-tag{display:inline-block;background:var(--gold-light);color:var(--gold);padding:.3rem .85rem;border-radius:50px;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:1.25rem}
+.article-title{font-family:'DM Serif Display',serif;font-size:clamp(1.8rem,4vw,2.5rem);color:var(--text);line-height:1.2;letter-spacing:-.02em;margin-bottom:1rem}
+.article-deck{font-family:'DM Serif Display',serif;font-style:italic;font-size:1.15rem;color:var(--text-muted);line-height:1.5;margin-bottom:1.5rem}
+.article-meta{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;font-size:.85rem;color:var(--text-muted);padding-bottom:1.5rem;border-bottom:1px solid var(--border);margin-bottom:2rem}
+.meta-dot{opacity:.4}
+#article-body{font-size:var(--article-font-size);line-height:1.85;color:var(--text);transition:font-size .2s}
+#article-body p{margin-bottom:1.4rem}
+.pull-quote{font-family:'DM Serif Display',serif;font-style:italic;font-size:1.3rem;color:var(--gold);border-left:3px solid var(--gold);padding:.5rem 1rem .5rem 1.5rem;margin:1.5rem 0 1.5rem 1.5rem;line-height:1.45}
+.vocab{position:relative;border-bottom:2px dotted var(--gold);cursor:help;color:var(--gold);font-weight:600;transition:.15s}
+.vocab:hover{background:var(--gold-light)}
+.vocab .tip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%) translateY(4px);background:var(--gold);color:#fff;padding:.65rem .9rem;border-radius:10px;font-size:.85rem;font-weight:400;font-family:'DM Sans',sans-serif;line-height:1.45;width:max-content;max-width:280px;white-space:normal;text-align:left;box-shadow:0 8px 24px rgba(0,0,0,.18);opacity:0;visibility:hidden;transition:opacity .18s,transform .18s;pointer-events:none;z-index:50}
+.vocab .tip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:var(--gold)}
+.vocab:hover .tip,.vocab.tap-active .tip{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
+.quiz-section{max-width:720px;margin:3rem auto 2rem;padding:0 1.5rem}
+.quiz-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:2rem;box-shadow:0 4px 16px rgba(26,39,68,.04)}
+.quiz-title{font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--text);margin-bottom:.4rem}
+.quiz-sub{color:var(--text-muted);font-size:.9rem;margin-bottom:1.5rem}
+.quiz-progress-track{height:5px;background:var(--border);border-radius:3px;overflow:hidden;margin-bottom:2rem}
+.quiz-progress-fill{height:100%;background:linear-gradient(90deg,var(--sky),var(--navy));width:0%;transition:width .4s}
+.quiz-q{margin-bottom:1.75rem;padding-bottom:1.75rem;border-bottom:1px dashed var(--border)}
+.quiz-q:last-of-type{border-bottom:none;padding-bottom:0;margin-bottom:0}
+.quiz-q-num{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.4rem}
+.quiz-word{font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--gold);margin-bottom:1rem}
+.quiz-options{display:flex;flex-direction:column;gap:.5rem}
+.quiz-opt{background:var(--cream);border:1.5px solid var(--border);border-radius:12px;padding:.75rem 1rem;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.92rem;text-align:left;color:var(--text);transition:.15s}
+.quiz-opt:hover:not(:disabled){border-color:var(--sky);background:var(--sky-light)}
+.quiz-opt:disabled{cursor:default}
+.quiz-opt.correct{background:var(--green-light);border-color:var(--green);color:var(--green);font-weight:600}
+.quiz-opt.wrong{background:#fef2f2;border-color:var(--red);color:var(--red);font-weight:600}
+body.dark-mode .quiz-opt.wrong{background:rgba(185,28,28,.18)}
+.quiz-feedback{margin-top:.75rem;font-size:.85rem;padding:.6rem .85rem;border-radius:10px;display:none;line-height:1.5}
+.quiz-feedback.show{display:block}
+.quiz-feedback.ok{background:var(--green-light);color:var(--green)}
+.quiz-feedback.bad{background:rgba(185,28,28,.1);color:var(--red)}
+.quiz-result{display:none;text-align:center;padding:1.5rem;margin-top:1.5rem;background:var(--gold-light);border:1.5px solid var(--gold);border-radius:var(--radius)}
+.quiz-result.show{display:block}
+.quiz-result-score{font-family:'DM Serif Display',serif;font-size:2.5rem;color:var(--gold);line-height:1}
+.quiz-result-label{font-size:.9rem;color:var(--text-muted);margin:.4rem 0 1rem}
+.mark-read-btn{background:var(--navy);color:#fff;border:none;border-radius:50px;padding:.75rem 2rem;font-family:'DM Sans',sans-serif;font-size:.95rem;font-weight:600;cursor:pointer;transition:.2s}
+.mark-read-btn:hover{background:var(--navy-mid);transform:translateY(-1px);box-shadow:0 4px 16px rgba(26,39,68,.25)}
+.mark-read-btn:disabled{background:var(--green);cursor:default;transform:none}
+.article-footer{max-width:720px;margin:2rem auto;padding:1.5rem;text-align:center;font-size:.8rem;color:var(--text-muted);border-top:1px solid var(--border)}
+.article-footer a{color:var(--sky);text-decoration:none}
+@media(max-width:600px){.article-wrap{padding:2rem 1rem 1.5rem}.article-title{font-size:1.6rem}.quiz-card{padding:1.5rem}.font-controls{display:none}#top-bar{padding:.6rem 1rem}.pull-quote{margin-left:.5rem;font-size:1.1rem}}
+</style>
+</head>
+<body>
+<div id="auth-overlay"><div class="auth-card"><div style="font-size:2.5rem;margin-bottom:.5rem">📰</div><h2>Sign in to read</h2><p>You need an English Flow account to access articles.</p><input type="email" id="auth-email" class="auth-input" placeholder="Email address" onkeydown="if(event.key==='Enter')doSignIn()"><input type="password" id="auth-pass" class="auth-input" placeholder="Password" onkeydown="if(event.key==='Enter')doSignIn()"><button class="auth-btn" id="auth-btn" onclick="doSignIn()">Sign In</button><div id="auth-msg" class="auth-msg" style="display:none"></div><p style="margin-top:1rem;font-size:.8rem;color:#5a6a8a">No account? <a href="../ielts.html" style="color:#2e6fad">Sign up on the IELTS page</a></p></div></div>
+<div id="top-bar"><div class="logo">English <span class="dot">Flow</span></div><div class="font-controls"><button class="font-btn" id="font-down" onclick="changeFont(-1)">A−</button><span class="font-label">Aa</span><button class="font-btn" id="font-up" onclick="changeFont(1)">A+</button></div><div class="user-area"><button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()">🌙</button><div class="user-pill" id="user-pill">Student</div><button class="signout-btn" onclick="doSignOut()">Sign out</button></div></div>
+<div id="breadcrumb"><a href="../index.html">← Home</a><span class="crumb-sep">/</span><a href="index.html">← Articles</a><span class="crumb-sep">/</span><span class="crumb-active">Ghost Elephants</span></div>
+<div class="article-wrap">
+<span class="cat-tag">Culture</span>
+<h1 class="article-title">Hunting elusive elephants</h1>
+<p class="article-deck">A film about the quest for 'ghost elephants' is as much about not knowing and asking the right questions as about exploration.</p>
+<div class="article-meta"><span>✍ Davide Abbatescianni</span><span class="meta-dot">·</span><span>📅 April 2026</span><span class="meta-dot">·</span><span>⏱ 5 min read</span><span class="meta-dot">·</span><span>📊 C1 Hard</span></div>
+<div id="article-body">
+<p>Film director Werner Herzog has always been <span class="vocab" data-def="attracted to">drawn to<span class="tip">attracted to</span></span> the limits of human knowledge — to the places where science meets <span class="vocab" data-def="an old story, often about gods or heroes">myth<span class="tip">an old story, often about gods or heroes</span></span>, where discovery <span class="vocab" data-def="gradually changes into">shades into<span class="tip">gradually changes into</span></span> <span class="vocab" data-def="a fixed idea that takes over your mind">obsession<span class="tip">a fixed idea that takes over your mind</span></span>.</p>
+<p>In <em>Ghost Elephants</em>, which <span class="vocab" data-def="was shown publicly for the first time">premiered<span class="tip">was shown publicly for the first time</span></span> at last year's Venice Film Festival, he follows <span class="vocab" data-def="someone who works to protect nature">conservationist<span class="tip">someone who works to protect nature</span></span> Steve Boyes in Angola as he searches for a <span class="vocab" data-def="a group of animals of the same kind">herd<span class="tip">a group of animals of the same kind</span></span> of elephants that may or may not exist. It is both a scientific <span class="vocab" data-def="an organised journey for a particular purpose">expedition<span class="tip">an organised journey for a particular purpose</span></span> and a <span class="vocab" data-def="concerned with the meaning of life and ideas">philosophical<span class="tip">concerned with the meaning of life and ideas</span></span> <span class="vocab" data-def="a short story with a moral lesson">fable<span class="tip">a short story with a moral lesson</span></span> that asks what it means to chase a dream that could easily remain just that.</p>
+<p>The <span class="vocab" data-def="the main idea on which something is based">premise<span class="tip">the main idea on which something is based</span></span> is <span class="vocab" data-def="in a way that catches your attention">strikingly<span class="tip">in a way that catches your attention</span></span> simple. Boyes believes that there has been a <span class="vocab" data-def="an instance of seeing something rare">sighting<span class="tip">an instance of seeing something rare</span></span> of a group of unusually large elephants, possibly related to the legendary Fénykövi <span class="vocab" data-def="an example used for study or display">specimen<span class="tip">an example used for study or display</span></span> preserved at the Smithsonian National Museum of Natural History in Washington DC. The elephants may be roaming the remote Bié plateau, a <span class="vocab" data-def="with very few people living there">sparsely inhabited<span class="tip">with very few people living there</span></span>, wooded region roughly the size of England.</p>
+<p>For a decade, Boyes has <span class="vocab" data-def="cared for and supported the growth of">nurtured<span class="tip">cared for and supported the growth of</span></span> this hypothesis, piecing together <span class="vocab" data-def="based on personal stories rather than facts">anecdotal<span class="tip">based on personal stories rather than facts</span></span> evidence from San master <span class="vocab" data-def="people skilled at following animals through wilderness">trackers<span class="tip">people skilled at following animals through wilderness</span></span>, whose ability to read traces in the land remains one of the most sophisticated of any surviving <span class="vocab" data-def="a culture that hunts animals and collects wild plants">hunter-gatherer<span class="tip">a culture that hunts animals and collects wild plants</span></span> cultures.</p>
+<p>Herzog, however, is never content to tell a straightforward natural history story. His gravelly narration, in a style that is part-professor, part-sceptic and part-humourist, frames Boyes's project in broader terms. What begins as a quest for DNA samples becomes a reflection on how science and imagination <span class="vocab" data-def="twist or weave together">intertwine<span class="tip">twist or weave together</span></span>.</p>
+<p>The film stops short of offering hard data — this isn't a peer-reviewed publication after all — but it does capture the methodology of field science in real time: hypothesis, observation, inference and the cautious drawing of conclusions. The ultimate discovery rests less on spectacle than on the slow accumulation of evidence, a rhythm the film embraces with its measured pacing.</p>
+<p>Herzog also uses the camera to widen the frame of inquiry. The cinematography recalls the polished textures of <em>National Geographic</em> documentaries, yet always bears Herzog's signature curiosity. <span class="vocab" data-def="wide and impressive">Sweeping<span class="tip">wide and impressive</span></span> <span class="vocab" data-def="from the air; from above">aerial<span class="tip">from the air; from above</span></span> shots of the plateau convey the <span class="vocab" data-def="extremely large size">immensity<span class="tip">extremely large size</span></span> of the landscape, while close studies of trackers' hands reading footprints on the ground reveal a parallel science rooted in embodied knowledge.</p>
+<p>The San people, among the oldest continuous cultures on Earth, carry genetic <span class="vocab" data-def="lines of descent from ancestors">lineages<span class="tip">lines of descent from ancestors</span></span> that <span class="vocab" data-def="moved away from; became different from">diverged from<span class="tip">moved away from; became different from</span></span> other humans up to 200,000 years ago. Their expertise in tracking isn't treated as folklore, but as a form of empirical knowledge <span class="vocab" data-def="improved over a long time">honed<span class="tip">improved over a long time</span></span> over millennia — science before labs.</p>
+<p>Inevitably, the search for elephants becomes a <span class="vocab" data-def="a way of looking at something from a particular angle">prism<span class="tip">a way of looking at something from a particular angle</span></span> for larger themes. Climate change, colonialism and the <span class="vocab" data-def="lasting effects after a major event">aftershocks<span class="tip">lasting effects after a major event</span></span> of industrial <span class="vocab" data-def="using something or someone for your own benefit unfairly">exploitation<span class="tip">using something or someone for your own benefit unfairly</span></span> surface in Herzog's commentary, which is never heavy-handed but is persistent. The Angolan flatlands, once <span class="vocab" data-def="left with marks or damage from an event">scarred<span class="tip">left with marks or damage from an event</span></span> by war, are now a site where conservation, Indigenous sovereignty and ecological responsibility intersect.</p>
+<p>Boyes's quest underscores the paradox of conservation science: to study is to <span class="vocab" data-def="get involved to change a situation">intervene<span class="tip">get involved to change a situation</span></span>, and the very act of seeking to preserve can alter what is found.</p>
+<p>In Herzog's hands, the ghost elephants remain both possibility and metaphor — fascinating creatures that embody a <span class="vocab" data-def="a strong feeling of wanting something">longing<span class="tip">a strong feeling of wanting something</span></span> for mysteries that science has yet to tame. The message is clear: exploration is never only about what we find, but also about the humility of not knowing, and the persistence of asking questions at the edge of knowledge.</p>
+</div>
+</div>
+<div class="quiz-section"><div class="quiz-card"><h2 class="quiz-title">📝 Vocabulary Check</h2><p class="quiz-sub">Match each word to its meaning</p><div class="quiz-progress-track"><div class="quiz-progress-fill" id="quiz-progress"></div></div><div id="quiz-list"></div><div class="quiz-result" id="quiz-result"><div class="quiz-result-score" id="result-score">0 / 0</div><div class="quiz-result-label">words correct</div><button class="mark-read-btn" id="mark-read-btn" onclick="markAsRead()">✓ Mark as Read</button></div></div></div>
+<div class="article-footer">Originally published in <a href="https://www.newscientist.com" target="_blank">New Scientist</a>, 18 April 2026 · Adapted for English Flow</div>
+<script>
+const ARTICLE_ID = 'ghost-elephants';
+const SUPABASE_URL = 'https://evhceswvapszaghnvmxl.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGNlc3d2YXBzemFnaG52bXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3OTQwNzMsImV4cCI6MjA5MzM3MDA3M30.yV7tavgR7JKc45uSGtS8Lf6m1ZMuuvQ23hmAb8n6k3A';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const VOCAB = [
+  {
+    "word": "elusive",
+    "def": "difficult to find or catch"
+  },
+  {
+    "word": "quest",
+    "def": "a long search for something"
+  },
+  {
+    "word": "drawn to",
+    "def": "attracted to"
+  },
+  {
+    "word": "myth",
+    "def": "an old story, often about gods or heroes"
+  },
+  {
+    "word": "shades into",
+    "def": "gradually changes into"
+  },
+  {
+    "word": "obsession",
+    "def": "a fixed idea that takes over your mind"
+  },
+  {
+    "word": "premiered",
+    "def": "was shown publicly for the first time"
+  },
+  {
+    "word": "conservationist",
+    "def": "someone who works to protect nature"
+  },
+  {
+    "word": "herd",
+    "def": "a group of animals of the same kind"
+  },
+  {
+    "word": "expedition",
+    "def": "an organised journey for a particular purpose"
+  },
+  {
+    "word": "philosophical",
+    "def": "concerned with the meaning of life and ideas"
+  },
+  {
+    "word": "fable",
+    "def": "a short story with a moral lesson"
+  },
+  {
+    "word": "premise",
+    "def": "the main idea on which something is based"
+  },
+  {
+    "word": "strikingly",
+    "def": "in a way that catches your attention"
+  },
+  {
+    "word": "sighting",
+    "def": "an instance of seeing something rare"
+  },
+  {
+    "word": "specimen",
+    "def": "an example used for study or display"
+  },
+  {
+    "word": "sparsely inhabited",
+    "def": "with very few people living there"
+  },
+  {
+    "word": "nurtured",
+    "def": "cared for and supported the growth of"
+  },
+  {
+    "word": "anecdotal",
+    "def": "based on personal stories rather than facts"
+  },
+  {
+    "word": "trackers",
+    "def": "people skilled at following animals through wilderness"
+  },
+  {
+    "word": "hunter-gatherer",
+    "def": "a culture that hunts animals and collects wild plants"
+  },
+  {
+    "word": "intertwine",
+    "def": "twist or weave together"
+  },
+  {
+    "word": "sweeping",
+    "def": "wide and impressive"
+  },
+  {
+    "word": "aerial",
+    "def": "from the air; from above"
+  },
+  {
+    "word": "immensity",
+    "def": "extremely large size"
+  },
+  {
+    "word": "lineages",
+    "def": "lines of descent from ancestors"
+  },
+  {
+    "word": "diverged from",
+    "def": "moved away from; became different from"
+  },
+  {
+    "word": "honed",
+    "def": "improved over a long time"
+  },
+  {
+    "word": "prism",
+    "def": "a way of looking at something from a particular angle"
+  },
+  {
+    "word": "aftershocks",
+    "def": "lasting effects after a major event"
+  },
+  {
+    "word": "exploitation",
+    "def": "using something or someone for your own benefit unfairly"
+  },
+  {
+    "word": "scarred",
+    "def": "left with marks or damage from an event"
+  },
+  {
+    "word": "intervene",
+    "def": "get involved to change a situation"
+  },
+  {
+    "word": "longing",
+    "def": "a strong feeling of wanting something"
+  }
+];
+let currentUser=null,quizScore=0,quizAnswered=0,quizWords=[];
+async function initAuth(){const{data:{session}}=await sb.auth.getSession();if(session){currentUser=session.user;showApp()}}
+async function doSignIn(){const email=document.getElementById('auth-email').value.trim(),pass=document.getElementById('auth-pass').value,btn=document.getElementById('auth-btn');if(!email||!pass){showAuthMsg('Enter email and password.',true);return}btn.disabled=true;btn.textContent='Signing in…';const{data,error}=await sb.auth.signInWithPassword({email,password:pass});btn.disabled=false;btn.textContent='Sign In';if(error){showAuthMsg(error.message,true);return}currentUser=data.user;showApp()}
+function showAuthMsg(text,isErr){const el=document.getElementById('auth-msg');el.textContent=text;el.className='auth-msg '+(isErr?'error':'success');el.style.display='block'}
+function showApp(){document.getElementById('auth-overlay').style.display='none';const name=currentUser.user_metadata?.name||currentUser.email.split('@')[0];document.getElementById('user-pill').textContent='👋 '+name.split(' ')[0];buildQuiz()}
+async function doSignOut(){await sb.auth.signOut();location.reload()}
+const FONT_SIZES=[.85,.95,1.05,1.15,1.25,1.4];let fontIdx=2;
+function loadFontPref(){const saved=parseInt(localStorage.getItem('ef_font_idx'));if(!isNaN(saved)&&saved>=0&&saved<FONT_SIZES.length)fontIdx=saved;applyFont()}
+function changeFont(delta){fontIdx=Math.max(0,Math.min(FONT_SIZES.length-1,fontIdx+delta));localStorage.setItem('ef_font_idx',fontIdx);applyFont()}
+function applyFont(){document.documentElement.style.setProperty('--article-font-size',FONT_SIZES[fontIdx]+'rem');document.getElementById('font-down').disabled=(fontIdx===0);document.getElementById('font-up').disabled=(fontIdx===FONT_SIZES.length-1)}
+function loadThemePref(){if(localStorage.getItem('ef_dark')==='1'){document.body.classList.add('dark-mode');document.getElementById('theme-toggle').textContent='☀'}}
+function toggleTheme(){const dark=document.body.classList.toggle('dark-mode');localStorage.setItem('ef_dark',dark?'1':'0');document.getElementById('theme-toggle').textContent=dark?'☀':'🌙'}
+document.addEventListener('click',(e)=>{const v=e.target.closest('.vocab');if(v){document.querySelectorAll('.vocab.tap-active').forEach(o=>{if(o!==v)o.classList.remove('tap-active')});v.classList.toggle('tap-active');e.stopPropagation()}else{document.querySelectorAll('.vocab.tap-active').forEach(o=>o.classList.remove('tap-active'))}});
+function shuffle(arr){return arr.map(v=>[Math.random(),v]).sort((a,b)=>a[0]-b[0]).map(p=>p[1])}
+function buildQuiz(){quizWords=shuffle(VOCAB.slice()).slice(0,Math.min(12,VOCAB.length));const list=document.getElementById('quiz-list');list.innerHTML='';const allDefs=VOCAB.map(v=>v.def);quizWords.forEach((item,i)=>{const others=allDefs.filter(d=>d!==item.def);const distractors=shuffle(others).slice(0,3);const options=shuffle([item.def,...distractors]);const card=document.createElement('div');card.className='quiz-q';card.id='q-'+i;card.innerHTML=`<div class="quiz-q-num">Word ${i+1} of ${quizWords.length}</div><div class="quiz-word">${item.word}</div><div class="quiz-options">${options.map(opt=>`<button class="quiz-opt" data-q="${i}" data-correct="${item.def===opt?'1':'0'}">${opt}</button>`).join('')}</div><div class="quiz-feedback" id="fb-${i}"></div>`;list.appendChild(card)});document.querySelectorAll('.quiz-opt').forEach(btn=>btn.addEventListener('click',handleAnswer))}
+function handleAnswer(e){const btn=e.currentTarget,qIdx=parseInt(btn.dataset.q),isCorrect=btn.dataset.correct==='1',card=document.getElementById('q-'+qIdx);card.querySelectorAll('.quiz-opt').forEach(o=>{o.disabled=true;if(o.dataset.correct==='1')o.classList.add('correct')});if(!isCorrect)btn.classList.add('wrong');const fb=document.getElementById('fb-'+qIdx);if(isCorrect){fb.className='quiz-feedback show ok';fb.textContent='✓ Correct!';quizScore++}else{fb.className='quiz-feedback show bad';fb.textContent='✗ Not quite. The correct definition is highlighted.'}quizAnswered++;document.getElementById('quiz-progress').style.width=(quizAnswered/quizWords.length*100)+'%';if(quizAnswered===quizWords.length)setTimeout(showQuizResult,400)}
+function showQuizResult(){const r=document.getElementById('quiz-result');document.getElementById('result-score').textContent=quizScore+' / '+quizWords.length;r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'center'})}
+async function markAsRead(){const btn=document.getElementById('mark-read-btn');btn.disabled=true;btn.textContent='Saving…';try{await sb.from('article_reads').upsert({user_id:currentUser.id,article_id:ARTICLE_ID,completed_at:new Date().toISOString()},{onConflict:'user_id,article_id'});btn.textContent='✓ Marked as Read'}catch(e){btn.disabled=false;btn.textContent='Try again';console.warn('Save failed:',e)}}
+loadFontPref();loadThemePref();initAuth();
+</script>
+</body>
+</html>
