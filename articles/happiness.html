@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happiness | English Flow</title>
+<link rel="icon" href="data:,">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--navy:#1a2744;--navy-mid:#243358;--sky:#2e6fad;--sky-light:#e8f2fc;--gold:#c9922a;--gold-light:#fdf3e3;--cream:#f9f7f4;--surface:#fff;--text:#1a2744;--text-muted:#5a6a8a;--border:rgba(26,39,68,0.1);--green:#1e6e4e;--green-light:#e8f5ee;--red:#b91c1c;--radius:16px;--radius-lg:24px;--article-font-size:1.05rem}
+body.dark-mode{--cream:#0e1422;--surface:#1a2438;--text:#f0f4fa;--text-muted:#95a3bf;--border:rgba(255,255,255,0.1);--navy:#0a1020;--gold-light:rgba(201,146,42,0.15);--green-light:rgba(30,110,78,0.18);--sky-light:rgba(46,111,173,0.18)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;line-height:1.6;transition:background-color .3s,color .3s}
+#auth-overlay{position:fixed;inset:0;z-index:9999;background:rgba(26,39,68,.88);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:1rem}
+.auth-card{background:#fff;border-radius:var(--radius-lg);padding:2.5rem;width:100%;max-width:420px;text-align:center;box-shadow:0 32px 64px rgba(0,0,0,.3)}
+.auth-card h2{font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--navy);margin-bottom:.4rem}
+.auth-card p{color:var(--text-muted);font-size:.9rem;margin-bottom:1.5rem}
+.auth-input{width:100%;padding:.75rem 1rem;border:1.5px solid rgba(26,39,68,.1);border-radius:50px;font-family:'DM Sans',sans-serif;font-size:.95rem;color:#1a2744;outline:none;margin-bottom:.75rem;transition:.2s}
+.auth-input:focus{border-color:var(--sky)}
+.auth-btn{width:100%;padding:.8rem;background:#1a2744;color:#fff;border:none;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:600;cursor:pointer;transition:.2s}
+.auth-btn:hover{background:#243358}
+.auth-btn:disabled{opacity:.6;cursor:default}
+.auth-msg{font-size:.85rem;margin-top:.75rem;padding:.5rem 1rem;border-radius:50px}
+.auth-msg.error{background:#fef2f2;color:var(--red)}
+.auth-msg.success{background:#e8f5ee;color:var(--green)}
+#top-bar{background:linear-gradient(135deg,var(--navy),var(--navy-mid));color:#fff;padding:.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;position:sticky;top:0;z-index:100}
+.logo{font-family:'DM Serif Display',serif;font-size:1.3rem;color:#fff}
+.logo .dot{color:var(--gold)}
+.font-controls{display:flex;align-items:center;gap:.4rem;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:50px;padding:.2rem .4rem}
+.font-btn{background:transparent;border:none;color:#fff;font-family:'DM Sans',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;padding:.25rem .55rem;border-radius:50px;transition:.15s;min-width:32px}
+.font-btn:hover{background:rgba(255,255,255,.15)}
+.font-btn:disabled{opacity:.35;cursor:default}
+.font-label{font-size:.7rem;color:rgba(255,255,255,.55);letter-spacing:.06em;text-transform:uppercase;padding:0 .25rem}
+.user-area{display:flex;align-items:center;gap:.5rem}
+.theme-toggle{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:#fff;border-radius:50%;width:36px;height:36px;font-size:1rem;cursor:pointer;transition:.2s}
+.theme-toggle:hover{background:rgba(255,255,255,.2)}
+.user-pill{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:50px;padding:.35rem .85rem;font-size:.85rem;color:#fff;font-weight:500}
+.signout-btn{background:transparent;color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.3);border-radius:50px;padding:.35rem .85rem;font-family:'DM Sans',sans-serif;font-size:.8rem;cursor:pointer;transition:.2s}
+.signout-btn:hover{background:rgba(255,255,255,.1);color:#fff}
+#breadcrumb{background:var(--surface);border-bottom:1px solid var(--border);padding:.6rem 1.5rem;display:flex;align-items:center;gap:.75rem;font-size:.85rem;flex-wrap:wrap}
+#breadcrumb a{color:var(--sky);text-decoration:none;font-weight:500;transition:.15s}
+#breadcrumb a:hover{color:var(--navy)}
+.crumb-sep{color:var(--text-muted)}
+.crumb-active{background:var(--navy);color:#fff;border-radius:50px;padding:.2rem .75rem;font-size:.78rem;font-weight:600;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.article-wrap{max-width:720px;margin:0 auto;padding:3rem 1.5rem 2rem}
+.cat-tag{display:inline-block;background:var(--sky-light);color:var(--sky);padding:.3rem .85rem;border-radius:50px;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:1.25rem}
+.article-title{font-family:'DM Serif Display',serif;font-size:clamp(1.8rem,4vw,2.5rem);color:var(--text);line-height:1.2;letter-spacing:-.02em;margin-bottom:1rem}
+.article-deck{font-family:'DM Serif Display',serif;font-style:italic;font-size:1.15rem;color:var(--text-muted);line-height:1.5;margin-bottom:1.5rem}
+.article-meta{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;font-size:.85rem;color:var(--text-muted);padding-bottom:1.5rem;border-bottom:1px solid var(--border);margin-bottom:2rem}
+.meta-dot{opacity:.4}
+#article-body{font-size:var(--article-font-size);line-height:1.85;color:var(--text);transition:font-size .2s}
+#article-body p{margin-bottom:1.4rem}
+.pull-quote{font-family:'DM Serif Display',serif;font-style:italic;font-size:1.3rem;color:var(--gold);border-left:3px solid var(--gold);padding:.5rem 1rem .5rem 1.5rem;margin:1.5rem 0 1.5rem 1.5rem;line-height:1.45}
+.vocab{position:relative;border-bottom:2px dotted var(--gold);cursor:help;color:var(--gold);font-weight:600;transition:.15s}
+.vocab:hover{background:var(--gold-light)}
+.vocab .tip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%) translateY(4px);background:var(--gold);color:#fff;padding:.65rem .9rem;border-radius:10px;font-size:.85rem;font-weight:400;font-family:'DM Sans',sans-serif;line-height:1.45;width:max-content;max-width:280px;white-space:normal;text-align:left;box-shadow:0 8px 24px rgba(0,0,0,.18);opacity:0;visibility:hidden;transition:opacity .18s,transform .18s;pointer-events:none;z-index:50}
+.vocab .tip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:var(--gold)}
+.vocab:hover .tip,.vocab.tap-active .tip{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
+.quiz-section{max-width:720px;margin:3rem auto 2rem;padding:0 1.5rem}
+.quiz-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:2rem;box-shadow:0 4px 16px rgba(26,39,68,.04)}
+.quiz-title{font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--text);margin-bottom:.4rem}
+.quiz-sub{color:var(--text-muted);font-size:.9rem;margin-bottom:1.5rem}
+.quiz-progress-track{height:5px;background:var(--border);border-radius:3px;overflow:hidden;margin-bottom:2rem}
+.quiz-progress-fill{height:100%;background:linear-gradient(90deg,var(--sky),var(--navy));width:0%;transition:width .4s}
+.quiz-q{margin-bottom:1.75rem;padding-bottom:1.75rem;border-bottom:1px dashed var(--border)}
+.quiz-q:last-of-type{border-bottom:none;padding-bottom:0;margin-bottom:0}
+.quiz-q-num{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.4rem}
+.quiz-word{font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--gold);margin-bottom:1rem}
+.quiz-options{display:flex;flex-direction:column;gap:.5rem}
+.quiz-opt{background:var(--cream);border:1.5px solid var(--border);border-radius:12px;padding:.75rem 1rem;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.92rem;text-align:left;color:var(--text);transition:.15s}
+.quiz-opt:hover:not(:disabled){border-color:var(--sky);background:var(--sky-light)}
+.quiz-opt:disabled{cursor:default}
+.quiz-opt.correct{background:var(--green-light);border-color:var(--green);color:var(--green);font-weight:600}
+.quiz-opt.wrong{background:#fef2f2;border-color:var(--red);color:var(--red);font-weight:600}
+body.dark-mode .quiz-opt.wrong{background:rgba(185,28,28,.18)}
+.quiz-feedback{margin-top:.75rem;font-size:.85rem;padding:.6rem .85rem;border-radius:10px;display:none;line-height:1.5}
+.quiz-feedback.show{display:block}
+.quiz-feedback.ok{background:var(--green-light);color:var(--green)}
+.quiz-feedback.bad{background:rgba(185,28,28,.1);color:var(--red)}
+.quiz-result{display:none;text-align:center;padding:1.5rem;margin-top:1.5rem;background:var(--gold-light);border:1.5px solid var(--gold);border-radius:var(--radius)}
+.quiz-result.show{display:block}
+.quiz-result-score{font-family:'DM Serif Display',serif;font-size:2.5rem;color:var(--gold);line-height:1}
+.quiz-result-label{font-size:.9rem;color:var(--text-muted);margin:.4rem 0 1rem}
+.mark-read-btn{background:var(--navy);color:#fff;border:none;border-radius:50px;padding:.75rem 2rem;font-family:'DM Sans',sans-serif;font-size:.95rem;font-weight:600;cursor:pointer;transition:.2s}
+.mark-read-btn:hover{background:var(--navy-mid);transform:translateY(-1px);box-shadow:0 4px 16px rgba(26,39,68,.25)}
+.mark-read-btn:disabled{background:var(--green);cursor:default;transform:none}
+.article-footer{max-width:720px;margin:2rem auto;padding:1.5rem;text-align:center;font-size:.8rem;color:var(--text-muted);border-top:1px solid var(--border)}
+.article-footer a{color:var(--sky);text-decoration:none}
+@media(max-width:600px){.article-wrap{padding:2rem 1rem 1.5rem}.article-title{font-size:1.6rem}.quiz-card{padding:1.5rem}.font-controls{display:none}#top-bar{padding:.6rem 1rem}.pull-quote{margin-left:.5rem;font-size:1.1rem}}
+</style>
+</head>
+<body>
+<div id="auth-overlay"><div class="auth-card"><div style="font-size:2.5rem;margin-bottom:.5rem">📰</div><h2>Sign in to read</h2><p>You need an English Flow account to access articles.</p><input type="email" id="auth-email" class="auth-input" placeholder="Email address" onkeydown="if(event.key==='Enter')doSignIn()"><input type="password" id="auth-pass" class="auth-input" placeholder="Password" onkeydown="if(event.key==='Enter')doSignIn()"><button class="auth-btn" id="auth-btn" onclick="doSignIn()">Sign In</button><div id="auth-msg" class="auth-msg" style="display:none"></div><p style="margin-top:1rem;font-size:.8rem;color:#5a6a8a">No account? <a href="../ielts.html" style="color:#2e6fad">Sign up on the IELTS page</a></p></div></div>
+<div id="top-bar"><div class="logo">English <span class="dot">Flow</span></div><div class="font-controls"><button class="font-btn" id="font-down" onclick="changeFont(-1)">A−</button><span class="font-label">Aa</span><button class="font-btn" id="font-up" onclick="changeFont(1)">A+</button></div><div class="user-area"><button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()">🌙</button><div class="user-pill" id="user-pill">Student</div><button class="signout-btn" onclick="doSignOut()">Sign out</button></div></div>
+<div id="breadcrumb"><a href="../index.html">← Home</a><span class="crumb-sep">/</span><a href="index.html">← Articles</a><span class="crumb-sep">/</span><span class="crumb-active">Happiness</span></div>
+<div class="article-wrap">
+<span class="cat-tag">Health</span>
+<h1 class="article-title">Happiness</h1>
+<p class="article-deck">What makes you happy? Read about how to design your life to maximise happiness.</p>
+<div class="article-meta"><span>✍ English Flow</span><span class="meta-dot">·</span><span>📅 Article</span><span class="meta-dot">·</span><span>⏱ 6 min read</span><span class="meta-dot">·</span><span>📊 B1 Easy</span></div>
+<div id="article-body">
+<p>Do you know what makes you happy or do you just <em>think</em> you know? <span class="vocab" data-def="when you look at something for the first time">At first glance<span class="tip">when you look at something for the first time</span></span>, these two questions look the same. After all, you know yourself, don't you?</p>
+<p>Write a list of all the things that make you happy. Now look at that list and <span class="vocab" data-def="make a small mark to show something is correct or done">tick<span class="tip">make a small mark to show something is correct or done</span></span> all the ones that are fun or enjoyable. Probably most of them, right? So, if you spend your time doing all this <span class="vocab" data-def="things that are enjoyable to do (informal)">fun stuff<span class="tip">things that are enjoyable to do (informal)</span></span>, you'll be really happy, won't you?</p>
+<p>Well, maybe not. For most people, only doing things for fun isn't enough for real happiness. According to author Paul Dolan, your happiness <span class="vocab" data-def="is decided by; needs">depends on<span class="tip">is decided by; needs</span></span> a "pleasure–<span class="vocab" data-def="the reason for doing something; meaning">purpose<span class="tip">the reason for doing something; meaning</span></span> <span class="vocab" data-def="an equal mix between two things">balance<span class="tip">an equal mix between two things</span></span>". In order to be happy, you also need activities that give your life purpose.</p>
+<p>We usually know if something is enjoyable, but to know what brings <span class="vocab" data-def="the importance of something">meaning<span class="tip">the importance of something</span></span> and <span class="vocab" data-def="how important or useful something is">value<span class="tip">how important or useful something is</span></span> requires more thought. For example, most people will say that air <span class="vocab" data-def="people who fly aeroplanes">pilots<span class="tip">people who fly aeroplanes</span></span> have jobs with clear purpose. They are <span class="vocab" data-def="in charge of; having a duty to look after">responsible for<span class="tip">in charge of; having a duty to look after</span></span> hundreds of people and fly all over the world. But they often have to spend time in boring hotels or <span class="vocab" data-def="unable to move or leave">stuck<span class="tip">unable to move or leave</span></span> in airports. Just like everyone else, pilots need balance.</p>
+<p>There are different ways we can find purpose. Some activities are <span class="vocab" data-def="making you want to do something">motivating<span class="tip">making you want to do something</span></span> because they work towards the "<span class="vocab" data-def="what is best for everyone">greater good<span class="tip">what is best for everyone</span></span>". Or what you do might help a team. Or it might be motivating to see you're making <span class="vocab" data-def="moving forward; getting better at something">progress<span class="tip">moving forward; getting better at something</span></span>.</p>
+<p>If you're still in education, you can think of your "job" as studying. It's easy to do well in subjects you enjoy. But subjects you don't like are much less motivating. Realistically, society won't <span class="vocab" data-def="get help or advantage from something">benefit<span class="tip">get help or advantage from something</span></span> from you getting an A in a subject you hate. But can you find a way to be part of a study team? The purpose becomes about helping the team.</p>
+<p>Now you need to find balance. Paul Dolan believes in "deciding, designing, doing". First decide what brings you pleasure and/or purpose. Then design your life so you do as many of them as possible.</p>
+<p>It's easy to make <span class="vocab" data-def="reasons given to avoid doing something">excuses<span class="tip">reasons given to avoid doing something</span></span> not to do things because they're not <span class="vocab" data-def="easy to use; not causing problems">convenient<span class="tip">easy to use; not causing problems</span></span>. For example, you might love riding a bike but never have time. But it's up to you to build a <span class="vocab" data-def="a regular way of doing things">routine<span class="tip">a regular way of doing things</span></span> where you can use it to go to school. Some parts of our lives are the result of good or bad <span class="vocab" data-def="good or bad things that happen by chance">luck<span class="tip">good or bad things that happen by chance</span></span>, but we can still design the parts that are under our control to <span class="vocab" data-def="make as big or as much as possible">maximise<span class="tip">make as big or as much as possible</span></span> happiness.</p>
+</div>
+</div>
+<div class="quiz-section"><div class="quiz-card"><h2 class="quiz-title">📝 Vocabulary Check</h2><p class="quiz-sub">Match each word to its meaning</p><div class="quiz-progress-track"><div class="quiz-progress-fill" id="quiz-progress"></div></div><div id="quiz-list"></div><div class="quiz-result" id="quiz-result"><div class="quiz-result-score" id="result-score">0 / 0</div><div class="quiz-result-label">words correct</div><button class="mark-read-btn" id="mark-read-btn" onclick="markAsRead()">✓ Mark as Read</button></div></div></div>
+<div class="article-footer">Originally published in <a href="https://learnenglishteens.britishcouncil.org" target="_blank">British Council LearnEnglish Teens</a>, Adapted Article · Adapted for English Flow</div>
+<script>
+const ARTICLE_ID = 'happiness';
+const SUPABASE_URL = 'https://evhceswvapszaghnvmxl.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGNlc3d2YXBzemFnaG52bXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3OTQwNzMsImV4cCI6MjA5MzM3MDA3M30.yV7tavgR7JKc45uSGtS8Lf6m1ZMuuvQ23hmAb8n6k3A';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const VOCAB = [
+  {
+    "word": "at first glance",
+    "def": "when you look at something for the first time"
+  },
+  {
+    "word": "tick",
+    "def": "make a small mark to show something is correct or done"
+  },
+  {
+    "word": "fun stuff",
+    "def": "things that are enjoyable to do (informal)"
+  },
+  {
+    "word": "depends on",
+    "def": "is decided by; needs"
+  },
+  {
+    "word": "purpose",
+    "def": "the reason for doing something; meaning"
+  },
+  {
+    "word": "balance",
+    "def": "an equal mix between two things"
+  },
+  {
+    "word": "meaning",
+    "def": "the importance of something"
+  },
+  {
+    "word": "value",
+    "def": "how important or useful something is"
+  },
+  {
+    "word": "pilots",
+    "def": "people who fly aeroplanes"
+  },
+  {
+    "word": "responsible for",
+    "def": "in charge of; having a duty to look after"
+  },
+  {
+    "word": "stuck",
+    "def": "unable to move or leave"
+  },
+  {
+    "word": "routine",
+    "def": "a regular way of doing things"
+  },
+  {
+    "word": "motivating",
+    "def": "making you want to do something"
+  },
+  {
+    "word": "greater good",
+    "def": "what is best for everyone"
+  },
+  {
+    "word": "progress",
+    "def": "moving forward; getting better at something"
+  },
+  {
+    "word": "benefit",
+    "def": "get help or advantage from something"
+  },
+  {
+    "word": "convenient",
+    "def": "easy to use; not causing problems"
+  },
+  {
+    "word": "excuses",
+    "def": "reasons given to avoid doing something"
+  },
+  {
+    "word": "luck",
+    "def": "good or bad things that happen by chance"
+  },
+  {
+    "word": "maximise",
+    "def": "make as big or as much as possible"
+  }
+];
+let currentUser=null,quizScore=0,quizAnswered=0,quizWords=[];
+async function initAuth(){const{data:{session}}=await sb.auth.getSession();if(session){currentUser=session.user;showApp()}}
+async function doSignIn(){const email=document.getElementById('auth-email').value.trim(),pass=document.getElementById('auth-pass').value,btn=document.getElementById('auth-btn');if(!email||!pass){showAuthMsg('Enter email and password.',true);return}btn.disabled=true;btn.textContent='Signing in…';const{data,error}=await sb.auth.signInWithPassword({email,password:pass});btn.disabled=false;btn.textContent='Sign In';if(error){showAuthMsg(error.message,true);return}currentUser=data.user;showApp()}
+function showAuthMsg(text,isErr){const el=document.getElementById('auth-msg');el.textContent=text;el.className='auth-msg '+(isErr?'error':'success');el.style.display='block'}
+function showApp(){document.getElementById('auth-overlay').style.display='none';const name=currentUser.user_metadata?.name||currentUser.email.split('@')[0];document.getElementById('user-pill').textContent='👋 '+name.split(' ')[0];buildQuiz()}
+async function doSignOut(){await sb.auth.signOut();location.reload()}
+const FONT_SIZES=[.85,.95,1.05,1.15,1.25,1.4];let fontIdx=2;
+function loadFontPref(){const saved=parseInt(localStorage.getItem('ef_font_idx'));if(!isNaN(saved)&&saved>=0&&saved<FONT_SIZES.length)fontIdx=saved;applyFont()}
+function changeFont(delta){fontIdx=Math.max(0,Math.min(FONT_SIZES.length-1,fontIdx+delta));localStorage.setItem('ef_font_idx',fontIdx);applyFont()}
+function applyFont(){document.documentElement.style.setProperty('--article-font-size',FONT_SIZES[fontIdx]+'rem');document.getElementById('font-down').disabled=(fontIdx===0);document.getElementById('font-up').disabled=(fontIdx===FONT_SIZES.length-1)}
+function loadThemePref(){if(localStorage.getItem('ef_dark')==='1'){document.body.classList.add('dark-mode');document.getElementById('theme-toggle').textContent='☀'}}
+function toggleTheme(){const dark=document.body.classList.toggle('dark-mode');localStorage.setItem('ef_dark',dark?'1':'0');document.getElementById('theme-toggle').textContent=dark?'☀':'🌙'}
+document.addEventListener('click',(e)=>{const v=e.target.closest('.vocab');if(v){document.querySelectorAll('.vocab.tap-active').forEach(o=>{if(o!==v)o.classList.remove('tap-active')});v.classList.toggle('tap-active');e.stopPropagation()}else{document.querySelectorAll('.vocab.tap-active').forEach(o=>o.classList.remove('tap-active'))}});
+function shuffle(arr){return arr.map(v=>[Math.random(),v]).sort((a,b)=>a[0]-b[0]).map(p=>p[1])}
+function buildQuiz(){quizWords=shuffle(VOCAB.slice()).slice(0,Math.min(12,VOCAB.length));const list=document.getElementById('quiz-list');list.innerHTML='';const allDefs=VOCAB.map(v=>v.def);quizWords.forEach((item,i)=>{const others=allDefs.filter(d=>d!==item.def);const distractors=shuffle(others).slice(0,3);const options=shuffle([item.def,...distractors]);const card=document.createElement('div');card.className='quiz-q';card.id='q-'+i;card.innerHTML=`<div class="quiz-q-num">Word ${i+1} of ${quizWords.length}</div><div class="quiz-word">${item.word}</div><div class="quiz-options">${options.map(opt=>`<button class="quiz-opt" data-q="${i}" data-correct="${item.def===opt?'1':'0'}">${opt}</button>`).join('')}</div><div class="quiz-feedback" id="fb-${i}"></div>`;list.appendChild(card)});document.querySelectorAll('.quiz-opt').forEach(btn=>btn.addEventListener('click',handleAnswer))}
+function handleAnswer(e){const btn=e.currentTarget,qIdx=parseInt(btn.dataset.q),isCorrect=btn.dataset.correct==='1',card=document.getElementById('q-'+qIdx);card.querySelectorAll('.quiz-opt').forEach(o=>{o.disabled=true;if(o.dataset.correct==='1')o.classList.add('correct')});if(!isCorrect)btn.classList.add('wrong');const fb=document.getElementById('fb-'+qIdx);if(isCorrect){fb.className='quiz-feedback show ok';fb.textContent='✓ Correct!';quizScore++}else{fb.className='quiz-feedback show bad';fb.textContent='✗ Not quite. The correct definition is highlighted.'}quizAnswered++;document.getElementById('quiz-progress').style.width=(quizAnswered/quizWords.length*100)+'%';if(quizAnswered===quizWords.length)setTimeout(showQuizResult,400)}
+function showQuizResult(){const r=document.getElementById('quiz-result');document.getElementById('result-score').textContent=quizScore+' / '+quizWords.length;r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'center'})}
+async function markAsRead(){const btn=document.getElementById('mark-read-btn');btn.disabled=true;btn.textContent='Saving…';try{await sb.from('article_reads').upsert({user_id:currentUser.id,article_id:ARTICLE_ID,completed_at:new Date().toISOString()},{onConflict:'user_id,article_id'});btn.textContent='✓ Marked as Read'}catch(e){btn.disabled=false;btn.textContent='Try again';console.warn('Save failed:',e)}}
+loadFontPref();loadThemePref();initAuth();
+</script>
+</body>
+</html>
