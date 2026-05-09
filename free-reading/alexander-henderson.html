@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alexander Henderson – IELTS Reading | English Flow</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1a2744;--navy-mid:#243358;--sky:#2e6fad;--sky-light:#e8f2fc;
+  --gold:#c9922a;--gold-light:#fdf3e3;--cream:#f9f7f4;--surface:#ffffff;
+  --text:#1a2744;--text-muted:#5a6a8a;--border:rgba(26,39,68,0.1);
+  --green:#1e6e4e;--green-light:#e8f5ee;--red:#b91c1c;--red-light:#fef2f2;
+  --radius:16px;--radius-lg:24px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden}
+body{font-family:'DM Sans',sans-serif;color:var(--text);background:var(--cream);display:flex;flex-direction:column}
+
+/* AUTH */
+#auth-overlay{position:fixed;inset:0;z-index:9999;background:rgba(26,39,68,.88);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center}
+.auth-card{background:#fff;border-radius:var(--radius-lg);padding:2.5rem;width:100%;max-width:420px;text-align:center;box-shadow:0 32px 64px rgba(0,0,0,.3)}
+.auth-card h2{font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--navy);margin-bottom:.4rem}
+.auth-card p{color:var(--text-muted);font-size:.9rem;margin-bottom:1.5rem}
+.auth-input{width:100%;padding:.75rem 1rem;border:1.5px solid var(--border);border-radius:50px;font-family:'DM Sans',sans-serif;font-size:.95rem;color:var(--text);outline:none;margin-bottom:.75rem;transition:.2s}
+.auth-input:focus{border-color:var(--sky)}
+.auth-btn{width:100%;padding:.8rem;background:var(--navy);color:#fff;border:none;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:600;cursor:pointer;transition:.2s;margin-top:.25rem}
+.auth-btn:hover{background:var(--navy-mid)}
+.auth-btn:disabled{opacity:.6;cursor:default}
+.auth-msg{font-size:.85rem;margin-top:.75rem;padding:.5rem 1rem;border-radius:50px}
+.auth-msg.error{background:#fef2f2;color:var(--red)}
+.auth-msg.success{background:var(--green-light);color:var(--green)}
+
+/* TOP BAR */
+#top-bar{background:linear-gradient(135deg,var(--navy),var(--navy-mid));color:#fff;padding:.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;z-index:100}
+.logo{font-family:'DM Serif Display',serif;font-size:1.4rem;color:#fff}
+.logo .dot{color:var(--gold)}
+.timer-lbl{font-size:.72rem;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.1rem;text-align:center}
+#timer-display{font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--gold);letter-spacing:.05em;min-width:70px;text-align:center}
+#timer-display.warning{color:#ff8c42;animation:blink .8s infinite}
+#timer-display.danger{color:#ff4444;animation:blink .5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
+.user-area{display:flex;align-items:center;gap:.75rem}
+.user-pill{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:50px;padding:.35rem .9rem;font-size:.85rem;font-weight:500;color:#fff}
+.signout-btn{background:transparent;border:1px solid rgba(255,255,255,.3);color:rgba(255,255,255,.8);border-radius:50px;padding:.35rem .85rem;font-family:'DM Sans',sans-serif;font-size:.8rem;cursor:pointer;transition:.2s}
+.signout-btn:hover{background:rgba(255,255,255,.1);color:#fff}
+
+/* BREADCRUMB */
+#breadcrumb{background:#fff;border-bottom:1px solid var(--border);padding:.6rem 1.5rem;display:flex;align-items:center;gap:1rem;flex-shrink:0;font-size:.85rem}
+#breadcrumb a{color:var(--sky);text-decoration:none;font-weight:500;transition:.15s}
+#breadcrumb a:hover{color:var(--navy)}
+.crumb-sep{color:var(--text-muted)}
+.crumb-active{background:var(--navy);color:#fff;border-radius:50px;padding:.2rem .75rem;font-size:.8rem;font-weight:600;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* SPLIT */
+#split-layout{display:flex;flex:1;overflow:hidden}
+#passage-col{width:55%;background:var(--cream);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+#questions-col{width:45%;background:var(--cream);display:flex;flex-direction:column;overflow:hidden}
+
+/* HIGHLIGHT TOOLBAR */
+#highlight-toolbar{background:#fff;border-bottom:1px solid var(--border);padding:.6rem 1.5rem;display:flex;align-items:center;gap:.75rem;flex-shrink:0}
+.hl-label{font-size:.8rem;color:var(--text-muted);font-weight:500}
+.hl-btn{width:26px;height:26px;border-radius:50%;border:2px solid rgba(0,0,0,.15);cursor:pointer;transition:transform .15s;flex-shrink:0}
+.hl-btn:hover{transform:scale(1.2)}
+.hl-btn.active{border-color:rgba(0,0,0,.45);transform:scale(1.15)}
+#hl-yellow{background:#fff176}
+#hl-green{background:#c8e6c9}
+#hl-pink{background:#f8bbd0}
+.hl-clear{background:transparent;border:1px solid var(--border);color:var(--text-muted);border-radius:50px;padding:.25rem .7rem;font-family:'DM Sans',sans-serif;font-size:.75rem;cursor:pointer;transition:.15s}
+.hl-clear:hover{background:var(--red-light);color:var(--red);border-color:var(--red)}
+
+/* PASSAGE */
+#passage-scroll{padding:1.75rem 2rem;overflow-y:auto;flex:1}
+.passage-title-row{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:.5rem;flex-wrap:wrap}
+.passage-title{font-family:'DM Serif Display',serif;font-size:1.55rem;color:var(--navy);line-height:1.3}
+.passage-subtitle{font-family:'DM Serif Display',serif;font-style:italic;font-size:1rem;color:var(--text-muted);margin-bottom:1.5rem;line-height:1.5}
+.diff-badge{padding:.25rem .75rem;border-radius:50px;font-size:.72rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;flex-shrink:0;margin-top:.3rem}
+.diff-medium{background:#fff3e0;color:#e65100}
+#passage-text{font-size:1rem;line-height:1.85;color:var(--text)}
+#passage-text p{margin-bottom:1rem}
+
+/* QUESTIONS */
+#progress-bar-wrap{background:#fff;border-bottom:1px solid var(--border);padding:.75rem 1.5rem;flex-shrink:0}
+.progress-label{display:flex;justify-content:space-between;font-size:.8rem;color:var(--text-muted);margin-bottom:.4rem;font-weight:500}
+.progress-track{height:6px;background:rgba(26,39,68,.08);border-radius:3px;overflow:hidden}
+#progress-fill{height:100%;background:linear-gradient(90deg,var(--sky),var(--navy));border-radius:3px;transition:width .4s ease;width:0%}
+#questions-scroll{padding:1.25rem 1.5rem;overflow-y:auto;flex:1}
+
+.q-section-hdr{background:var(--navy);color:#fff;border-radius:var(--radius) var(--radius) 0 0;padding:.9rem 1.25rem;margin-top:1.5rem}
+.q-section-hdr:first-child{margin-top:0}
+.q-section-type{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;opacity:.7;margin-bottom:.2rem}
+.q-section-title{font-family:'DM Serif Display',serif;font-size:1.1rem}
+.q-section-instr{font-size:.82rem;opacity:.8;margin-top:.4rem;line-height:1.55}
+
+/* QUESTION CARDS */
+.question-card{background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.25rem;margin-bottom:.75rem;transition:.2s}
+.question-card.flagged{border-color:var(--gold);background:var(--gold-light)}
+.q-header{display:flex;align-items:flex-start;justify-content:space-between;gap:.75rem;margin-bottom:.8rem}
+.q-num{background:var(--navy);color:#fff;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0;margin-top:.1rem}
+.q-text{font-size:.9rem;line-height:1.55;flex:1;color:var(--text)}
+.flag-btn{background:transparent;border:1px solid var(--border);border-radius:50px;padding:.2rem .55rem;font-size:.8rem;cursor:pointer;flex-shrink:0;transition:.15s;color:var(--text-muted)}
+.flag-btn:hover{background:var(--gold-light);border-color:var(--gold)}
+.flag-btn.active{background:var(--gold-light);border-color:var(--gold);color:var(--gold)}
+
+/* TFNG options */
+.yng-row{display:flex;gap:.5rem;flex-wrap:wrap}
+.opt-label{display:flex;align-items:center;justify-content:center;gap:.4rem;cursor:pointer;font-size:.85rem;background:var(--cream);border:1.5px solid var(--border);border-radius:50px;padding:.4rem .9rem;transition:.2s;user-select:none;flex:1;min-width:80px;text-align:center}
+.opt-label:hover{background:var(--sky-light);border-color:var(--sky)}
+.opt-label input[type=radio]{display:none}
+.opt-label.selected{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+/* fill blanks */
+.blank-input{border:none;border-bottom:2px solid var(--sky);background:transparent;font-family:'DM Sans',sans-serif;font-size:.88rem;color:var(--navy);outline:none;width:120px;padding:.1rem .3rem;transition:.2s;text-align:center}
+.blank-input:focus{border-color:var(--navy);background:var(--sky-light)}
+.blank-input.answered{border-color:var(--green)}
+
+/* notes box */
+.notes-box{background:#fff;border:1.5px solid var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;font-size:.9rem;line-height:2}
+.notes-box h4{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--navy);margin:1rem 0 .4rem;text-align:center}
+.notes-box h4:first-child{margin-top:0}
+.notes-box .sub-h{font-weight:700;color:var(--navy);margin-top:.6rem;font-size:.92rem}
+.notes-box ul{list-style:none;padding-left:1.2rem}
+.notes-box ul li{position:relative;margin-bottom:.5rem}
+.notes-box ul li::before{content:'•';color:var(--gold);position:absolute;left:-1rem;font-weight:700}
+
+/* SUBMIT */
+#submit-wrap{padding:1rem 1.5rem;border-top:1px solid var(--border);background:#fff;flex-shrink:0}
+#submit-btn{width:100%;padding:.85rem;background:var(--navy);color:#fff;border:none;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:.2s}
+#submit-btn:hover{background:var(--navy-mid);transform:translateY(-1px);box-shadow:0 4px 16px rgba(26,39,68,.25)}
+
+/* CONFIRM */
+#confirm-overlay{position:fixed;inset:0;z-index:800;background:rgba(26,39,68,.7);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center}
+#confirm-overlay.show{display:flex}
+.confirm-card{background:#fff;border-radius:var(--radius-lg);padding:2rem;max-width:400px;width:90%;text-align:center}
+.confirm-card h3{font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--navy);margin-bottom:.75rem}
+.confirm-card p{font-size:.9rem;color:var(--text-muted);margin-bottom:1.5rem;line-height:1.6}
+.confirm-btns{display:flex;gap:.75rem;justify-content:center}
+.confirm-yes{background:var(--navy);color:#fff;border:none;border-radius:50px;padding:.65rem 1.75rem;font-family:'DM Sans',sans-serif;font-weight:600;cursor:pointer;transition:.2s}
+.confirm-yes:hover{background:var(--navy-mid)}
+.confirm-no{background:transparent;color:var(--text-muted);border:1.5px solid var(--border);border-radius:50px;padding:.65rem 1.75rem;font-family:'DM Sans',sans-serif;font-weight:500;cursor:pointer;transition:.2s}
+.confirm-no:hover{border-color:var(--navy);color:var(--navy)}
+
+/* RESULTS */
+#results-screen{display:none;position:fixed;inset:0;background:var(--cream);z-index:500;overflow-y:auto;padding:2rem 1rem}
+.results-inner{max-width:760px;margin:0 auto}
+.results-hero{text-align:center;margin-bottom:2.5rem}
+.results-hero h1{font-family:'DM Serif Display',serif;font-size:2rem;color:var(--navy);margin-bottom:.5rem}
+.band-ring{width:140px;height:140px;border-radius:50%;margin:1.5rem auto;background:conic-gradient(var(--gold) 0%,var(--gold) var(--fill,0%),rgba(26,39,68,.08) var(--fill,0%));display:flex;align-items:center;justify-content:center;position:relative;box-shadow:0 0 40px rgba(201,146,42,.2)}
+.band-ring::before{content:'';position:absolute;inset:12px;border-radius:50%;background:var(--cream)}
+.band-inner{position:relative;z-index:1;text-align:center}
+.band-num{font-family:'DM Serif Display',serif;font-size:2.4rem;color:var(--gold);line-height:1}
+.band-lbl{font-size:.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em;margin-top:.1rem}
+.score-raw{font-size:1.1rem;color:var(--text-muted);margin-top:.5rem}
+.score-raw strong{color:var(--navy);font-size:1.4rem}
+.review-list{display:flex;flex-direction:column;gap:1rem;margin-bottom:2rem}
+.review-item{background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.25rem}
+.review-item.correct-item{border-color:var(--green)}
+.review-item.wrong-item{border-color:var(--red)}
+.review-q-num{font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.4rem}
+.review-item.correct-item .review-q-num{color:var(--green)}
+.review-item.wrong-item .review-q-num{color:var(--red)}
+.review-q-text{font-size:.9rem;color:var(--text-muted);margin-bottom:.6rem;line-height:1.5}
+.review-answer-row{display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:.5rem}
+.ra-block{font-size:.85rem}
+.ra-label{font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);margin-bottom:.2rem}
+.ra-val.correct{color:var(--green);font-weight:700}
+.ra-val.wrong{color:var(--red);font-weight:700}
+.ra-val.answer{color:var(--navy);font-weight:700}
+.review-exp{font-size:.82rem;color:var(--text-muted);line-height:1.6;padding:.6rem .9rem;background:var(--cream);border-radius:8px;margin-top:.5rem}
+.back-btn{display:inline-block;background:var(--navy);color:#fff;border-radius:50px;padding:.75rem 2rem;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:600;text-decoration:none;transition:.2s}
+.back-btn:hover{background:var(--navy-mid)}
+
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(26,39,68,.18);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:rgba(26,39,68,.32)}
+
+@media(max-width:768px){
+  html,body{overflow:auto;height:auto}
+  #split-layout{flex-direction:column;overflow:visible}
+  #passage-col,#questions-col{width:100%;overflow:visible;height:auto}
+  #passage-scroll,#questions-scroll{overflow:visible;height:auto}
+}
+</style>
+</head>
+<body>
+
+<!-- AUTH -->
+<div id="auth-overlay">
+  <div class="auth-card">
+    <div style="font-size:2.5rem;margin-bottom:.5rem">📖</div>
+    <h2>Sign in to read</h2>
+    <p>You need an English Flow account to access this passage and track your scores.</p>
+    <input type="email" id="auth-email" class="auth-input" placeholder="Email address" onkeydown="if(event.key==='Enter')doSignIn()">
+    <input type="password" id="auth-pass" class="auth-input" placeholder="Password" onkeydown="if(event.key==='Enter')doSignIn()">
+    <button class="auth-btn" id="auth-btn" onclick="doSignIn()">Sign In</button>
+    <div id="auth-msg" class="auth-msg" style="display:none"></div>
+    <p style="margin-top:1rem;font-size:.8rem;color:var(--text-muted)">No account? <a href="../ielts.html" style="color:var(--sky)">Sign up on the IELTS page</a></p>
+  </div>
+</div>
+
+<!-- CONFIRM -->
+<div id="confirm-overlay">
+  <div class="confirm-card">
+    <h3>Submit Answers?</h3>
+    <p>You cannot change your answers after submitting. Make sure you've reviewed all questions.</p>
+    <div class="confirm-btns">
+      <button class="confirm-yes" onclick="submitAnswers()">Yes, Submit</button>
+      <button class="confirm-no" onclick="closeConfirm()">Go Back</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOP BAR -->
+<div id="top-bar">
+  <div class="logo">English <span class="dot">Flow</span></div>
+  <div>
+    <div class="timer-lbl">Time remaining</div>
+    <div id="timer-display">20:00</div>
+  </div>
+  <div class="user-area">
+    <div class="user-pill" id="user-pill">Student</div>
+    <button class="signout-btn" onclick="doSignOut()">Sign out</button>
+  </div>
+</div>
+
+<!-- BREADCRUMB -->
+<div id="breadcrumb">
+  <a href="../index.html">← Home</a>
+  <span class="crumb-sep">/</span>
+  <a href="index.html">← Reading</a>
+  <span class="crumb-sep">/</span>
+  <span class="crumb-active">Alexander Henderson (1831–1913)</span>
+</div>
+
+<!-- SPLIT LAYOUT -->
+<div id="split-layout">
+
+  <!-- PASSAGE -->
+  <div id="passage-col">
+    <div id="highlight-toolbar">
+      <span class="hl-label">Highlight:</span>
+      <div class="hl-btn" id="hl-yellow" title="Yellow" onclick="setColor('#fff176')"></div>
+      <div class="hl-btn" id="hl-green"  title="Green"  onclick="setColor('#c8e6c9')"></div>
+      <div class="hl-btn" id="hl-pink"   title="Pink"   onclick="setColor('#f8bbd0')"></div>
+      <button class="hl-clear" onclick="clearHighlights()">✕ Clear all</button>
+    </div>
+    <div id="passage-scroll">
+      <div class="passage-title-row">
+        <h1 class="passage-title">Alexander Henderson (1831–1913)</h1>
+        <span class="diff-badge diff-medium">Medium</span>
+      </div>
+      <p class="passage-subtitle">Born in Scotland, Henderson emigrated to Canada in 1855 and became a well-known landscape photographer</p>
+      <div id="passage-text">
+        <p>Alexander Henderson was born in Scotland in 1831 and was the son of a successful merchant. His grandfather, also called Alexander, had founded the family business, and later became the first chairman of the National Bank of Scotland. The family had extensive landholdings in Scotland. Besides its residence in Edinburgh, it owned Press Estate, 650 acres of farmland about 35 miles southeast of the city. The family often stayed at Press Castle, the large mansion on the northern edge of the property, and Alexander spent much of his childhood in the area, playing on the beach near Eyemouth or fishing in the streams nearby.</p>
+        <p>Even after he went to school at Murcheston Academy on the outskirts of Edinburgh, Henderson returned to Press at weekends. In 1849 he began a three-year apprenticeship to become an accountant. Although he never liked the prospect of a business career, he stayed with it to please his family. In October 1855, however, he emigrated to Canada with his wife Agnes Elder Robertson and they settled in Montreal.</p>
+        <p>Henderson learned photography in Montreal around the year 1857 and quickly took it up as a serious amateur. He became a personal friend and colleague of the Scottish–Canadian photographer William Notman. The two men made a photographic excursion to Niagara Falls in 1860 and they cooperated on experiments with magnesium flares as a source of artificial light in 1865. They belonged to the same societies and were among the founding members of the Art Association of Montreal. Henderson acted as chairman of the association's first meeting, which was held in Notman's studio on 11 January 1860.</p>
+        <p>In spite of their friendship, their styles of photography were quite different. While Notman's landscapes were noted for their bold realism, Henderson for the first 20 years of his career produced romantic images, showing the strong influence of the British landscape tradition. His artistic and technical progress was rapid and in 1865 he published his first major collection of landscape photographs. The publication had limited circulation (only seven copies have ever been found), and was called <em>Canadian Views and Studies</em>. The contents of each copy vary significantly and have proved a useful source for evaluating Henderson's early work.</p>
+        <p>In 1866, he gave up his business to open a photographic studio, advertising himself as a portrait and landscape photographer. From about 1870 he dropped portraiture to specialize in landscape photography and other views. His numerous photographs of city life revealed in street scenes, houses, and markets are alive with human activity, and although his favourite subject was landscape he usually composed his scenes around such human pursuits as farming the land, cutting ice on a river, or sailing down a woodland stream. There was sufficient demand for these types of scenes and others he took depicting the lumber trade, steamboats and waterfalls to enable him to make a living. There was little competing hobby or amateur photography before the late 1880s because of the time-consuming techniques involved and the weight of the equipment. People wanted to buy photographs as souvenirs of a trip or as gifts, and catering to this market, Henderson had stock photographs on display at his studio for mounting, framing, or inclusion in albums.</p>
+        <p>Henderson frequently exhibited his photographs in Montreal and abroad, in London, Edinburgh, Dublin, Paris, New York, and Philadelphia. He met with greater success in 1877 and 1878 in New York when he won first prizes in the exhibition held by E and H T Anthony and Company for landscapes using the Lambertype process. In 1878 his work won second prize at the world exhibition in Paris.</p>
+        <p>In the 1870s and 1880s Henderson travelled widely throughout Quebec and Ontario, in Canada, documenting the major cities of the two provinces and many of the villages in Quebec. He was especially fond of the wilderness and often travelled by canoe on the Blanche, du Lièvre, and other noted eastern rivers. He went on several occasions to the Maritimes and in 1872 he sailed by yacht along the lower north shore of the St Lawrence River. That same year, while in the lower St Lawrence River region, he took some photographs of the construction of the Intercolonial Railway. This undertaking led in 1875 to a commission from the railway to record the principal structures along the almost-completed line connecting Montreal to Halifax. Commissions from other railways followed. In 1876 he photographed bridges on the Quebec, Montreal, Ottawa and Occidental Railway between Montreal and Ottawa. In 1885 he went west along the Canadian Pacific Railway (CPR) as far as Rogers Pass in British Columbia, where he took photographs of the mountains and the progress of construction.</p>
+        <p>In 1892 Henderson accepted a full-time position with the CPR as manager of a photographic department which he was to set up and administer. His duties included spending four months in the field each year. That summer he made his second trip west, photographing extensively along the railway line as far as Victoria. He continued in this post until 1897, when he retired completely from photography.</p>
+        <p>When Henderson died in 1913, his huge collection of glass negatives was stored in the basement of his house. Today collections of his work are held at the National Archives of Canada, Ottawa, and the McCord Museum of Canadian History, Montreal.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUESTIONS -->
+  <div id="questions-col">
+    <div id="progress-bar-wrap">
+      <div class="progress-label">
+        <span>Questions answered</span>
+        <span id="progress-text">0 / 13</span>
+      </div>
+      <div class="progress-track"><div id="progress-fill"></div></div>
+    </div>
+
+    <div id="questions-scroll">
+
+      <!-- Q1–8 TFNG -->
+      <div class="q-section-hdr">
+        <div class="q-section-type">Questions 1–8</div>
+        <div class="q-section-title">True / False / Not Given</div>
+        <div class="q-section-instr">
+          Do the following statements agree with the information given in the passage?<br>
+          <strong>TRUE</strong> — agrees with the information &nbsp;|&nbsp;
+          <strong>FALSE</strong> — contradicts the information &nbsp;|&nbsp;
+          <strong>NOT GIVEN</strong> — no information on this
+        </div>
+      </div>
+
+      <!-- Q1 -->
+      <div class="question-card" id="card-1">
+        <div class="q-header">
+          <div class="q-num">1</div>
+          <div class="q-text">Henderson rarely visited the area around Press estate when he was younger.</div>
+          <button class="flag-btn" onclick="toggleFlag(1)">🚩</button>
+        </div>
+        <div class="yng-row" id="opts-1">
+          <label class="opt-label"><input type="radio" name="q1" value="TRUE" onchange="selectOpt(1,'TRUE')">TRUE</label>
+          <label class="opt-label"><input type="radio" name="q1" value="FALSE" onchange="selectOpt(1,'FALSE')">FALSE</label>
+          <label class="opt-label"><input type="radio" name="q1" value="NOT GIVEN" onchange="selectOpt(1,'NOT GIVEN')">NOT GIVEN</label>
+        </div>
+      </div>
+
+      <!-- Q2 -->
+      <div class="question-card" id="card-2">
+        <div class="q-header">
+          <div class="q-num">2</div>
+          <div class="q-text">Henderson pursued a business career because it was what his family wanted.</div>
+          <button class="flag-btn" onclick="toggleFlag(2)">🚩</button>
+        </div>
+        <div class="yng-row" id="opts-2">
+          <label class="opt-label"><input type="radio" name="q2" value="TRUE" onchange="selectOpt(2,'TRUE')">TRUE</label>
+          <label class="opt-label"><input type="radio" name="q2" value="FALSE" onchange="selectOpt(2,'FALSE')">FALSE</label>
+          <label class="opt-label"><input type="radio" name="q2" value="NOT GIVEN" onchange="selectOpt(2,'NOT GIVEN')">NOT GIVEN</label>
+        </div>
+      </div>
+
+      <!-- Q3 -->
+      <div class="question-card" id="card-3">
+        <div class="q-header">
+          <div class="q-num">3</div>
+          <div class="q-text">Henderson and Notman were surprised by the results of their 1865 experiment.</div>
+          <button class="flag-btn" onclick="toggleFlag(3)">🚩</button>
+        </div>
+        <div class="yng-row" id="opts-3">
+          <label class="opt-label"><input type="radio" name="q3" value="TRUE" onchange="selectOpt(3,'TRUE')">TRUE</label>
+          <label class="opt-label"><input type="radio" name="q3" value="FALSE" onchange="selectOpt(3,'FALSE')">FALSE</label>
+          <label class="opt-label"><input type="radio" name="q3" value="NOT GIVEN" onchange="selectOpt(3,'NOT GIVEN')">NOT GIVEN</label>
+        </div>
+      </div>
+
+      <!-- Q4 -->
+      <div class="question-card" id="card-4">
+        <div class="q-header">
+          <div class="q-num">4</div>
+          <div class="q-text">There were many similarities between Henderson's early landscapes and those of Notman.</div>
+          <button class="flag-btn" onclick="toggleFlag(4)">🚩</button>
+        </div>
+        <div class="yng-row" id="opts-4">
+          <label class="opt-label"><input type="radio" name="q4" value="TRUE" onchange="selectOpt(4,'TRUE')">TRUE</label>
+          <label class="opt-label"><input type="radio" name="q4" value="FALSE" onchange="selectOpt(4,'FALSE')">FALSE</label>
+          <label class="opt-label"><input type="radio" name="q4" value="NOT GIVEN" onchange="selectOpt(4,'NOT GIVEN')">NOT GIVEN</label>
+        </div>
+      </div>
+
+      <!-- Q5 -->
+      <div class="question-card" id="card-5">
+        <div class="q-header">
+          <div class="q-num">5</div>
+          <div class="q-text">The studio that Henderson opened in 1866 was close to his home.</div>
+          <button class="flag-btn" onclick="toggleFlag(5)">🚩</button>
+        </div>
+        <div class="yng-row" id="opts-5">
+          <label class="opt-label"><input type="radio" name="q5" value="TRUE" onchange="selectOpt(5,'TRUE')">TRUE</label>
+          <label class="opt-label"><input type="radio" name="q5" value="FALSE" onchange="selectOpt(5,'FALSE')">FALSE</label>
+          <label class="opt-label"><input type="radio" name="q5" value="NOT GIVEN" onchange="selectOpt(5,'NOT GIVEN')">NOT GIVEN</label>
+        </div>
+      </div>
+
+      <!-- Q6 -->
+      <div class="question-card" id="card-6">
+        <div class="q-header">
+          <div class="q-num">6</div>
+          <div class="q-text">Henderson gave up portraiture so that he could focus on taking photographs of scenery.</div>
+          <button class="flag-btn" onclick="toggleFlag(6)">🚩</button>
+        </div>
+        <div class="yng-row" id="opts-6">
+          <label class="opt-label"><input type="radio" name="q6" value="TRUE" onchange="selectOpt(6,'TRUE')">TRUE</label>
+          <label class="opt-label"><input type="radio" name="q6" value="FALSE" onchange="selectOpt(6,'FALSE')">FALSE</label>
+          <label class="opt-label"><input type="radio" name="q6" value="NOT GIVEN" onchange="selectOpt(6,'NOT GIVEN')">NOT GIVEN</label>
+        </div>
+      </div>
+
+      <!-- Q7 -->
+      <div class="question-card" id="card-7">
+        <div class="q-header">
+          <div class="q-num">7</div>
+          <div class="q-text">When Henderson began work for the Intercolonial Railway, the Montreal to Halifax line had been finished.</div>
+          <button class="flag-btn" onclick="toggleFlag(7)">🚩</button>
+        </div>
+        <div class="yng-row" id="opts-7">
+          <label class="opt-label"><input type="radio" name="q7" value="TRUE" onchange="selectOpt(7,'TRUE')">TRUE</label>
+          <label class="opt-label"><input type="radio" name="q7" value="FALSE" onchange="selectOpt(7,'FALSE')">FALSE</label>
+          <label class="opt-label"><input type="radio" name="q7" value="NOT GIVEN" onchange="selectOpt(7,'NOT GIVEN')">NOT GIVEN</label>
+        </div>
+      </div>
+
+      <!-- Q8 -->
+      <div class="question-card" id="card-8">
+        <div class="q-header">
+          <div class="q-num">8</div>
+          <div class="q-text">Henderson's last work as a photographer was with the Canadian Pacific Railway.</div>
+          <button class="flag-btn" onclick="toggleFlag(8)">🚩</button>
+        </div>
+        <div class="yng-row" id="opts-8">
+          <label class="opt-label"><input type="radio" name="q8" value="TRUE" onchange="selectOpt(8,'TRUE')">TRUE</label>
+          <label class="opt-label"><input type="radio" name="q8" value="FALSE" onchange="selectOpt(8,'FALSE')">FALSE</label>
+          <label class="opt-label"><input type="radio" name="q8" value="NOT GIVEN" onchange="selectOpt(8,'NOT GIVEN')">NOT GIVEN</label>
+        </div>
+      </div>
+
+      <!-- Q9–13 Note Completion -->
+      <div class="q-section-hdr">
+        <div class="q-section-type">Questions 9–13</div>
+        <div class="q-section-title">Note Completion</div>
+        <div class="q-section-instr">Complete the notes below using ONE WORD ONLY from the passage for each answer.</div>
+      </div>
+
+      <div class="notes-box">
+        <h4>Alexander Henderson</h4>
+
+        <div class="sub-h">Early life</div>
+        <ul>
+          <li>was born in Scotland in 1831 — father was a <strong>9</strong> <input class="blank-input" id="q9" data-q="9" placeholder="…" oninput="onInput(this)" autocomplete="off" spellcheck="false"></li>
+          <li>trained as an accountant, emigrated to Canada in 1855</li>
+        </ul>
+
+        <div class="sub-h">Start of a photographic career</div>
+        <ul>
+          <li>opened up a photographic studio in 1866</li>
+          <li>took photos of city life, but preferred landscape photography</li>
+          <li>people bought Henderson's photos because photography took up considerable time and the <strong>10</strong> <input class="blank-input" id="q10" data-q="10" placeholder="…" oninput="onInput(this)" autocomplete="off" spellcheck="false"> was heavy</li>
+          <li>the photographs Henderson sold were <strong>11</strong> <input class="blank-input" id="q11" data-q="11" placeholder="…" oninput="onInput(this)" autocomplete="off" spellcheck="false"> or souvenirs</li>
+        </ul>
+
+        <div class="sub-h">Travelling as a professional photographer</div>
+        <ul>
+          <li>travelled widely in Quebec and Ontario in 1870s and 1880s</li>
+          <li>took many trips along eastern rivers in a <strong>12</strong> <input class="blank-input" id="q12" data-q="12" placeholder="…" oninput="onInput(this)" autocomplete="off" spellcheck="false"></li>
+          <li>worked for Canadian railways between 1875 and 1897</li>
+          <li>worked for CPR in 1885 and photographed the <strong>13</strong> <input class="blank-input" id="q13" data-q="13" placeholder="…" oninput="onInput(this)" autocomplete="off" spellcheck="false"> and the railway at Rogers Pass</li>
+        </ul>
+      </div>
+
+    </div><!-- /questions-scroll -->
+
+    <div id="submit-wrap">
+      <button id="submit-btn" onclick="showConfirm()">Submit Answers</button>
+    </div>
+  </div>
+
+</div><!-- /split-layout -->
+
+<!-- RESULTS -->
+<div id="results-screen">
+  <div class="results-inner">
+    <div class="results-hero">
+      <h1>Your Results</h1>
+      <div class="band-ring" id="band-ring">
+        <div class="band-inner">
+          <div class="band-num" id="band-num">—</div>
+          <div class="band-lbl">Band</div>
+        </div>
+      </div>
+      <div class="score-raw"><strong id="raw-score">0</strong> / 13 correct</div>
+    </div>
+    <div class="review-list" id="review-list"></div>
+    <div style="text-align:center;margin-bottom:2rem">
+      <a href="index.html" class="back-btn">← Back to Reading</a>
+    </div>
+  </div>
+</div>
+
+<script>
+const PASSAGE_ID   = 'alexander-henderson';
+const SUPABASE_URL = 'https://evhceswvapszaghnvmxl.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGNlc3d2YXBzemFnaG52bXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3OTQwNzMsImV4cCI6MjA5MzM3MDA3M30.yV7tavgR7JKc45uSGtS8Lf6m1ZMuuvQ23hmAb8n6k3A';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const ANSWERS = {
+  1: { correct:'FALSE', type:'yng', text:'Henderson rarely visited the area around Press estate when he was younger.',
+       exp:"Paragraph 1: he 'spent much of his childhood in the area, playing on the beach near Eyemouth or fishing in the streams nearby.' This contradicts 'rarely visited.'" },
+  2: { correct:'TRUE', type:'yng', text:'Henderson pursued a business career because it was what his family wanted.',
+       exp:"Paragraph 2: 'he never liked the prospect of a business career, he stayed with it to please his family.'" },
+  3: { correct:'NOT GIVEN', type:'yng', text:'Henderson and Notman were surprised by the results of their 1865 experiment.',
+       exp:"Paragraph 3 mentions the 1865 magnesium-flare experiment but says nothing about their reaction or the results — no information given." },
+  4: { correct:'FALSE', type:'yng', text:"There were many similarities between Henderson's early landscapes and those of Notman.",
+       exp:"Paragraph 4: 'In spite of their friendship, their styles of photography were quite different.' This contradicts the statement." },
+  5: { correct:'NOT GIVEN', type:'yng', text:'The studio that Henderson opened in 1866 was close to his home.',
+       exp:"The passage says he opened a studio in 1866 but never mentions its location relative to his home." },
+  6: { correct:'TRUE', type:'yng', text:'Henderson gave up portraiture so that he could focus on taking photographs of scenery.',
+       exp:"Paragraph 5: 'From about 1870 he dropped portraiture to specialize in landscape photography.'" },
+  7: { correct:'FALSE', type:'yng', text:'When Henderson began work for the Intercolonial Railway, the Montreal to Halifax line had been finished.',
+       exp:"Paragraph 7: the 1875 commission was for 'the almost-completed line connecting Montreal to Halifax' — almost finished, not finished." },
+  8: { correct:'TRUE', type:'yng', text:"Henderson's last work as a photographer was with the Canadian Pacific Railway.",
+       exp:"Paragraph 8: he worked for CPR until 1897, 'when he retired completely from photography.'" },
+  9:  { correct:['merchant'],  type:'fill', text:'Father was a ___', exp:"Paragraph 1: 'son of a successful merchant.'" },
+  10: { correct:['equipment'], type:'fill', text:'The ___ was heavy', exp:"Paragraph 5: 'because of the time-consuming techniques involved and the weight of the equipment.'" },
+  11: { correct:['gifts'],     type:'fill', text:'Photographs were ___ or souvenirs', exp:"Paragraph 5: 'as souvenirs of a trip or as gifts.'" },
+  12: { correct:['canoe'],     type:'fill', text:'Travelled along eastern rivers in a ___', exp:"Paragraph 7: 'often travelled by canoe on the Blanche, du Lièvre, and other noted eastern rivers.'" },
+  13: { correct:['mountains'], type:'fill', text:'Photographed the ___ and the railway at Rogers Pass', exp:"Paragraph 7: 'where he took photographs of the mountains and the progress of construction.'" }
+};
+
+const TOTAL = 13;
+let currentUser = null;
+let timerInterval = null;
+let secondsLeft = 20 * 60;
+let userAnswers = {};
+let flagged = {};
+let activeHlColor = null;
+
+// AUTH
+async function initAuth() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) { currentUser = session.user; showApp(); }
+}
+async function doSignIn() {
+  const email = document.getElementById('auth-email').value.trim();
+  const pass  = document.getElementById('auth-pass').value;
+  const btn   = document.getElementById('auth-btn');
+  if (!email || !pass) { showAuthMsg('Please enter email and password.', true); return; }
+  btn.disabled = true; btn.textContent = 'Signing in…';
+  const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+  btn.disabled = false; btn.textContent = 'Sign In';
+  if (error) { showAuthMsg(error.message, true); return; }
+  currentUser = data.user;
+  showApp();
+}
+function showAuthMsg(text, isErr) {
+  const el = document.getElementById('auth-msg');
+  el.textContent = text;
+  el.className = 'auth-msg ' + (isErr ? 'error' : 'success');
+  el.style.display = 'block';
+}
+function showApp() {
+  document.getElementById('auth-overlay').style.display = 'none';
+  const name = currentUser.user_metadata?.name || currentUser.email.split('@')[0];
+  document.getElementById('user-pill').textContent = '👤 ' + name.split(' ')[0];
+  startTimer();
+}
+async function doSignOut() { await sb.auth.signOut(); location.reload(); }
+
+// TIMER
+function startTimer() {
+  updateTimerDisplay();
+  timerInterval = setInterval(() => {
+    secondsLeft--;
+    updateTimerDisplay();
+    if (secondsLeft <= 0) { clearInterval(timerInterval); submitAnswers(); }
+  }, 1000);
+}
+function updateTimerDisplay() {
+  const m = Math.floor(secondsLeft / 60), s = secondsLeft % 60;
+  const el = document.getElementById('timer-display');
+  el.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  el.className = '';
+  if (secondsLeft <= 60) el.classList.add('danger');
+  else if (secondsLeft <= 180) el.classList.add('warning');
+}
+
+// HIGHLIGHT
+function setColor(color) {
+  activeHlColor = color;
+  document.querySelectorAll('.hl-btn').forEach(b => b.classList.remove('active'));
+  const map = {'#fff176':'hl-yellow','#c8e6c9':'hl-green','#f8bbd0':'hl-pink'};
+  if (map[color]) document.getElementById(map[color]).classList.add('active');
+}
+document.getElementById('passage-text').addEventListener('mouseup', () => {
+  if (!activeHlColor) return;
+  const sel = window.getSelection();
+  if (!sel || sel.isCollapsed) return;
+  const range = sel.getRangeAt(0);
+  const span = document.createElement('span');
+  span.style.backgroundColor = activeHlColor;
+  span.style.borderRadius = '3px';
+  try { range.surroundContents(span); } catch(e) {}
+  sel.removeAllRanges();
+});
+function clearHighlights() {
+  document.querySelectorAll('#passage-text span[style*="background"]').forEach(s => {
+    const p = s.parentNode;
+    while (s.firstChild) p.insertBefore(s.firstChild, s);
+    p.removeChild(s);
+  });
+}
+
+// INPUTS
+function selectOpt(q, val) {
+  userAnswers[q] = val;
+  document.querySelectorAll(`#opts-${q} .opt-label`).forEach(l => {
+    l.classList.toggle('selected', l.querySelector('input').value === val);
+  });
+  updateProgress();
+}
+function onInput(el) {
+  const q = parseInt(el.dataset.q);
+  userAnswers[q] = el.value.trim();
+  el.classList.toggle('answered', el.value.trim().length > 0);
+  updateProgress();
+}
+function toggleFlag(q) {
+  flagged[q] = !flagged[q];
+  const card = document.getElementById(`card-${q}`);
+  const btn  = card?.querySelector('.flag-btn');
+  if (card) card.classList.toggle('flagged', !!flagged[q]);
+  if (btn)  btn.classList.toggle('active', !!flagged[q]);
+}
+function updateProgress() {
+  let count = 0;
+  for (let i = 1; i <= 13; i++) {
+    const v = userAnswers[i];
+    if (v && String(v).trim() !== '') count++;
+  }
+  document.getElementById('progress-text').textContent = `${count} / ${TOTAL}`;
+  document.getElementById('progress-fill').style.width = `${(count/TOTAL)*100}%`;
+}
+
+// CONFIRM / SUBMIT
+function showConfirm() { document.getElementById('confirm-overlay').classList.add('show'); }
+function closeConfirm() { document.getElementById('confirm-overlay').classList.remove('show'); }
+
+async function submitAnswers() {
+  closeConfirm();
+  clearInterval(timerInterval);
+
+  let correct = 0;
+  for (let i = 1; i <= 13; i++) {
+    const a = ANSWERS[i];
+    const given = (userAnswers[i] || '').trim();
+    if (a.type === 'yng') {
+      if (given.toUpperCase() === a.correct.toUpperCase()) correct++;
+    } else {
+      if (a.correct.some(c => c.toLowerCase() === given.toLowerCase())) correct++;
+    }
+  }
+
+  const band = getBand(correct, TOTAL);
+
+  if (currentUser) {
+    try {
+      await sb.from('reading_scores').upsert({
+        user_id: currentUser.id, passage_id: PASSAGE_ID,
+        band_score: band, score_raw: correct, total: TOTAL,
+        completed_at: new Date().toISOString()
+      }, { onConflict: 'user_id,passage_id' });
+    } catch(e) { console.warn('Score save failed:', e); }
+  }
+
+  showResults(correct, band);
+}
+
+function getBand(raw, total) {
+  const s = raw / total * 40;
+  if (s >= 39) return 9.0; if (s >= 37) return 8.5; if (s >= 35) return 8.0;
+  if (s >= 33) return 7.5; if (s >= 30) return 7.0; if (s >= 27) return 6.5;
+  if (s >= 23) return 6.0; if (s >= 19) return 5.5; if (s >= 15) return 5.0;
+  if (s >= 13) return 4.5; if (s >= 10) return 4.0; return 3.5;
+}
+
+function showResults(correct, band) {
+  document.getElementById('results-screen').style.display = 'block';
+  document.getElementById('band-num').textContent = band.toFixed(1);
+  document.getElementById('raw-score').textContent = correct;
+  const pct = Math.min(100, (band / 9) * 100);
+  document.getElementById('band-ring').style.setProperty('--fill', pct + '%');
+
+  const list = document.getElementById('review-list');
+  list.innerHTML = '';
+
+  for (let i = 1; i <= 13; i++) {
+    const a = ANSWERS[i];
+    const given = (userAnswers[i] || '').trim();
+    let isOk;
+    if (a.type === 'yng') {
+      isOk = given.toUpperCase() === a.correct.toUpperCase();
+    } else {
+      isOk = a.correct.some(c => c.toLowerCase() === given.toLowerCase());
+    }
+
+    const correctDisplay = Array.isArray(a.correct) ? a.correct[0] : a.correct;
+    const givenDisplay = given || '(no answer)';
+
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (isOk ? 'correct-item' : 'wrong-item');
+    div.innerHTML = `
+      <div class="review-q-num">${isOk ? '✓' : '✗'} Question ${i}</div>
+      <div class="review-q-text">${a.text}</div>
+      <div class="review-answer-row">
+        <div class="ra-block">
+          <div class="ra-label">Your answer</div>
+          <div class="ra-val ${isOk ? 'correct' : 'wrong'}">${givenDisplay}</div>
+        </div>
+        ${!isOk ? `<div class="ra-block"><div class="ra-label">Correct answer</div><div class="ra-val answer">${correctDisplay}</div></div>` : ''}
+      </div>
+      <div class="review-exp">💡 ${a.exp}</div>`;
+    list.appendChild(div);
+  }
+}
+
+initAuth();
+</script>
+</body>
+</html>
