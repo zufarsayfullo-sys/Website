@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skyscraper Design – IELTS Reading | English Flow</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#1a2744;--navy-mid:#243358;--sky:#2e6fad;--sky-light:#e8f2fc;--gold:#c9922a;--gold-light:#fdf3e3;--cream:#f9f7f4;--surface:#ffffff;--text:#1a2744;--text-muted:#5a6a8a;--border:rgba(26,39,68,0.1);--green:#1e6e4e;--green-light:#e8f5ee;--red:#b91c1c;--red-light:#fef2f2;--radius:16px;--radius-lg:24px;}
+*{margin:0;padding:0;box-sizing:border-box}html,body{height:100%;overflow:hidden}
+body{font-family:'DM Sans',sans-serif;color:var(--text);background:var(--cream);display:flex;flex-direction:column}
+#auth-overlay{position:fixed;inset:0;z-index:9999;background:rgba(26,39,68,.88);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center}
+.auth-card{background:#fff;border-radius:var(--radius-lg);padding:2.5rem;width:100%;max-width:420px;text-align:center;box-shadow:0 32px 64px rgba(0,0,0,.3)}
+.auth-card h2{font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--navy);margin-bottom:.4rem}
+.auth-card p{color:var(--text-muted);font-size:.9rem;margin-bottom:1.5rem}
+.auth-input{width:100%;padding:.75rem 1rem;border:1.5px solid var(--border);border-radius:50px;font-family:'DM Sans',sans-serif;font-size:.95rem;color:var(--text);outline:none;margin-bottom:.75rem;transition:.2s}
+.auth-input:focus{border-color:var(--sky)}
+.auth-btn{width:100%;padding:.8rem;background:var(--navy);color:#fff;border:none;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:600;cursor:pointer;transition:.2s}
+.auth-btn:hover{background:var(--navy-mid)}.auth-btn:disabled{opacity:.6;cursor:default}
+.auth-msg{font-size:.85rem;margin-top:.75rem;padding:.5rem 1rem;border-radius:50px}
+.auth-msg.error{background:#fef2f2;color:var(--red)}.auth-msg.success{background:var(--green-light);color:var(--green)}
+#top-bar{background:linear-gradient(135deg,var(--navy),var(--navy-mid));color:#fff;padding:.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;z-index:100}
+.logo{font-family:'DM Serif Display',serif;font-size:1.4rem;color:#fff}.logo .dot{color:var(--gold)}
+.timer-lbl{font-size:.72rem;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.1rem;text-align:center}
+#timer-display{font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--gold);letter-spacing:.05em;min-width:70px;text-align:center}
+#timer-display.warning{color:#ff8c42;animation:blink .8s infinite}#timer-display.danger{color:#ff4444;animation:blink .5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
+.user-area{display:flex;align-items:center;gap:.75rem}
+.user-pill{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:50px;padding:.35rem .9rem;font-size:.85rem;font-weight:500;color:#fff}
+.signout-btn{background:transparent;border:1px solid rgba(255,255,255,.3);color:rgba(255,255,255,.8);border-radius:50px;padding:.35rem .85rem;font-family:'DM Sans',sans-serif;font-size:.8rem;cursor:pointer;transition:.2s}
+.signout-btn:hover{background:rgba(255,255,255,.1);color:#fff}
+#breadcrumb{background:#fff;border-bottom:1px solid var(--border);padding:.6rem 1.5rem;display:flex;align-items:center;gap:1rem;flex-shrink:0;font-size:.85rem}
+#breadcrumb a{color:var(--sky);text-decoration:none;font-weight:500;transition:.15s}#breadcrumb a:hover{color:var(--navy)}
+.crumb-sep{color:var(--text-muted)}
+.crumb-active{background:var(--navy);color:#fff;border-radius:50px;padding:.2rem .75rem;font-size:.8rem;font-weight:600;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#split-layout{display:flex;flex:1;overflow:hidden}
+#passage-col{width:55%;background:var(--cream);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+#questions-col{width:45%;background:var(--cream);display:flex;flex-direction:column;overflow:hidden}
+#highlight-toolbar{background:#fff;border-bottom:1px solid var(--border);padding:.6rem 1.5rem;display:flex;align-items:center;gap:.75rem;flex-shrink:0}
+.hl-label{font-size:.8rem;color:var(--text-muted);font-weight:500}
+.hl-btn{width:26px;height:26px;border-radius:50%;border:2px solid rgba(0,0,0,.15);cursor:pointer;transition:transform .15s;flex-shrink:0}
+.hl-btn:hover{transform:scale(1.2)}.hl-btn.active{border-color:rgba(0,0,0,.45);transform:scale(1.15)}
+#hl-yellow{background:#fff176}#hl-green{background:#c8e6c9}#hl-pink{background:#f8bbd0}
+.hl-clear{background:transparent;border:1px solid var(--border);color:var(--text-muted);border-radius:50px;padding:.25rem .7rem;font-family:'DM Sans',sans-serif;font-size:.75rem;cursor:pointer;transition:.15s}
+.hl-clear:hover{background:var(--red-light);color:var(--red);border-color:var(--red)}
+#passage-scroll{padding:1.75rem 2rem;overflow-y:auto;flex:1}
+.passage-title-row{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:.5rem;flex-wrap:wrap}
+.passage-title{font-family:'DM Serif Display',serif;font-size:1.55rem;color:var(--navy);line-height:1.3}
+.passage-subtitle{font-family:'DM Serif Display',serif;font-style:italic;font-size:.95rem;color:var(--text-muted);margin-bottom:1.5rem;line-height:1.5}
+.diff-badge{padding:.25rem .75rem;border-radius:50px;font-size:.72rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;flex-shrink:0;margin-top:.3rem}
+.diff-hard{background:#fce4ec;color:#880e4f}
+#passage-text{font-size:1rem;line-height:1.85;color:var(--text)}
+#passage-text p{margin-bottom:1rem}
+.section-label{font-weight:700;color:var(--navy);margin-right:.4rem}
+#progress-bar-wrap{background:#fff;border-bottom:1px solid var(--border);padding:.75rem 1.5rem;flex-shrink:0}
+.progress-label{display:flex;justify-content:space-between;font-size:.8rem;color:var(--text-muted);margin-bottom:.4rem;font-weight:500}
+.progress-track{height:6px;background:rgba(26,39,68,.08);border-radius:3px;overflow:hidden}
+#progress-fill{height:100%;background:linear-gradient(90deg,var(--sky),var(--navy));border-radius:3px;transition:width .4s ease;width:0%}
+#questions-scroll{padding:1.25rem 1.5rem;overflow-y:auto;flex:1}
+.q-section-hdr{background:var(--navy);color:#fff;border-radius:var(--radius) var(--radius) 0 0;padding:.9rem 1.25rem;margin-top:1.5rem}
+.q-section-hdr:first-child{margin-top:0}
+.q-section-type{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;opacity:.7;margin-bottom:.2rem}
+.q-section-title{font-family:'DM Serif Display',serif;font-size:1.1rem}
+.q-section-instr{font-size:.82rem;opacity:.8;margin-top:.4rem;line-height:1.55}
+.question-card{background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.25rem;margin-bottom:.75rem;transition:.2s}
+.question-card.flagged{border-color:var(--gold);background:var(--gold-light)}
+.q-header{display:flex;align-items:flex-start;justify-content:space-between;gap:.75rem;margin-bottom:.8rem}
+.q-num{background:var(--navy);color:#fff;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0;margin-top:.1rem}
+.q-text{font-size:.9rem;line-height:1.55;flex:1;color:var(--text)}
+.flag-btn{background:transparent;border:1px solid var(--border);border-radius:50px;padding:.2rem .55rem;font-size:.8rem;cursor:pointer;flex-shrink:0;transition:.15s;color:var(--text-muted)}
+.flag-btn:hover{background:var(--gold-light);border-color:var(--gold)}.flag-btn.active{background:var(--gold-light);border-color:var(--gold);color:var(--gold)}
+/* section-letter dropdown */
+.sect-select{width:100%;padding:.55rem .85rem;border:1.5px solid var(--border);border-radius:12px;font-family:'DM Sans',sans-serif;font-size:.88rem;color:var(--navy);background:#fff;outline:none;cursor:pointer;transition:.2s}
+.sect-select:focus{border-color:var(--sky)}.sect-select.answered{border-color:var(--green)}
+/* fill blanks */
+.blank-input{border:none;border-bottom:2px solid var(--sky);background:transparent;font-family:'DM Sans',sans-serif;font-size:.88rem;color:var(--navy);outline:none;width:120px;padding:.1rem .3rem;transition:.2s;text-align:center}
+.blank-input:focus{border-color:var(--navy);background:var(--sky-light)}.blank-input.answered{border-color:var(--green)}
+/* summary box */
+.summary-box{background:#fff;border:1.5px solid var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;font-size:.9rem;line-height:2.1}
+.summary-box h4{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--navy);margin-bottom:1rem;text-align:center}
+#submit-wrap{padding:1rem 1.5rem;border-top:1px solid var(--border);background:#fff;flex-shrink:0}
+#submit-btn{width:100%;padding:.85rem;background:var(--navy);color:#fff;border:none;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:.2s}
+#submit-btn:hover{background:var(--navy-mid);transform:translateY(-1px);box-shadow:0 4px 16px rgba(26,39,68,.25)}
+#confirm-overlay{position:fixed;inset:0;z-index:800;background:rgba(26,39,68,.7);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center}
+#confirm-overlay.show{display:flex}
+.confirm-card{background:#fff;border-radius:var(--radius-lg);padding:2rem;max-width:400px;width:90%;text-align:center}
+.confirm-card h3{font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--navy);margin-bottom:.75rem}
+.confirm-card p{font-size:.9rem;color:var(--text-muted);margin-bottom:1.5rem;line-height:1.6}
+.confirm-btns{display:flex;gap:.75rem;justify-content:center}
+.confirm-yes{background:var(--navy);color:#fff;border:none;border-radius:50px;padding:.65rem 1.75rem;font-family:'DM Sans',sans-serif;font-weight:600;cursor:pointer;transition:.2s}
+.confirm-yes:hover{background:var(--navy-mid)}
+.confirm-no{background:transparent;color:var(--text-muted);border:1.5px solid var(--border);border-radius:50px;padding:.65rem 1.75rem;font-family:'DM Sans',sans-serif;font-weight:500;cursor:pointer;transition:.2s}
+.confirm-no:hover{border-color:var(--navy);color:var(--navy)}
+#results-screen{display:none;position:fixed;inset:0;background:var(--cream);z-index:500;overflow-y:auto;padding:2rem 1rem}
+.results-inner{max-width:760px;margin:0 auto}
+.results-hero{text-align:center;margin-bottom:2.5rem}
+.results-hero h1{font-family:'DM Serif Display',serif;font-size:2rem;color:var(--navy);margin-bottom:.5rem}
+.band-ring{width:140px;height:140px;border-radius:50%;margin:1.5rem auto;background:conic-gradient(var(--gold) 0%,var(--gold) var(--fill,0%),rgba(26,39,68,.08) var(--fill,0%));display:flex;align-items:center;justify-content:center;position:relative;box-shadow:0 0 40px rgba(201,146,42,.2)}
+.band-ring::before{content:'';position:absolute;inset:12px;border-radius:50%;background:var(--cream)}
+.band-inner{position:relative;z-index:1;text-align:center}
+.band-num{font-family:'DM Serif Display',serif;font-size:2.4rem;color:var(--gold);line-height:1}
+.band-lbl{font-size:.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em;margin-top:.1rem}
+.score-raw{font-size:1.1rem;color:var(--text-muted);margin-top:.5rem}
+.score-raw strong{color:var(--navy);font-size:1.4rem}
+.review-list{display:flex;flex-direction:column;gap:1rem;margin-bottom:2rem}
+.review-item{background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.25rem}
+.review-item.correct-item{border-color:var(--green)}.review-item.wrong-item{border-color:var(--red)}
+.review-q-num{font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.4rem}
+.review-item.correct-item .review-q-num{color:var(--green)}.review-item.wrong-item .review-q-num{color:var(--red)}
+.review-q-text{font-size:.9rem;color:var(--text-muted);margin-bottom:.6rem;line-height:1.5}
+.review-answer-row{display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:.5rem}
+.ra-block{font-size:.85rem}.ra-label{font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);margin-bottom:.2rem}
+.ra-val.correct{color:var(--green);font-weight:700}.ra-val.wrong{color:var(--red);font-weight:700}.ra-val.answer{color:var(--navy);font-weight:700}
+.review-exp{font-size:.82rem;color:var(--text-muted);line-height:1.6;padding:.6rem .9rem;background:var(--cream);border-radius:8px;margin-top:.5rem}
+.back-btn{display:inline-block;background:var(--navy);color:#fff;border-radius:50px;padding:.75rem 2rem;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:600;text-decoration:none;transition:.2s}
+.back-btn:hover{background:var(--navy-mid)}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(26,39,68,.18);border-radius:3px}::-webkit-scrollbar-thumb:hover{background:rgba(26,39,68,.32)}
+@media(max-width:768px){html,body{overflow:auto;height:auto}#split-layout{flex-direction:column;overflow:visible}#passage-col,#questions-col{width:100%;overflow:visible;height:auto}#passage-scroll,#questions-scroll{overflow:visible;height:auto}}
+</style>
+</head>
+<body>
+
+<div id="auth-overlay">
+  <div class="auth-card">
+    <div style="font-size:2.5rem;margin-bottom:.5rem">📖</div>
+    <h2>Sign in to read</h2>
+    <p>You need an English Flow account to access this passage and track your scores.</p>
+    <input type="email" id="auth-email" class="auth-input" placeholder="Email address" onkeydown="if(event.key==='Enter')doSignIn()">
+    <input type="password" id="auth-pass" class="auth-input" placeholder="Password" onkeydown="if(event.key==='Enter')doSignIn()">
+    <button class="auth-btn" id="auth-btn" onclick="doSignIn()">Sign In</button>
+    <div id="auth-msg" class="auth-msg" style="display:none"></div>
+    <p style="margin-top:1rem;font-size:.8rem;color:var(--text-muted)">No account? <a href="../ielts.html" style="color:var(--sky)">Sign up on the IELTS page</a></p>
+  </div>
+</div>
+
+<div id="confirm-overlay">
+  <div class="confirm-card">
+    <h3>Submit Answers?</h3>
+    <p>You cannot change your answers after submitting. Make sure you've reviewed all questions.</p>
+    <div class="confirm-btns">
+      <button class="confirm-yes" onclick="submitAnswers()">Yes, Submit</button>
+      <button class="confirm-no" onclick="closeConfirm()">Go Back</button>
+    </div>
+  </div>
+</div>
+
+<div id="top-bar">
+  <div class="logo">English <span class="dot">Flow</span></div>
+  <div><div class="timer-lbl">Time remaining</div><div id="timer-display">20:00</div></div>
+  <div class="user-area">
+    <div class="user-pill" id="user-pill">Student</div>
+    <button class="signout-btn" onclick="doSignOut()">Sign out</button>
+  </div>
+</div>
+
+<div id="breadcrumb">
+  <a href="../index.html">← Home</a><span class="crumb-sep">/</span>
+  <a href="index.html">← Reading</a><span class="crumb-sep">/</span>
+  <span class="crumb-active">Back to the future of skyscraper design</span>
+</div>
+
+<div id="split-layout">
+
+  <!-- PASSAGE -->
+  <div id="passage-col">
+    <div id="highlight-toolbar">
+      <span class="hl-label">Highlight:</span>
+      <div class="hl-btn" id="hl-yellow" title="Yellow" onclick="setColor('#fff176')"></div>
+      <div class="hl-btn" id="hl-green"  title="Green"  onclick="setColor('#c8e6c9')"></div>
+      <div class="hl-btn" id="hl-pink"   title="Pink"   onclick="setColor('#f8bbd0')"></div>
+      <button class="hl-clear" onclick="clearHighlights()">✕ Clear all</button>
+    </div>
+    <div id="passage-scroll">
+      <div class="passage-title-row">
+        <h1 class="passage-title">Back to the future of skyscraper design</h1>
+        <span class="diff-badge diff-hard">Hard</span>
+      </div>
+      <p class="passage-subtitle">Answers to the problem of excessive electricity use by skyscrapers and large public buildings can be found in ingenious but forgotten architectural designs of the 19th and early-20th centuries</p>
+      <div id="passage-text">
+        <p><span class="section-label">A</span><em>The Recovery of Natural Environments in Architecture</em> by Professor Alan Short is the culmination of 30 years of research and award-winning green building design by Short and colleagues in Architecture, Engineering, Applied Maths and Earth Sciences at the University of Cambridge.</p>
+        <p>'The crisis in building design is already here,' said Short. 'Policy makers think you can solve energy and building problems with gadgets. You can't. As global temperatures continue to rise, we are going to continue to squander more and more energy on keeping our buildings mechanically cool until we have run out of capacity.'</p>
+        <p><span class="section-label">B</span>Short is calling for a sweeping reinvention of how skyscrapers and major public buildings are designed — to end the reliance on sealed buildings which exist solely via the 'life support' system of vast air conditioning units.</p>
+        <p>Instead, he shows it is entirely possible to accommodate natural ventilation and cooling in large buildings by looking into the past, before the widespread introduction of air conditioning systems, which were 'relentlessly and aggressively marketed' by their inventors.</p>
+        <p><span class="section-label">C</span>Short points out that to make most contemporary buildings habitable, they have to be sealed and air conditioned. The energy use and carbon emissions this generates is spectacular and largely unnecessary. Buildings in the West account for 40–50% of electricity usage, generating substantial carbon emissions, and the rest of the world is catching up at a frightening rate. Short regards glass, steel and air-conditioned skyscrapers as symbols of status, rather than practical ways of meeting our requirements.</p>
+        <p><span class="section-label">D</span>Short's book highlights a developing and sophisticated art and science of ventilating buildings through the 19th and earlier-20th centuries, including the design of ingeniously ventilated hospitals. Of particular interest were those built to the designs of John Shaw Billings, including the first Johns Hopkins Hospital in the US city of Baltimore (1873–1889).</p>
+        <p>'We spent three years digitally modelling Billings' final designs,' says Short. 'We put pathogens* in the airstreams, modelled for someone with tuberculosis (TB) coughing in the wards and we found the ventilation systems in the room would have kept other patients safe from harm.</p>
+        <p><span class="section-label">E</span>'We discovered that 19th-century hospital wards could generate up to 24 air changes an hour – that's similar to the performance of a modern-day, computer-controlled operating theatre. We believe you could build wards based on these principles now.</p>
+        <p>Single rooms are not appropriate for all patients. Communal wards appropriate for certain patients – older people with dementia, for example – would work just as well in today's hospitals, at a fraction of the energy cost.'</p>
+        <p>Professor Short contends the mindset and skill-sets behind these designs have been completely lost, lamenting the disappearance of expertly designed theatres, opera houses, and other buildings where up to half the volume of the building was given over to ensuring everyone got fresh air.</p>
+        <p><span class="section-label">F</span>Much of the ingenuity present in 19th-century hospital and building design was driven by a panicked public clamouring for buildings that could protect against what was thought to be the lethal threat of miasmas – toxic air that spread disease. Miasmas were feared as the principal agents of disease and epidemics for centuries, and were used to explain the spread of infection from the Middle Ages right through to the cholera outbreaks in London and Paris during the 1850s. Foul air, rather than germs, was believed to be the main driver of 'hospital fever', leading to disease and frequent death. The prosperous steered clear of hospitals.</p>
+        <p>While miasma theory has been long since disproved, Short has for the last 30 years advocated a return to some of the building design principles produced in its wake.</p>
+        <p><span class="section-label">G</span>Today, huge amounts of a building's space and construction cost are given over to air conditioning. 'But I have designed and built a series of buildings over the past three decades which have tried to reinvent some of these ideas and then measure what happens.</p>
+        <p>'To go forward into our new low-energy, low-carbon future, we would be well advised to look back at design before our high-energy, high-carbon present appeared. What is surprising is what a rich legacy we have abandoned.'</p>
+        <p><span class="section-label">H</span>Successful examples of Short's approach include the Queen's Building at De Montfort University in Leicester. Containing as many as 2,000 staff and students, the entire building is naturally ventilated, passively cooled and naturally lit, including the two largest auditoria, each seating more than 150 people. The award-winning building uses a fraction of the electricity of comparable buildings in the UK.</p>
+        <p>Short contends that glass skyscrapers in London and around the world will become a liability over the next 20 or 30 years if climate modelling predictions and energy price rises come to pass as expected.</p>
+        <p><span class="section-label">I</span>He is convinced that sufficiently cooled skyscrapers using the natural environment can be produced in almost any climate. He and his team have worked on hybrid buildings in the harsh climates of Beijing and Chicago – built with natural ventilation assisted by back-up air conditioning – which, surprisingly perhaps, can be switched off more than half the time on milder days and during the spring and autumn.</p>
+        <p>Short looks at how we might reimagine the cities, offices and homes of the future. Maybe it's time we changed our outlook.</p>
+        <p style="font-size:.82rem;color:var(--text-muted);margin-top:1rem">* pathogens: microorganisms that can cause disease</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUESTIONS -->
+  <div id="questions-col">
+    <div id="progress-bar-wrap">
+      <div class="progress-label"><span>Questions answered</span><span id="progress-text">0 / 13</span></div>
+      <div class="progress-track"><div id="progress-fill"></div></div>
+    </div>
+    <div id="questions-scroll">
+
+      <!-- Q14–18: Section matching -->
+      <div class="q-section-hdr">
+        <div class="q-section-type">Questions 14–18</div>
+        <div class="q-section-title">Information Matching</div>
+        <div class="q-section-instr">Reading Passage 2 has nine sections, A–I. Which section contains the following information? Write the correct letter, A–I.</div>
+      </div>
+
+      <div class="question-card" id="card-14">
+        <div class="q-header"><div class="q-num">14</div><div class="q-text">why some people avoided hospitals in the 19th century</div><button class="flag-btn" onclick="toggleFlag(14)">🚩</button></div>
+        <select class="sect-select" id="q14" onchange="onSelect(14,this)"><option value="">— Choose section —</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option><option>I</option></select>
+      </div>
+
+      <div class="question-card" id="card-15">
+        <div class="q-header"><div class="q-num">15</div><div class="q-text">a suggestion that the popularity of tall buildings is linked to prestige</div><button class="flag-btn" onclick="toggleFlag(15)">🚩</button></div>
+        <select class="sect-select" id="q15" onchange="onSelect(15,this)"><option value="">— Choose section —</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option><option>I</option></select>
+      </div>
+
+      <div class="question-card" id="card-16">
+        <div class="q-header"><div class="q-num">16</div><div class="q-text">a comparison between the circulation of air in a 19th-century building and modern standards</div><button class="flag-btn" onclick="toggleFlag(16)">🚩</button></div>
+        <select class="sect-select" id="q16" onchange="onSelect(16,this)"><option value="">— Choose section —</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option><option>I</option></select>
+      </div>
+
+      <div class="question-card" id="card-17">
+        <div class="q-header"><div class="q-num">17</div><div class="q-text">how Short tested the circulation of air in a 19th-century building</div><button class="flag-btn" onclick="toggleFlag(17)">🚩</button></div>
+        <select class="sect-select" id="q17" onchange="onSelect(17,this)"><option value="">— Choose section —</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option><option>I</option></select>
+      </div>
+
+      <div class="question-card" id="card-18">
+        <div class="q-header"><div class="q-num">18</div><div class="q-text">an implication that advertising led to the large increase in the use of air conditioning</div><button class="flag-btn" onclick="toggleFlag(18)">🚩</button></div>
+        <select class="sect-select" id="q18" onchange="onSelect(18,this)"><option value="">— Choose section —</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option><option>I</option></select>
+      </div>
+
+      <!-- Q19–26: Summary completion -->
+      <div class="q-section-hdr">
+        <div class="q-section-type">Questions 19–26</div>
+        <div class="q-section-title">Summary Completion</div>
+        <div class="q-section-instr">Complete the summary below. Choose ONE WORD ONLY from the passage for each answer.</div>
+      </div>
+
+      <div class="summary-box">
+        <h4>Ventilation in 19th-century hospital wards</h4>
+        <p>Professor Alan Short examined the work of John Shaw Billings, who influenced the architectural <strong>19</strong> <input class="blank-input" id="q19" data-q="19" placeholder="…" oninput="onInput(this)" autocomplete="off" spellcheck="false"> of hospitals to ensure they had good ventilation. He calculated that <strong>20</strong> <input class="blank-input" id="q20" data-q="20" placeholder="…" oninput="onInput(this)" autocomplete="off" spellcheck="false"> in the air coming from patients suffering from <strong>21</strong> <input class="blank-input" id="q21" data-q="21" placeholder="…" oninput="onInput(this)" autocomplete="off" spellcheck="false"> would not have harmed other patients. He also found that the air in <strong>22</strong> <input class="blank-input" id="q22" data-q="22" placeholder="…" oninput="onInput(this)" autocomplete="off" spellcheck="false"> in hospitals could change as often as in a modern operating theatre. He suggests that energy use could be reduced by locating more patients in <strong>23</strong> <input class="blank-input" id="q23" data-q="23" placeholder="…" oninput="onInput(this)" autocomplete="off" spellcheck="false"> areas.</p>
+        <p style="margin-top:1rem">A major reason for improving ventilation in 19th-century hospitals was the demand from the <strong>24</strong> <input class="blank-input" id="q24" data-q="24" placeholder="…" oninput="onInput(this)" autocomplete="off" spellcheck="false"> for protection against bad air, known as <strong>25</strong> <input class="blank-input" id="q25" data-q="25" placeholder="…" oninput="onInput(this)" autocomplete="off" spellcheck="false">. These were blamed for the spread of disease for hundreds of years, including epidemics of <strong>26</strong> <input class="blank-input" id="q26" data-q="26" placeholder="…" oninput="onInput(this)" autocomplete="off" spellcheck="false"> in London and Paris in the middle of the 19th century.</p>
+      </div>
+
+    </div>
+    <div id="submit-wrap">
+      <button id="submit-btn" onclick="showConfirm()">Submit Answers</button>
+    </div>
+  </div>
+</div>
+
+<div id="results-screen">
+  <div class="results-inner">
+    <div class="results-hero">
+      <h1>Your Results</h1>
+      <div class="band-ring" id="band-ring"><div class="band-inner"><div class="band-num" id="band-num">—</div><div class="band-lbl">Band</div></div></div>
+      <div class="score-raw"><strong id="raw-score">0</strong> / 13 correct</div>
+    </div>
+    <div class="review-list" id="review-list"></div>
+    <div style="text-align:center;margin-bottom:2rem"><a href="index.html" class="back-btn">← Back to Reading</a></div>
+  </div>
+</div>
+
+<script>
+const PASSAGE_ID='skyscraper-design';
+const SUPABASE_URL='https://evhceswvapszaghnvmxl.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGNlc3d2YXBzemFnaG52bXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3OTQwNzMsImV4cCI6MjA5MzM3MDA3M30.yV7tavgR7JKc45uSGtS8Lf6m1ZMuuvQ23hmAb8n6k3A';
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const TOTAL=13;
+const ANSWERS={
+  14:{correct:'F',type:'select',text:'why some people avoided hospitals in the 19th century',exp:"Section F: 'The prosperous steered clear of hospitals.' — foul air / miasmas caused fear of hospitals."},
+  15:{correct:'C',type:'select',text:'a suggestion that the popularity of tall buildings is linked to prestige',exp:"Section C: Short regards glass, steel and air-conditioned skyscrapers as 'symbols of status'."},
+  16:{correct:'E',type:'select',text:'a comparison between the circulation of air in a 19th-century building and modern standards',exp:"Section E: '19th-century hospital wards could generate up to 24 air changes an hour – that's similar to the performance of a modern-day, computer-controlled operating theatre.'"},
+  17:{correct:'D',type:'select',text:'how Short tested the circulation of air in a 19th-century building',exp:"Section D: 'We spent three years digitally modelling Billings' final designs… We put pathogens in the airstreams, modelled for someone with tuberculosis coughing in the wards.'"},
+  18:{correct:'B',type:'select',text:'an implication that advertising led to the large increase in the use of air conditioning',exp:"Section B: air conditioning systems were 'relentlessly and aggressively marketed' by their inventors."},
+  19:{correct:['design'],type:'fill',text:'architectural ___ of hospitals',exp:"Section D: Short highlighted 'the design of ingeniously ventilated hospitals'."},
+  20:{correct:['pathogens'],type:'fill',text:'___ in the air from TB patients',exp:"Section D: 'We put pathogens in the airstreams, modelled for someone with tuberculosis coughing.'"},
+  21:{correct:['tuberculosis'],type:'fill',text:'patients suffering from ___',exp:"Section D: '…modelled for someone with tuberculosis (TB) coughing in the wards.'"},
+  22:{correct:['wards'],type:'fill',text:'air in ___ changed as often as in an operating theatre',exp:"Section E: '19th-century hospital wards could generate up to 24 air changes an hour.'"},
+  23:{correct:['communal'],type:'fill',text:'locating patients in ___ areas',exp:"Section E: 'Communal wards appropriate for certain patients… would work just as well in today's hospitals, at a fraction of the energy cost.'"},
+  24:{correct:['public'],type:'fill',text:'demand from the ___ for protection',exp:"Section F: 'driven by a panicked public clamouring for buildings that could protect against… miasmas.'"},
+  25:{correct:['miasmas'],type:'fill',text:'bad air known as ___',exp:"Section F: 'the lethal threat of miasmas – toxic air that spread disease.'"},
+  26:{correct:['cholera'],type:'fill',text:'epidemics of ___ in London and Paris',exp:"Section F: 'the cholera outbreaks in London and Paris during the 1850s.'"}
+};
+let currentUser=null,timerInterval=null,secondsLeft=20*60,userAnswers={},flagged={},activeHlColor=null;
+async function initAuth(){const{data:{session}}=await sb.auth.getSession();if(session){currentUser=session.user;showApp()}}
+async function doSignIn(){const email=document.getElementById('auth-email').value.trim(),pass=document.getElementById('auth-pass').value,btn=document.getElementById('auth-btn');if(!email||!pass){showAuthMsg('Please enter email and password.',true);return}btn.disabled=true;btn.textContent='Signing in…';const{data,error}=await sb.auth.signInWithPassword({email,password:pass});btn.disabled=false;btn.textContent='Sign In';if(error){showAuthMsg(error.message,true);return}currentUser=data.user;showApp()}
+function showAuthMsg(t,e){const el=document.getElementById('auth-msg');el.textContent=t;el.className='auth-msg '+(e?'error':'success');el.style.display='block'}
+function showApp(){document.getElementById('auth-overlay').style.display='none';const name=currentUser.user_metadata?.name||currentUser.email.split('@')[0];document.getElementById('user-pill').textContent='👤 '+name.split(' ')[0];startTimer()}
+async function doSignOut(){await sb.auth.signOut();location.reload()}
+function startTimer(){updateTimerDisplay();timerInterval=setInterval(()=>{secondsLeft--;updateTimerDisplay();if(secondsLeft<=0){clearInterval(timerInterval);submitAnswers()}},1000)}
+function updateTimerDisplay(){const m=Math.floor(secondsLeft/60),s=secondsLeft%60,el=document.getElementById('timer-display');el.textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;el.className='';if(secondsLeft<=60)el.classList.add('danger');else if(secondsLeft<=180)el.classList.add('warning')}
+function setColor(c){activeHlColor=c;document.querySelectorAll('.hl-btn').forEach(b=>b.classList.remove('active'));const map={'#fff176':'hl-yellow','#c8e6c9':'hl-green','#f8bbd0':'hl-pink'};if(map[c])document.getElementById(map[c]).classList.add('active')}
+document.getElementById('passage-text').addEventListener('mouseup',()=>{if(!activeHlColor)return;const sel=window.getSelection();if(!sel||sel.isCollapsed)return;const range=sel.getRangeAt(0),span=document.createElement('span');span.style.backgroundColor=activeHlColor;span.style.borderRadius='3px';try{range.surroundContents(span)}catch(e){}sel.removeAllRanges()});
+function clearHighlights(){document.querySelectorAll('#passage-text span[style*="background"]').forEach(s=>{const p=s.parentNode;while(s.firstChild)p.insertBefore(s.firstChild,s);p.removeChild(s)})}
+function onSelect(q,sel){userAnswers[q]=sel.value;sel.classList.toggle('answered',sel.value!=='');updateProgress()}
+function onInput(el){const q=parseInt(el.dataset.q);userAnswers[q]=el.value.trim();el.classList.toggle('answered',el.value.trim().length>0);updateProgress()}
+function toggleFlag(q){flagged[q]=!flagged[q];const card=document.getElementById(`card-${q}`),btn=card?.querySelector('.flag-btn');if(card)card.classList.toggle('flagged',!!flagged[q]);if(btn)btn.classList.toggle('active',!!flagged[q])}
+function updateProgress(){let count=0;for(let i=14;i<=26;i++){const v=userAnswers[i];if(v&&String(v).trim()!=='')count++}document.getElementById('progress-text').textContent=`${count} / ${TOTAL}`;document.getElementById('progress-fill').style.width=`${(count/TOTAL)*100}%`}
+function showConfirm(){document.getElementById('confirm-overlay').classList.add('show')}
+function closeConfirm(){document.getElementById('confirm-overlay').classList.remove('show')}
+async function submitAnswers(){closeConfirm();clearInterval(timerInterval);let correct=0;for(let i=14;i<=26;i++){const a=ANSWERS[i],given=(userAnswers[i]||'').trim();if(a.type==='select'){if(given===a.correct)correct++}else{if(a.correct.some(c=>c.toLowerCase()===given.toLowerCase()))correct++}}const band=getBand(correct,TOTAL);if(currentUser){try{await sb.from('reading_scores').upsert({user_id:currentUser.id,passage_id:PASSAGE_ID,band_score:band,score_raw:correct,total:TOTAL,completed_at:new Date().toISOString()},{onConflict:'user_id,passage_id'})}catch(e){console.warn('Save failed:',e)}}showResults(correct,band)}
+function getBand(raw,total){const s=raw/total*40;if(s>=39)return 9.0;if(s>=37)return 8.5;if(s>=35)return 8.0;if(s>=33)return 7.5;if(s>=30)return 7.0;if(s>=27)return 6.5;if(s>=23)return 6.0;if(s>=19)return 5.5;if(s>=15)return 5.0;if(s>=13)return 4.5;if(s>=10)return 4.0;return 3.5}
+function showResults(correct,band){document.getElementById('results-screen').style.display='block';document.getElementById('band-num').textContent=band.toFixed(1);document.getElementById('raw-score').textContent=correct;const pct=Math.min(100,(band/9)*100);document.getElementById('band-ring').style.setProperty('--fill',pct+'%');const list=document.getElementById('review-list');list.innerHTML='';for(let i=14;i<=26;i++){const a=ANSWERS[i],given=(userAnswers[i]||'').trim();let isOk;if(a.type==='select'){isOk=given===a.correct}else{isOk=a.correct.some(c=>c.toLowerCase()===given.toLowerCase())}const correctDisplay=Array.isArray(a.correct)?a.correct[0]:a.correct;const div=document.createElement('div');div.className='review-item '+(isOk?'correct-item':'wrong-item');div.innerHTML=`<div class="review-q-num">${isOk?'✓':'✗'} Question ${i}</div><div class="review-q-text">${a.text}</div><div class="review-answer-row"><div class="ra-block"><div class="ra-label">Your answer</div><div class="ra-val ${isOk?'correct':'wrong'}">${given||'(no answer)'}</div></div>${!isOk?`<div class="ra-block"><div class="ra-label">Correct answer</div><div class="ra-val answer">${correctDisplay}</div></div>`:''}</div><div class="review-exp">💡 ${a.exp}</div>`;list.appendChild(div)}}
+initAuth();
+</script>
+</body>
+</html>
