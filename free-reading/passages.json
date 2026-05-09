@@ -38,5 +38,15 @@
     "difficulty": "Medium",
     "questions": 13,
     "time": "20 min"
+  },
+  {
+    "id": "5",
+    "file": "skyscraper-design.html",
+    "title": "Back to the Future of Skyscraper Design",
+    "description": "Answers to excessive energy use in skyscrapers may lie in ingenious but forgotten architectural designs of the 19th century.",
+    "type": "Academic",
+    "difficulty": "Hard",
+    "questions": 13,
+    "time": "20 min"
   }
 ]
