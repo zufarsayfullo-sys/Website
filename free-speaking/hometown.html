@@ -12,14 +12,12 @@
     --text: #1a2744; --text-muted: #5a6a8a; --border: rgba(26,39,68,0.1);
     --green: #1e6e4e; --green-light: #e8f5ee; --radius: 16px; --radius-lg: 24px;
   }
-
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--text); min-height: 100vh; line-height: 1.6; }
 
-  /* HERO */
   .hero { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 60%, #1f4a7a 100%); position: relative; overflow: hidden; }
-  .hero::before { content:''; position:absolute; top:-40%; right:-10%; width:600px; height:600px; border-radius:50%; background:radial-gradient(circle, rgba(46,111,173,0.25) 0%, transparent 70%); pointer-events:none; }
-  .hero::after { content:''; position:absolute; bottom:-30%; left:5%; width:400px; height:400px; border-radius:50%; background:radial-gradient(circle, rgba(201,146,42,0.12) 0%, transparent 70%); pointer-events:none; }
+  .hero::before { content:''; position:absolute; top:-40%; right:-10%; width:600px; height:600px; border-radius:50%; background:radial-gradient(circle,rgba(46,111,173,0.25) 0%,transparent 70%); pointer-events:none; }
+  .hero::after { content:''; position:absolute; bottom:-30%; left:5%; width:400px; height:400px; border-radius:50%; background:radial-gradient(circle,rgba(201,146,42,0.12) 0%,transparent 70%); pointer-events:none; }
 
   .top-bar { display:flex; align-items:center; justify-content:space-between; padding:0.55rem 1.5rem; border-bottom:1px solid rgba(255,255,255,0.1); position:relative; z-index:10; flex-wrap:wrap; gap:0.5rem; }
   .logo { font-family:'DM Serif Display',serif; color:white; font-size:1.15rem; letter-spacing:-0.02em; text-decoration:none; }
@@ -32,186 +30,50 @@
   .hero-pills { display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:1rem; }
   .pill { background:rgba(255,255,255,0.1); color:rgba(255,255,255,0.8); border:1px solid rgba(255,255,255,0.15); padding:0.25rem 0.8rem; border-radius:40px; font-size:0.75rem; font-weight:500; }
 
-  /* QUICK LINKS */
   .quick-links { background:var(--surface); border-bottom:1px solid var(--border); padding:0.6rem 1.5rem; display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap; }
   .quick-link { display:flex; align-items:center; gap:0.35rem; padding:0.35rem 0.85rem; border-radius:40px; font-size:0.82rem; font-weight:500; text-decoration:none; color:var(--text-muted); border:1px solid var(--border); background:var(--cream); transition:all 0.2s; }
   .quick-link:hover { background:var(--sky-light); color:var(--sky); border-color:rgba(46,111,173,0.2); }
   .quick-link.active { background:var(--navy); color:white; border-color:var(--navy); }
 
-  /* MAIN */
-  .main { max-width: 820px; margin: 0 auto; padding: 2rem; }
+  .main { max-width:820px; margin:0 auto; padding:2rem; }
   @media (max-width:768px) { .main { padding:1rem; } .hero-content { padding:1.5rem 1rem; } .top-bar { padding:0.5rem 1rem; } }
 
-  /* SECTION HEADING */
-  .section-heading {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.3rem;
-    color: var(--text);
-    margin-bottom: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
+  .section-heading { font-family:'DM Serif Display',serif; font-size:1.3rem; color:var(--text); margin-bottom:1rem; display:flex; align-items:center; gap:0.5rem; }
 
-  /* QUESTION CARD */
-  .q-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    margin-bottom: 1rem;
-    overflow: hidden;
-    transition: box-shadow 0.2s;
-  }
-  .q-card:hover { box-shadow: 0 4px 20px rgba(26,39,68,0.08); }
+  /* QUESTION CARDS */
+  .q-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); margin-bottom:1rem; overflow:hidden; transition:box-shadow 0.2s; }
+  .q-card:hover { box-shadow:0 4px 20px rgba(26,39,68,0.08); }
 
-  .q-card-header {
-    padding: 1.1rem 1.4rem;
-    cursor: pointer;
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 1rem;
-  }
+  .q-card-header { padding:1.1rem 1.4rem; cursor:pointer; display:flex; align-items:flex-start; justify-content:space-between; gap:1rem; }
+  .q-number { font-size:0.72rem; font-weight:700; color:var(--sky); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:0.25rem; }
+  .q-text { font-family:'DM Serif Display',serif; font-size:1rem; color:var(--text); line-height:1.4; }
 
-  .q-number {
-    font-size: 0.72rem;
-    font-weight: 700;
-    color: var(--sky);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    margin-bottom: 0.25rem;
-  }
+  .q-toggle { font-size:0.82rem; color:var(--text-muted); flex-shrink:0; margin-top:0.2rem; transition:transform 0.25s; user-select:none; }
+  .q-toggle.open { transform:rotate(180deg); }
 
-  .q-text {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1rem;
-    color: var(--text);
-    line-height: 1.4;
-  }
+  .q-answer { display:none; border-top:1px solid var(--border); }
+  .q-answer.open { display:block; }
 
-  .q-toggle {
-    font-size: 0.82rem;
-    color: var(--text-muted);
-    flex-shrink: 0;
-    margin-top: 0.2rem;
-    transition: transform 0.2s;
-    user-select: none;
-  }
-  .q-toggle.open { transform: rotate(180deg); }
+  .answer-body { padding:1.1rem 1.4rem; }
 
-  /* ANSWER PANEL */
-  .q-answer {
-    display: none;
-    border-top: 1px solid var(--border);
-  }
-  .q-answer.open { display: block; }
+  .answer-label { font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--sky); margin-bottom:0.5rem; }
+  .answer-text { font-size:0.92rem; line-height:1.75; color:var(--text); background:var(--sky-light); border-radius:var(--radius); padding:1rem 1.1rem; border-left:3px solid var(--sky); margin-bottom:1rem; }
 
-  .answer-body { padding: 1.1rem 1.4rem; }
+  .analysis-label { font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--gold); margin-bottom:0.4rem; }
+  .analysis-text { font-size:0.84rem; line-height:1.65; color:var(--text-muted); background:var(--gold-light); border-radius:var(--radius); padding:0.9rem 1rem; border-left:3px solid var(--gold); }
 
-  .answer-label {
-    font-size: 0.7rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--sky);
-    margin-bottom: 0.5rem;
-  }
+  /* VOCABULARY */
+  .vocab-section { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; margin-top:2rem; margin-bottom:2rem; }
+  .vocab-header { background:linear-gradient(135deg,var(--navy),var(--navy-mid)); padding:1rem 1.4rem; }
+  .vocab-header-title { font-family:'DM Serif Display',serif; font-size:1.1rem; color:white; }
+  .vocab-header-sub { font-size:0.78rem; color:rgba(255,255,255,0.6); margin-top:0.1rem; }
 
-  .answer-text {
-    font-size: 0.92rem;
-    line-height: 1.75;
-    color: var(--text);
-    background: var(--sky-light);
-    border-radius: var(--radius);
-    padding: 1rem 1.1rem;
-    border-left: 3px solid var(--sky);
-    margin-bottom: 1rem;
-  }
-
-  .analysis-label {
-    font-size: 0.7rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--gold);
-    margin-bottom: 0.4rem;
-  }
-
-  .analysis-text {
-    font-size: 0.84rem;
-    line-height: 1.65;
-    color: var(--text-muted);
-    background: var(--gold-light);
-    border-radius: var(--radius);
-    padding: 0.9rem 1rem;
-    border-left: 3px solid var(--gold);
-  }
-
-  /* VOCABULARY SECTION */
-  .vocab-section {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    margin-top: 2rem;
-    margin-bottom: 2rem;
-  }
-
-  .vocab-header {
-    background: linear-gradient(135deg, var(--navy), var(--navy-mid));
-    padding: 1rem 1.4rem;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
-
-  .vocab-header-text { color: white; }
-  .vocab-header-title { font-family: 'DM Serif Display', serif; font-size: 1.1rem; }
-  .vocab-header-sub { font-size: 0.78rem; color: rgba(255,255,255,0.6); margin-top: 0.1rem; }
-
-  .vocab-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 0;
-  }
-
-  .vocab-item {
-    padding: 0.9rem 1.2rem;
-    border-right: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-  }
-  .vocab-item:nth-child(even) { border-right: none; }
-
-  .vocab-word {
-    font-weight: 700;
-    font-size: 0.9rem;
-    color: var(--navy);
-    margin-bottom: 0.2rem;
-  }
-
-  .vocab-type {
-    font-size: 0.68rem;
-    color: var(--sky);
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    margin-bottom: 0.25rem;
-  }
-
-  .vocab-def {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    line-height: 1.4;
-  }
-
-  .vocab-example {
-    font-size: 0.78rem;
-    color: var(--text-muted);
-    font-style: italic;
-    margin-top: 0.25rem;
-    padding-top: 0.25rem;
-    border-top: 1px dashed var(--border);
-  }
+  .vocab-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); }
+  .vocab-item { padding:0.9rem 1.2rem; border-right:1px solid var(--border); border-bottom:1px solid var(--border); }
+  .vocab-word { font-weight:700; font-size:0.9rem; color:var(--navy); margin-bottom:0.15rem; }
+  .vocab-type { font-size:0.68rem; color:var(--sky); font-weight:600; text-transform:uppercase; letter-spacing:0.04em; margin-bottom:0.2rem; }
+  .vocab-def { font-size:0.8rem; color:var(--text-muted); line-height:1.4; }
+  .vocab-example { font-size:0.78rem; color:var(--text-muted); font-style:italic; margin-top:0.25rem; padding-top:0.25rem; border-top:1px dashed var(--border); }
 
   /* FOOTER */
   .contact-bar { background:var(--surface); border-top:1px solid var(--border); padding:0.75rem 2rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.75rem; margin-top:1rem; }
@@ -225,7 +87,7 @@
 
 <div class="hero">
   <div class="top-bar">
-    <a href="../../index.html" class="logo">English<span class="logo-dot">Flow</span></a>
+    <a href="../index.html" class="logo">English<span class="logo-dot">Flow</span></a>
   </div>
   <div class="hero-content">
     <div class="hero-title"><em>Hometown</em></div>
@@ -240,10 +102,9 @@
 </div>
 
 <div class="quick-links">
-  <a href="../../index.html" class="quick-link">← Home</a>
-  <a href="../../ielts.html" class="quick-link">← IELTS Menu</a>
-  <a href="../index.html" class="quick-link">← Speaking</a>
-  <a href="../part1.html" class="quick-link">← Part 1</a>
+  <a href="../index.html" class="quick-link">← Home</a>
+  <a href="../ielts.html" class="quick-link">← IELTS Menu</a>
+  <a href="index.html" class="quick-link">← Speaking</a>
   <span class="quick-link active">Hometown</span>
 </div>
 
@@ -251,13 +112,9 @@
 
   <div class="section-heading">💬 Questions &amp; Sample Answers</div>
 
-  <!-- Q1 -->
   <div class="q-card">
     <div class="q-card-header" onclick="toggle(this)">
-      <div>
-        <div class="q-number">Question 1</div>
-        <div class="q-text">Where is your hometown?</div>
-      </div>
+      <div><div class="q-number">Question 1</div><div class="q-text">Where is your hometown?</div></div>
       <span class="q-toggle">▼</span>
     </div>
     <div class="q-answer">
@@ -270,13 +127,9 @@
     </div>
   </div>
 
-  <!-- Q2 -->
   <div class="q-card">
     <div class="q-card-header" onclick="toggle(this)">
-      <div>
-        <div class="q-number">Question 2</div>
-        <div class="q-text">Is your hometown a big city or a small place?</div>
-      </div>
+      <div><div class="q-number">Question 2</div><div class="q-text">Is your hometown a big city or a small place?</div></div>
       <span class="q-toggle">▼</span>
     </div>
     <div class="q-answer">
@@ -289,13 +142,9 @@
     </div>
   </div>
 
-  <!-- Q3 -->
   <div class="q-card">
     <div class="q-card-header" onclick="toggle(this)">
-      <div>
-        <div class="q-number">Question 3</div>
-        <div class="q-text">Please tell me about your hometown. / What's your hometown like?</div>
-      </div>
+      <div><div class="q-number">Question 3</div><div class="q-text">Please tell me about your hometown. / What's your hometown like?</div></div>
       <span class="q-toggle">▼</span>
     </div>
     <div class="q-answer">
@@ -308,13 +157,9 @@
     </div>
   </div>
 
-  <!-- Q4 -->
   <div class="q-card">
     <div class="q-card-header" onclick="toggle(this)">
-      <div>
-        <div class="q-number">Question 4</div>
-        <div class="q-text">How often do you visit your hometown?</div>
-      </div>
+      <div><div class="q-number">Question 4</div><div class="q-text">How often do you visit your hometown?</div></div>
       <span class="q-toggle">▼</span>
     </div>
     <div class="q-answer">
@@ -327,13 +172,9 @@
     </div>
   </div>
 
-  <!-- Q5 -->
   <div class="q-card">
     <div class="q-card-header" onclick="toggle(this)">
-      <div>
-        <div class="q-number">Question 5</div>
-        <div class="q-text">How long have you been living there?</div>
-      </div>
+      <div><div class="q-number">Question 5</div><div class="q-text">How long have you been living there?</div></div>
       <span class="q-toggle">▼</span>
     </div>
     <div class="q-answer">
@@ -346,13 +187,9 @@
     </div>
   </div>
 
-  <!-- Q6 -->
   <div class="q-card">
     <div class="q-card-header" onclick="toggle(this)">
-      <div>
-        <div class="q-number">Question 6</div>
-        <div class="q-text">Do you like your hometown? If yes, what do you like most about it?</div>
-      </div>
+      <div><div class="q-number">Question 6</div><div class="q-text">Do you like your hometown? If yes, what do you like most about it?</div></div>
       <span class="q-toggle">▼</span>
     </div>
     <div class="q-answer">
@@ -365,13 +202,9 @@
     </div>
   </div>
 
-  <!-- Q7 -->
   <div class="q-card">
     <div class="q-card-header" onclick="toggle(this)">
-      <div>
-        <div class="q-number">Question 7</div>
-        <div class="q-text">Is there anything you dislike about it?</div>
-      </div>
+      <div><div class="q-number">Question 7</div><div class="q-text">Is there anything you dislike about it?</div></div>
       <span class="q-toggle">▼</span>
     </div>
     <div class="q-answer">
@@ -384,13 +217,9 @@
     </div>
   </div>
 
-  <!-- Q8 -->
   <div class="q-card">
     <div class="q-card-header" onclick="toggle(this)">
-      <div>
-        <div class="q-number">Question 8</div>
-        <div class="q-text">Do you think you will continue living there for a long time?</div>
-      </div>
+      <div><div class="q-number">Question 8</div><div class="q-text">Do you think you will continue living there for a long time?</div></div>
       <span class="q-toggle">▼</span>
     </div>
     <div class="q-answer">
@@ -403,13 +232,9 @@
     </div>
   </div>
 
-  <!-- Q9 -->
   <div class="q-card">
     <div class="q-card-header" onclick="toggle(this)">
-      <div>
-        <div class="q-number">Question 9</div>
-        <div class="q-text">Has your hometown changed much since you were a child?</div>
-      </div>
+      <div><div class="q-number">Question 9</div><div class="q-text">Has your hometown changed much since you were a child?</div></div>
       <span class="q-toggle">▼</span>
     </div>
     <div class="q-answer">
@@ -422,13 +247,9 @@
     </div>
   </div>
 
-  <!-- Q10 -->
   <div class="q-card">
     <div class="q-card-header" onclick="toggle(this)">
-      <div>
-        <div class="q-number">Question 10</div>
-        <div class="q-text">Are there any changes you would like to make in your hometown?</div>
-      </div>
+      <div><div class="q-number">Question 10</div><div class="q-text">Are there any changes you would like to make in your hometown?</div></div>
       <span class="q-toggle">▼</span>
     </div>
     <div class="q-answer">
@@ -444,97 +265,82 @@
   <!-- VOCABULARY -->
   <div class="vocab-section">
     <div class="vocab-header">
-      <div class="vocab-header-text">
-        <div class="vocab-header-title">📚 Key Vocabulary — Hometown</div>
-        <div class="vocab-header-sub">Useful words and phrases from the sample answers above</div>
-      </div>
+      <div class="vocab-header-title">📚 Key Vocabulary — Hometown</div>
+      <div class="vocab-header-sub">Useful words and phrases from the sample answers above</div>
     </div>
     <div class="vocab-grid">
-
       <div class="vocab-item">
         <div class="vocab-word">Hospitality</div>
         <div class="vocab-type">noun</div>
         <div class="vocab-def">The friendly and generous reception of guests or strangers.</div>
         <div class="vocab-example">"I like the hospitality of people in my hometown."</div>
       </div>
-
       <div class="vocab-item">
         <div class="vocab-word">Picturesque</div>
         <div class="vocab-type">adjective</div>
         <div class="vocab-def">Visually attractive, especially in a charming or quaint way.</div>
         <div class="vocab-example">"A wonderful mix of culture and picturesque backwaters."</div>
       </div>
-
       <div class="vocab-item">
         <div class="vocab-word">Delectable</div>
         <div class="vocab-type">adjective</div>
         <div class="vocab-def">Extremely pleasant, especially to the taste; delicious.</div>
         <div class="vocab-example">"Delectable cuisine that draws visitors from afar."</div>
       </div>
-
       <div class="vocab-item">
         <div class="vocab-word">Captivating</div>
         <div class="vocab-type">adjective</div>
         <div class="vocab-def">Capable of attracting and holding interest; charming.</div>
         <div class="vocab-example">"It's a captivating place to live and raise a family."</div>
       </div>
-
       <div class="vocab-item">
         <div class="vocab-word">Infrastructure</div>
         <div class="vocab-type">noun</div>
-        <div class="vocab-def">The basic physical structures needed for society to function (roads, buildings, etc.).</div>
+        <div class="vocab-def">The basic physical structures needed for society to function.</div>
         <div class="vocab-example">"Improved infrastructure and a more vibrant atmosphere."</div>
       </div>
-
       <div class="vocab-item">
         <div class="vocab-word">Vibrant</div>
         <div class="vocab-type">adjective</div>
         <div class="vocab-def">Full of energy and enthusiasm; lively.</div>
         <div class="vocab-example">"A more vibrant atmosphere than before."</div>
       </div>
-
       <div class="vocab-item">
         <div class="vocab-word">Undergo</div>
         <div class="vocab-type">verb</div>
         <div class="vocab-def">To experience or be subjected to something.</div>
         <div class="vocab-example">"My hometown has undergone significant changes."</div>
       </div>
-
       <div class="vocab-item">
         <div class="vocab-word">Enhance</div>
         <div class="vocab-type">verb</div>
         <div class="vocab-def">To improve the quality, value, or extent of something.</div>
         <div class="vocab-example">"This would enhance the environment and promote activities."</div>
       </div>
-
       <div class="vocab-item">
         <div class="vocab-word">Commuting</div>
         <div class="vocab-type">noun / verb</div>
         <div class="vocab-def">Travelling regularly between home and work or study.</div>
         <div class="vocab-example">"Improved transportation would make commuting easier."</div>
       </div>
-
       <div class="vocab-item">
         <div class="vocab-word">Settling down</div>
         <div class="vocab-type">phrase</div>
         <div class="vocab-def">To establish a permanent home in a place.</div>
         <div class="vocab-example">"Settling down there is not part of my plan."</div>
       </div>
-
       <div class="vocab-item">
         <div class="vocab-word">Cozy</div>
         <div class="vocab-type">adjective</div>
         <div class="vocab-def">Giving a feeling of comfort and warmth; intimate.</div>
         <div class="vocab-example">"A medium-sized city with a cozy atmosphere."</div>
       </div>
-
       <div class="vocab-item">
         <div class="vocab-word">Give a hand</div>
         <div class="vocab-type">idiom</div>
         <div class="vocab-def">To help someone.</div>
         <div class="vocab-example">"Everyone was willing to give others a hand."</div>
       </div>
-
     </div>
   </div>
 
