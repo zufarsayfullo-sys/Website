@@ -35,11 +35,13 @@
   .quick-link:hover { background:var(--sky-light); color:var(--sky); border-color:rgba(46,111,173,0.2); }
   .quick-link.active { background:var(--navy); color:white; border-color:var(--navy); }
 
+  /* MAIN — 3 columns */
   .main { max-width:1280px; margin:0 auto; padding:2rem; display:grid; grid-template-columns:1fr 1fr 1fr; gap:1.25rem; }
   @media (max-width:900px) { .main { grid-template-columns:1fr 1fr; } }
-  @media (max-width:600px) { .main { grid-template-columns:1fr; padding:1rem; } .hero-content { padding:1.5rem 1rem; } .top-bar { padding:0.5rem 1rem; } }
+  @media (max-width:580px) { .main { grid-template-columns:1fr; padding:1rem; } .hero-content { padding:1.5rem 1rem; } .top-bar { padding:0.5rem 1rem; } }
 
-  .panel { background:var(--surface); border-radius:var(--radius-lg); border:1px solid var(--border); overflow:hidden; }
+  /* PANEL */
+  .panel { background:var(--surface); border-radius:var(--radius-lg); border:1px solid var(--border); overflow:hidden; display:flex; flex-direction:column; }
   .panel-header { padding:1.25rem 1.5rem 1rem; border-bottom:1px solid var(--border); }
 
   .panel-badge { padding:0.3rem 0.8rem; border-radius:40px; font-size:0.72rem; font-weight:600; letter-spacing:0.04em; text-transform:uppercase; }
@@ -49,21 +51,32 @@
 
   .panel-title { font-family:'DM Serif Display',serif; font-size:1.15rem; color:var(--text); letter-spacing:-0.01em; margin-top:0.4rem; }
   .panel-subtitle { color:var(--text-muted); font-size:0.78rem; margin-top:0.2rem; line-height:1.4; }
-  .panel-body { padding:1.25rem 1.5rem; }
+  .panel-body { padding:1.25rem 1.5rem; flex:1; display:flex; flex-direction:column; }
 
-  .stat-row { display:flex; gap:0.75rem; margin-bottom:1rem; }
+  /* STATS */
+  .stat-row { display:flex; gap:0.75rem; margin-bottom:1.1rem; }
   .stat-item { background:var(--cream); border:1px solid var(--border); border-radius:var(--radius); padding:0.65rem 0.9rem; flex:1; text-align:center; }
   .stat-number { font-family:'DM Serif Display',serif; font-size:1.5rem; color:var(--navy); line-height:1; }
   .stat-label { font-size:0.68rem; color:var(--text-muted); margin-top:0.2rem; font-weight:500; text-transform:uppercase; letter-spacing:0.03em; }
 
+  /* TOPIC LIST */
+  .topics-list { flex:1; margin-bottom:1rem; }
   .recent-label { font-size:0.7rem; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:0.5rem; }
-  .recent-item { display:flex; align-items:center; justify-content:space-between; padding:0.45rem 0; border-bottom:1px solid var(--border); gap:0.5rem; }
-  .recent-item:last-child { border-bottom:none; }
-  .recent-topic { font-size:0.82rem; font-weight:600; color:var(--text); }
-  .recent-date { font-size:0.72rem; color:var(--text-muted); white-space:nowrap; }
-  .no-topics { font-size:0.82rem; color:var(--text-muted); padding:0.5rem 0; }
 
-  .btn-go { display:flex; align-items:center; justify-content:space-between; width:100%; padding:0.85rem 1.25rem; color:white; border:none; border-radius:var(--radius); font-size:0.9rem; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif; transition:all 0.2s; text-decoration:none; margin-top:1.1rem; }
+  .topic-row { display:flex; align-items:center; justify-content:space-between; padding:0.5rem 0; border-bottom:1px solid var(--border); gap:0.5rem; text-decoration:none; color:inherit; transition:all 0.15s; }
+  .topic-row:last-child { border-bottom:none; }
+  .topic-row:hover .topic-row-title { color:var(--sky); }
+  .topic-row:hover .topic-row-arrow { transform:translateX(3px); color:var(--sky); }
+
+  .topic-row-left { display:flex; flex-direction:column; gap:0.1rem; }
+  .topic-row-title { font-size:0.85rem; font-weight:600; color:var(--text); transition:color 0.15s; }
+  .topic-row-date { font-size:0.72rem; color:var(--text-muted); }
+  .topic-row-arrow { font-size:0.8rem; color:var(--text-muted); flex-shrink:0; transition:all 0.15s; }
+
+  .no-topics { font-size:0.82rem; color:var(--text-muted); padding:0.75rem 0; text-align:center; }
+
+  /* GO BUTTON */
+  .btn-go { display:flex; align-items:center; justify-content:space-between; width:100%; padding:0.8rem 1.1rem; color:white; border:none; border-radius:var(--radius); font-size:0.88rem; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif; transition:all 0.2s; text-decoration:none; margin-top:auto; }
   .btn-go:hover { transform:translateY(-2px); box-shadow:0 4px 16px rgba(26,39,68,0.18); }
   .btn-go-arrow { font-size:1rem; transition:transform 0.2s; }
   .btn-go:hover .btn-go-arrow { transform:translateX(4px); }
@@ -73,6 +86,7 @@
   .btn-go-p3 { background:var(--green); }
   .btn-go-p3:hover { background:#155a3e; }
 
+  /* FOOTER */
   .contact-bar { background:var(--surface); border-top:1px solid var(--border); padding:0.75rem 2rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.75rem; margin-top:0.5rem; }
   .contact-links { display:flex; gap:0.5rem; flex-wrap:wrap; }
   .contact-link { display:flex; align-items:center; gap:0.4rem; padding:0.4rem 0.9rem; border-radius:40px; font-size:0.8rem; font-weight:500; text-decoration:none; color:var(--text-muted); border:1px solid var(--border); transition:all 0.2s; }
@@ -119,9 +133,11 @@
         <div class="stat-item"><div class="stat-number" id="p1Count">—</div><div class="stat-label">Topics</div></div>
         <div class="stat-item"><div class="stat-number">4–5</div><div class="stat-label">Minutes</div></div>
       </div>
-      <div class="recent-label">Recent topics</div>
-      <div id="p1Recent"><div class="no-topics">Loading…</div></div>
-      <a href="part1.html" class="btn-go btn-go-p1">Browse Part 1 Topics <span class="btn-go-arrow">→</span></a>
+      <div class="topics-list">
+        <div class="recent-label">Topics</div>
+        <div id="p1List"><div class="no-topics">Loading…</div></div>
+      </div>
+      <a href="part1-all.html" class="btn-go btn-go-p1">All Part 1 Topics <span class="btn-go-arrow">→</span></a>
     </div>
   </div>
 
@@ -137,9 +153,11 @@
         <div class="stat-item"><div class="stat-number" id="p2Count">—</div><div class="stat-label">Topics</div></div>
         <div class="stat-item"><div class="stat-number">3–4</div><div class="stat-label">Minutes</div></div>
       </div>
-      <div class="recent-label">Recent topics</div>
-      <div id="p2Recent"><div class="no-topics">Loading…</div></div>
-      <a href="part2.html" class="btn-go btn-go-p2">Browse Part 2 Topics <span class="btn-go-arrow">→</span></a>
+      <div class="topics-list">
+        <div class="recent-label">Topics</div>
+        <div id="p2List"><div class="no-topics">Loading…</div></div>
+      </div>
+      <a href="part2-all.html" class="btn-go btn-go-p2">All Part 2 Topics <span class="btn-go-arrow">→</span></a>
     </div>
   </div>
 
@@ -155,9 +173,11 @@
         <div class="stat-item"><div class="stat-number" id="p3Count">—</div><div class="stat-label">Topics</div></div>
         <div class="stat-item"><div class="stat-number">4–5</div><div class="stat-label">Minutes</div></div>
       </div>
-      <div class="recent-label">Recent topics</div>
-      <div id="p3Recent"><div class="no-topics">Loading…</div></div>
-      <a href="part3.html" class="btn-go btn-go-p3">Browse Part 3 Topics <span class="btn-go-arrow">→</span></a>
+      <div class="topics-list">
+        <div class="recent-label">Topics</div>
+        <div id="p3List"><div class="no-topics">Loading…</div></div>
+      </div>
+      <a href="part3-all.html" class="btn-go btn-go-p3">All Part 3 Topics <span class="btn-go-arrow">→</span></a>
     </div>
   </div>
 
@@ -173,27 +193,31 @@
 
 <script>
 (function() {
-  async function loadTopics() {
+  async function loadPart(part) {
     try {
-      const res = await fetch('topics.json');
+      const res = await fetch('part' + part + '.json');
       const topics = await res.json();
-      [1, 2, 3].forEach(part => {
-        const filtered = topics.filter(t => t.parts.includes(part));
-        document.getElementById('p' + part + 'Count').textContent = filtered.length;
-        const el = document.getElementById('p' + part + 'Recent');
-        if (filtered.length === 0) { el.innerHTML = '<div class="no-topics">No topics yet.</div>'; return; }
-        el.innerHTML = filtered.slice(0, 3).map(t => `
-          <div class="recent-item">
-            <span class="recent-topic">${t.title}</span>
-            <span class="recent-date">${t.exam_date || ''}</span>
+      document.getElementById('p' + part + 'Count').textContent = topics.length;
+      const el = document.getElementById('p' + part + 'List');
+      if (topics.length === 0) { el.innerHTML = '<div class="no-topics">No topics yet.</div>'; return; }
+      el.innerHTML = topics.slice(0, 5).map(t => `
+        <a href="${t.file}" class="topic-row">
+          <div class="topic-row-left">
+            <span class="topic-row-title">${t.title}</span>
+            ${t.exam_date ? `<span class="topic-row-date">${t.exam_date}</span>` : ''}
           </div>
-        `).join('');
-      });
+          <span class="topic-row-arrow">→</span>
+        </a>
+      `).join('');
     } catch(e) {
-      [1,2,3].forEach(p => { document.getElementById('p' + p + 'Recent').innerHTML = '<div class="no-topics">Could not load.</div>'; });
+      document.getElementById('p' + part + 'Count').textContent = '0';
+      document.getElementById('p' + part + 'List').innerHTML = '<div class="no-topics">Could not load.</div>';
     }
   }
-  loadTopics();
+
+  loadPart(1);
+  loadPart(2);
+  loadPart(3);
 })();
 </script>
 </body>
