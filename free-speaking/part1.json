@@ -2,7 +2,6 @@
   {
     "id": 1,
     "title": "Hometown",
-    "parts": [1],
     "exam_date": "April 2026",
     "description": "Questions about where you grew up, your neighbourhood and local area.",
     "file": "hometown.html"
