@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "title": "Hometown",
+    "parts": [1, 2, 3],
+    "exam_date": "April 2026",
+    "description": "Questions about where you grew up, your neighbourhood and local area.",
+    "file": "topics/hometown.html"
+  },
+  {
+    "id": 2,
+    "title": "Technology",
+    "parts": [1, 3],
+    "exam_date": "March 2026",
+    "description": "Questions about devices, the internet and how technology affects daily life.",
+    "file": "topics/technology.html"
+  },
+  {
+    "id": 3,
+    "title": "A Place You Visited",
+    "parts": [2],
+    "exam_date": "April 2026",
+    "description": "Describe a memorable place you have visited and explain why it was special.",
+    "file": "topics/a-place-you-visited.html"
+  }
+]
