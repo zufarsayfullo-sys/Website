@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Listening | English Flow</title>
+<link rel="icon" href="data:,">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --navy:#1a2744;--navy-mid:#243358;--sky:#2e6fad;--sky-light:#e8f2fc;
+  --gold:#c9922a;--gold-light:#fdf3e3;--cream:#f9f7f4;--surface:#fff;
+  --text:#1a2744;--text-muted:#5a6a8a;--border:rgba(26,39,68,0.1);
+  --green:#1e6e4e;--green-light:#e8f5ee;--red:#b91c1c;
+  --purple:#6c3db1;--purple-light:#f0ebff;
+  --radius:16px;--radius-lg:24px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;display:flex;flex-direction:column;line-height:1.6}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 60%,#1f4a7a 100%);position:relative;overflow:hidden;flex-shrink:0}
+.hero::before{content:'';position:absolute;top:-30%;right:-5%;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(46,111,173,.25) 0%,transparent 70%);pointer-events:none}
+.hero::after{content:'';position:absolute;bottom:-20%;left:10%;width:350px;height:350px;border-radius:50%;background:radial-gradient(circle,rgba(108,61,177,.15) 0%,transparent 70%);pointer-events:none}
+
+/* TOP BAR */
+.top-bar{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1.5rem;border-bottom:1px solid rgba(255,255,255,.1);position:relative;z-index:10;flex-wrap:wrap;gap:.5rem}
+.logo{font-family:'DM Serif Display',serif;font-size:1.3rem;color:#fff;text-decoration:none}
+.logo-dot{color:var(--gold)}
+.user-area{display:flex;align-items:center;gap:.5rem}
+.user-pill{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);border-radius:50px;padding:.3rem .85rem;font-size:.82rem;color:#fff;font-weight:500}
+.signout-btn{background:transparent;border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.8);border-radius:50px;padding:.3rem .8rem;font-family:'DM Sans',sans-serif;font-size:.78rem;cursor:pointer;transition:.2s}
+.signout-btn:hover{background:rgba(255,255,255,.1);color:#fff}
+
+/* HERO CONTENT */
+.hero-content{padding:2.5rem 2rem 3rem;position:relative;z-index:10;max-width:900px;margin:0 auto;width:100%}
+.hero-tag{display:inline-flex;align-items:center;gap:.4rem;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:50px;padding:.3rem .9rem;font-size:.75rem;font-weight:600;color:rgba(255,255,255,.85);letter-spacing:.06em;text-transform:uppercase;margin-bottom:1rem}
+.hero-title{font-family:'DM Serif Display',serif;font-size:clamp(1.9rem,4.5vw,2.9rem);color:#fff;line-height:1.15;letter-spacing:-.02em;margin-bottom:.8rem}
+.hero-title em{font-style:italic;color:var(--gold)}
+.hero-sub{color:rgba(255,255,255,.68);font-size:1rem;font-weight:300;max-width:560px;margin-bottom:1.5rem;line-height:1.65}
+.hero-pills{display:flex;flex-wrap:wrap;gap:.5rem}
+.h-pill{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.15);border-radius:50px;padding:.3rem .85rem;font-size:.78rem;color:rgba(255,255,255,.8);font-weight:500}
+
+/* BREADCRUMB */
+.breadcrumb{background:var(--surface);border-bottom:1px solid var(--border);padding:.6rem 1.5rem;display:flex;align-items:center;gap:.75rem;font-size:.85rem;flex-wrap:wrap}
+.breadcrumb a{color:var(--sky);text-decoration:none;font-weight:500}
+.breadcrumb a:hover{color:var(--navy)}
+.bc-sep{color:var(--text-muted)}
+.bc-active{background:var(--navy);color:#fff;border-radius:50px;padding:.2rem .75rem;font-size:.78rem;font-weight:600}
+
+/* AUTH GATE */
+#auth-overlay{position:fixed;inset:0;z-index:9999;background:rgba(26,39,68,.88);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:1rem}
+.auth-card{background:#fff;border-radius:var(--radius-lg);padding:2.5rem;width:100%;max-width:420px;text-align:center;box-shadow:0 32px 64px rgba(0,0,0,.3)}
+.auth-card h2{font-family:'DM Serif Display',serif;font-size:1.7rem;color:var(--navy);margin-bottom:.4rem}
+.auth-card p{color:var(--text-muted);font-size:.88rem;margin-bottom:1.5rem}
+.auth-input{width:100%;padding:.75rem 1rem;border:1.5px solid var(--border);border-radius:50px;font-family:'DM Sans',sans-serif;font-size:.92rem;color:var(--text);outline:none;margin-bottom:.7rem;transition:.2s}
+.auth-input:focus{border-color:var(--sky)}
+.auth-btn{width:100%;padding:.8rem;background:var(--navy);color:#fff;border:none;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:.95rem;font-weight:600;cursor:pointer;transition:.2s}
+.auth-btn:hover{background:var(--navy-mid)}.auth-btn:disabled{opacity:.6;cursor:default}
+.auth-msg{font-size:.82rem;margin-top:.7rem;padding:.45rem 1rem;border-radius:50px;display:none}
+.auth-msg.error{background:#fef2f2;color:var(--red)}.auth-msg.success{background:var(--green-light);color:var(--green)}
+
+/* MAIN */
+main{flex:1;max-width:1100px;margin:0 auto;width:100%;padding:3rem 1.5rem}
+
+/* SECTION HEADINGS */
+.sec-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:1.5rem;gap:1rem;flex-wrap:wrap}
+.sec-title-group{}
+.sec-eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.3rem}
+.sec-title{font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--text);line-height:1.2}
+.sec-count{font-size:.82rem;color:var(--text-muted);background:var(--surface);border:1px solid var(--border);border-radius:50px;padding:.25rem .75rem;font-weight:500;align-self:flex-end}
+
+/* PRACTICE GRID */
+.practice-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.25rem;margin-bottom:3.5rem}
+.practice-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem;cursor:pointer;transition:all .25s cubic-bezier(.2,.9,.4,1.05);text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:.75rem;position:relative;overflow:hidden}
+.practice-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--sky);transform:scaleX(0);transform-origin:left;transition:transform .3s}
+.practice-card:hover{transform:translateY(-3px);border-color:rgba(46,111,173,.3);box-shadow:0 10px 30px rgba(26,39,68,.1)}
+.practice-card:hover::before{transform:scaleX(1)}
+.practice-card.locked{cursor:default;opacity:.65}
+.practice-card.locked:hover{transform:none;box-shadow:none}
+.practice-card.locked::before{display:none}
+
+.card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:.75rem}
+.card-icon{width:48px;height:48px;border-radius:14px;background:var(--sky-light);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+.card-badges{display:flex;flex-direction:column;align-items:flex-end;gap:.35rem}
+.diff-pill{font-size:.68rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:.2rem .65rem;border-radius:50px}
+.diff-easy{background:var(--green-light);color:var(--green)}
+.diff-medium{background:#fff3e0;color:#e65100}
+.diff-hard{background:#fce4ec;color:#880e4f}
+.score-pill{background:var(--gold-light);color:var(--gold);font-size:.72rem;font-weight:700;padding:.2rem .65rem;border-radius:50px}
+.coming-pill{background:rgba(108,61,177,.1);color:var(--purple);font-size:.68rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:.2rem .65rem;border-radius:50px}
+
+.card-title{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--text);line-height:1.3}
+.card-desc{font-size:.85rem;color:var(--text-muted);line-height:1.55;flex:1}
+.card-meta{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;padding-top:.5rem;border-top:1px solid var(--border);font-size:.78rem;color:var(--text-muted)}
+.meta-item{display:flex;align-items:center;gap:.3rem}
+
+/* PODCAST SECTION */
+.podcast-section{margin-bottom:3rem}
+.podcast-list{display:flex;flex-direction:column;gap:1rem}
+.podcast-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem 1.5rem;display:flex;align-items:center;gap:1.25rem;cursor:pointer;transition:all .22s;text-decoration:none;color:inherit}
+.podcast-card:hover{border-color:rgba(108,61,177,.3);box-shadow:0 6px 20px rgba(26,39,68,.08);transform:translateX(3px)}
+.podcast-card.locked{cursor:default;opacity:.6}
+.podcast-card.locked:hover{transform:none;box-shadow:none;border-color:var(--border)}
+.pod-thumb{width:64px;height:64px;border-radius:14px;background:linear-gradient(135deg,var(--purple),#9c5fd6);display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0;color:#fff}
+.pod-info{flex:1;min-width:0}
+.pod-title{font-family:'DM Serif Display',serif;font-size:1.05rem;color:var(--text);margin-bottom:.25rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pod-desc{font-size:.82rem;color:var(--text-muted);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pod-right{display:flex;flex-direction:column;align-items:flex-end;gap:.4rem;flex-shrink:0}
+.pod-duration{font-size:.78rem;color:var(--text-muted);font-weight:500;white-space:nowrap}
+.pod-play{width:40px;height:40px;border-radius:50%;background:var(--purple);display:flex;align-items:center;justify-content:center;color:#fff;font-size:.9rem;transition:.2s;border:none;cursor:pointer}
+.pod-play:hover{background:#5a2fa0;transform:scale(1.05)}
+.pod-play.locked-icon{background:rgba(108,61,177,.15);color:var(--purple);cursor:default}
+.pod-play.locked-icon:hover{transform:none;background:rgba(108,61,177,.15)}
+
+/* COMING SOON SECTION */
+.coming-soon-banner{background:var(--surface);border:1.5px dashed var(--border);border-radius:var(--radius-lg);padding:2rem;text-align:center;color:var(--text-muted)}
+.coming-soon-banner .emoji{font-size:2rem;margin-bottom:.5rem}
+.coming-soon-banner p{font-size:.9rem;line-height:1.6}
+
+/* FOOTER */
+.site-footer{background:var(--surface);border-top:1px solid var(--border);padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem}
+.footer-links{display:flex;gap:.5rem}
+.footer-link{display:flex;align-items:center;gap:.35rem;padding:.35rem .85rem;border-radius:50px;font-size:.78rem;font-weight:500;text-decoration:none;color:var(--text-muted);border:1px solid var(--border);transition:.2s}
+.footer-link:hover{background:var(--sky-light);color:var(--sky);border-color:rgba(46,111,173,.25)}
+.footer-copy{font-size:.75rem;color:var(--text-muted)}
+
+@media(max-width:640px){
+  .hero-content{padding:2rem 1rem 2.5rem}
+  main{padding:2rem 1rem}
+  .practice-grid{grid-template-columns:1fr}
+  .podcast-card{flex-wrap:wrap}
+  .pod-right{flex-direction:row;width:100%;justify-content:space-between}
+  .sec-header{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<!-- AUTH -->
+<div id="auth-overlay">
+  <div class="auth-card">
+    <div style="font-size:2.5rem;margin-bottom:.5rem">🎧</div>
+    <h2>Sign in to listen</h2>
+    <p>You need an English Flow account to access listening content and track your progress.</p>
+    <input type="email" id="auth-email" class="auth-input" placeholder="Email address" onkeydown="if(event.key==='Enter')doSignIn()">
+    <input type="password" id="auth-pass" class="auth-input" placeholder="Password" onkeydown="if(event.key==='Enter')doSignIn()">
+    <button class="auth-btn" id="auth-btn" onclick="doSignIn()">Sign In</button>
+    <div id="auth-msg" class="auth-msg"></div>
+    <p style="margin-top:1rem;font-size:.8rem;color:var(--text-muted)">No account? <a href="../ielts.html" style="color:var(--sky)">Sign up on the IELTS page</a></p>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="top-bar">
+    <a href="../index.html" class="logo">English<span class="logo-dot">Flow</span></a>
+    <div class="user-area">
+      <div class="user-pill" id="user-pill">Student</div>
+      <button class="signout-btn" onclick="doSignOut()">Sign out</button>
+    </div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-tag">🎧 Listening</div>
+    <h1 class="hero-title">Train your ear.<br><em>Understand everything.</em></h1>
+    <p class="hero-sub">IELTS-style listening practice and real English podcasts — designed to sharpen your comprehension from B1 to C1.</p>
+    <div class="hero-pills">
+      <span class="h-pill">🎯 IELTS Practice</span>
+      <span class="h-pill">🎙 Real Podcasts</span>
+      <span class="h-pill">📊 Track Progress</span>
+      <span class="h-pill">✓ Free Access</span>
+    </div>
+  </div>
+</div>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb">
+  <a href="../index.html">← Home</a>
+  <span class="bc-sep">/</span>
+  <span class="bc-active">Listening</span>
+</div>
+
+<!-- MAIN -->
+<main>
+
+  <!-- PRACTICE -->
+  <div class="sec-header">
+    <div class="sec-title-group">
+      <div class="sec-eyebrow">🎯 IELTS Preparation</div>
+      <div class="sec-title">Listening Practice</div>
+    </div>
+    <span class="sec-count" id="practice-count">0 available</span>
+  </div>
+
+  <div class="practice-grid" id="practice-grid">
+    <!-- loaded from practice/practice.json -->
+    <div class="coming-soon-banner">
+      <div class="emoji">🔄</div>
+      <p>Loading practice tests...</p>
+    </div>
+  </div>
+
+  <!-- PODCASTS -->
+  <div class="sec-header">
+    <div class="sec-title-group">
+      <div class="sec-eyebrow">🎙 Real English</div>
+      <div class="sec-title">Listen to Podcasts</div>
+    </div>
+    <span class="sec-count" id="podcast-count">0 available</span>
+  </div>
+
+  <div class="podcast-list" id="podcast-list">
+    <!-- loaded from podcasts/podcasts.json -->
+    <div class="coming-soon-banner">
+      <div class="emoji">🔄</div>
+      <p>Loading podcasts...</p>
+    </div>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<div class="site-footer">
+  <div class="footer-links">
+    <a href="https://t.me/SAYFULLAEV_ZUFAR" target="_blank" class="footer-link">📱 Telegram</a>
+    <a href="https://www.instagram.com/sayfullaev.zufar/" target="_blank" class="footer-link">📸 Instagram</a>
+  </div>
+  <div class="footer-copy">📖 English Flow · 2026</div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://evhceswvapszaghnvmxl.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGNlc3d2YXBzemFnaG52bXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3OTQwNzMsImV4cCI6MjA5MzM3MDA3M30.yV7tavgR7JKc45uSGtS8Lf6m1ZMuuvQ23hmAb8n6k3A';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let currentUser = null;
+
+// AUTH
+async function initAuth() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) {
+    currentUser = session.user;
+    showApp();
+  }
+}
+
+async function doSignIn() {
+  const email = document.getElementById('auth-email').value.trim();
+  const pass  = document.getElementById('auth-pass').value;
+  const btn   = document.getElementById('auth-btn');
+  const msg   = document.getElementById('auth-msg');
+  if (!email || !pass) { showMsg('Please enter email and password.', true); return; }
+  btn.disabled = true; btn.textContent = 'Signing in…';
+  const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+  btn.disabled = false; btn.textContent = 'Sign In';
+  if (error) { showMsg(error.message, true); return; }
+  currentUser = data.user;
+  showApp();
+}
+
+function showMsg(text, isErr) {
+  const el = document.getElementById('auth-msg');
+  el.textContent = text;
+  el.className = 'auth-msg ' + (isErr ? 'error' : 'success');
+  el.style.display = 'block';
+}
+
+function showApp() {
+  document.getElementById('auth-overlay').style.display = 'none';
+  const name = currentUser.user_metadata?.name || currentUser.email.split('@')[0];
+  document.getElementById('user-pill').textContent = '👋 ' + name.split(' ')[0];
+  loadPractice();
+  loadPodcasts();
+}
+
+async function doSignOut() { await sb.auth.signOut(); location.reload(); }
+
+// LOAD PRACTICE TESTS
+async function loadPractice() {
+  const grid = document.getElementById('practice-grid');
+  const countEl = document.getElementById('practice-count');
+  try {
+    const res = await fetch('practice/practice.json');
+    if (!res.ok) throw new Error('not found');
+    const tests = await res.json();
+
+    // Load scores from Supabase
+    let scores = {};
+    try {
+      const { data } = await sb.from('listening_scores')
+        .select('test_id, band_score')
+        .eq('user_id', currentUser.id);
+      if (data) data.forEach(r => scores[r.test_id] = r.band_score);
+    } catch(e) {}
+
+    const available = tests.filter(t => !t.coming_soon).length;
+    countEl.textContent = `${available} available`;
+
+    grid.innerHTML = tests.map(t => {
+      const score = scores[t.id];
+      const scoreBadge = score ? `<span class="score-pill">Band ${score.toFixed(1)} ✓</span>` : '';
+      const comingBadge = t.coming_soon ? `<span class="coming-pill">Coming soon</span>` : '';
+      const locked = t.coming_soon ? 'locked' : '';
+      const href = locked ? '#' : `practice/${t.file}`;
+      return `
+      <a href="${href}" class="practice-card ${locked}" ${locked ? 'onclick="return false"' : ''}>
+        <div class="card-top">
+          <div class="card-icon">${t.icon || '🎧'}</div>
+          <div class="card-badges">
+            <span class="diff-pill diff-${(t.difficulty||'medium').toLowerCase()}">${t.difficulty}</span>
+            ${scoreBadge}${comingBadge}
+          </div>
+        </div>
+        <div class="card-title">${t.title}</div>
+        <div class="card-desc">${t.description}</div>
+        <div class="card-meta">
+          <span class="meta-item">⏱ ${t.time || '30 min'}</span>
+          <span class="meta-item">❓ ${t.questions || '40'} questions</span>
+          <span class="meta-item">📻 ${t.type || 'IELTS Academic'}</span>
+        </div>
+      </a>`;
+    }).join('');
+  } catch(e) {
+    countEl.textContent = '0 available';
+    grid.innerHTML = `
+      <div class="coming-soon-banner" style="grid-column:1/-1">
+        <div class="emoji">🎯</div>
+        <p><strong>Listening practice tests coming soon!</strong><br>
+        IELTS-style tests with audio, questions and instant scoring will be added here.</p>
+      </div>`;
+  }
+}
+
+// LOAD PODCASTS
+async function loadPodcasts() {
+  const list = document.getElementById('podcast-list');
+  const countEl = document.getElementById('podcast-count');
+  try {
+    const res = await fetch('podcasts/podcasts.json');
+    if (!res.ok) throw new Error('not found');
+    const pods = await res.json();
+
+    const available = pods.filter(p => !p.coming_soon).length;
+    countEl.textContent = `${available} available`;
+
+    list.innerHTML = pods.map(p => {
+      const locked = p.coming_soon ? 'locked' : '';
+      const href = locked ? '#' : `podcasts/${p.file}`;
+      const playBtn = locked
+        ? `<button class="pod-play locked-icon" disabled>🔒</button>`
+        : `<button class="pod-play" onclick="event.preventDefault();window.location='${href}'">▶</button>`;
+      return `
+      <a href="${locked ? '#' : href}" class="podcast-card ${locked}" ${locked ? 'onclick="return false"' : ''}>
+        <div class="pod-thumb">${p.emoji || '🎙'}</div>
+        <div class="pod-info">
+          <div class="pod-title">${p.title}</div>
+          <div class="pod-desc">${p.description}</div>
+        </div>
+        <div class="pod-right">
+          <span class="pod-duration">${p.duration || ''} ${p.coming_soon ? '<span class="coming-pill">Soon</span>' : ''}</span>
+          ${playBtn}
+        </div>
+      </a>`;
+    }).join('');
+  } catch(e) {
+    countEl.textContent = '0 available';
+    list.innerHTML = `
+      <div class="coming-soon-banner">
+        <div class="emoji">🎙</div>
+        <p><strong>Podcasts coming soon!</strong><br>
+        Real English conversations, news discussions and topic-based episodes will appear here.</p>
+      </div>`;
+  }
+}
+
+initAuth();
+</script>
+</body>
+</html>
