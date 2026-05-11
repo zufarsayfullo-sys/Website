@@ -11,5 +11,70 @@
     "format": "News Report",
     "source": "BBC News",
     "coming_soon": false
+  },
+  {
+    "id": "ep-2-bilingual-brain",
+    "file": "ep-2-bilingual-brain.html",
+    "title": "Ep 2 — Is Being Bilingual Good for Your Brain?",
+    "description": "Science shows bilingual people develop dementia 4 years later and recover better from strokes. But is it ever too late to learn?",
+    "emoji": "🧠",
+    "duration": "~7 min",
+    "level": "B2",
+    "topic": "Science",
+    "format": "Documentary",
+    "source": "BBC Ideas",
+    "coming_soon": false
+  },
+  {
+    "id": "ep-3-why-we-cant-stop-eating",
+    "file": "ep-3-why-we-cant-stop-eating.html",
+    "title": "Ep 3 — Why Can't We Stop Eating Certain Foods?",
+    "description": "The shocking truth about ultra-processed foods — engineered to bypass your brain's satiety signals and keep you eating more.",
+    "emoji": "🥗",
+    "duration": "~10 min",
+    "level": "B2",
+    "topic": "Health",
+    "format": "Documentary",
+    "source": "BBC",
+    "coming_soon": false
+  },
+  {
+    "id": "ep-4-ai2027",
+    "file": "ep-4-ai2027.html",
+    "title": "Ep 4 — AI2027: Is This How AI Might Destroy Humanity?",
+    "description": "A controversial research paper predicts AI will go rogue in 2027 and wipe out humanity by 2035. BBC World Service investigates.",
+    "emoji": "🤖",
+    "duration": "~8 min",
+    "level": "C1",
+    "topic": "Technology",
+    "format": "News Report",
+    "source": "BBC World Service",
+    "coming_soon": false
+  },
+  {
+    "id": "ep-5-underground-town",
+    "file": "ep-5-underground-town.html",
+    "title": "Ep 5 — Life Against the Odds in Australia's Underground Town",
+    "description": "In Coober Pedy, 60% of residents live underground to escape scorching heat — and the town is now a leader in renewable energy.",
+    "emoji": "⛏",
+    "duration": "~5 min",
+    "level": "B1",
+    "topic": "Society",
+    "format": "Documentary",
+    "source": "BBC Reel",
+    "coming_soon": false
+  },
+  {
+    "id": "ep-6-talking-about-lunch",
+    "file": "ep-6-talking-about-lunch.html",
+    "title": "Ep 6 — Talking About Lunch",
+    "description": "A natural everyday conversation about what people eat for lunch — great for practising real-life English and common food vocabulary.",
+    "emoji": "🥪",
+    "duration": "~5 min",
+    "level": "B1",
+    "topic": "Everyday English",
+    "format": "Conversation",
+    "source": "Real Easy English",
+    "coming_soon": false
   }
 ]
