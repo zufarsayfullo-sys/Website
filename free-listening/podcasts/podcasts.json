@@ -1,1 +1,15 @@
-
+[
+  {
+    "id": "ep-1-instagram-privacy",
+    "file": "ep-1-instagram-privacy.html",
+    "title": "Ep 1 — Instagram Privacy Tech Turned Off",
+    "description": "Instagram has removed end-to-end encryption from DMs — a major privacy U-turn by Meta. What does this mean for your messages?",
+    "emoji": "🔒",
+    "duration": "~3 min",
+    "level": "B2",
+    "topic": "Technology",
+    "format": "News Report",
+    "source": "BBC News",
+    "coming_soon": false
+  }
+]
