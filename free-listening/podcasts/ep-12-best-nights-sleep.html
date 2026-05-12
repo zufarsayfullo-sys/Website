@@ -1,1 +1,209 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to Get Your Best Night's Sleep | English Flow Podcasts</title>
+<link rel="icon" href="data:,">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--navy:#1a2744;--navy-mid:#243358;--sky:#2e6fad;--sky-light:#e8f2fc;--gold:#c9922a;--gold-light:#fdf3e3;--cream:#f9f7f4;--surface:#fff;--text:#1a2744;--text-muted:#5a6a8a;--border:rgba(26,39,68,0.1);--green:#1e6e4e;--green-light:#e8f5ee;--red:#b91c1c;--red-light:#fef2f2;--purple:#6c3db1;--purple-mid:#5a2fa0;--purple-light:#f0ebff;--radius:16px;--radius-lg:24px}
+body.dark-mode{--cream:#0e1422;--surface:#1a2438;--text:#f0f4fa;--text-muted:#95a3bf;--border:rgba(255,255,255,0.1);--navy:#0a1020;--purple-light:rgba(108,61,177,0.18);--gold-light:rgba(201,146,42,0.15);--green-light:rgba(30,110,78,0.18);--red-light:rgba(185,28,28,0.15)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;display:flex;flex-direction:column;line-height:1.6;transition:background-color .3s,color .3s}
+#auth-overlay{position:fixed;inset:0;z-index:9999;background:rgba(26,39,68,.88);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:1rem}
+.auth-card{background:#fff;border-radius:var(--radius-lg);padding:2.5rem;width:100%;max-width:420px;text-align:center;box-shadow:0 32px 64px rgba(0,0,0,.3)}
+.auth-card h2{font-family:'DM Serif Display',serif;font-size:1.7rem;color:var(--navy);margin-bottom:.4rem}
+.auth-card p{color:var(--text-muted);font-size:.88rem;margin-bottom:1.5rem}
+.auth-input{width:100%;padding:.75rem 1rem;border:1.5px solid rgba(26,39,68,.12);border-radius:50px;font-family:'DM Sans',sans-serif;font-size:.92rem;color:#1a2744;outline:none;margin-bottom:.7rem;transition:.2s}
+.auth-input:focus{border-color:var(--purple)}
+.auth-btn{width:100%;padding:.8rem;background:var(--purple);color:#fff;border:none;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:.95rem;font-weight:600;cursor:pointer;transition:.2s}
+.auth-btn:hover{background:var(--purple-mid)}.auth-btn:disabled{opacity:.6;cursor:default}
+.auth-msg{font-size:.82rem;margin-top:.7rem;padding:.45rem 1rem;border-radius:50px;display:none}
+.auth-msg.error{background:#fef2f2;color:var(--red)}.auth-msg.success{background:var(--green-light);color:var(--green)}
+#top-bar{background:linear-gradient(135deg,var(--navy),var(--navy-mid));color:#fff;padding:.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.logo{font-family:'DM Serif Display',serif;font-size:1.3rem;color:#fff}.logo-dot{color:var(--gold)}
+.theme-btn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:#fff;border-radius:50%;width:36px;height:36px;font-size:1rem;cursor:pointer;transition:.2s}
+.theme-btn:hover{background:rgba(255,255,255,.2)}
+.user-area{display:flex;align-items:center;gap:.5rem}
+.user-pill{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.22);border-radius:50px;padding:.3rem .85rem;font-size:.82rem;color:#fff;font-weight:500}
+.signout-btn{background:transparent;border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.8);border-radius:50px;padding:.3rem .8rem;font-family:'DM Sans',sans-serif;font-size:.78rem;cursor:pointer;transition:.2s}
+.signout-btn:hover{background:rgba(255,255,255,.1);color:#fff}
+#breadcrumb{background:var(--surface);border-bottom:1px solid var(--border);padding:.6rem 1.5rem;display:flex;align-items:center;gap:.75rem;font-size:.85rem;flex-wrap:wrap}
+#breadcrumb a{color:var(--purple);text-decoration:none;font-weight:500}#breadcrumb a:hover{opacity:.8}
+.bc-sep{color:var(--text-muted)}.bc-active{background:var(--navy);color:#fff;border-radius:50px;padding:.2rem .75rem;font-size:.78rem;font-weight:600;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.page-wrap{max-width:760px;margin:0 auto;padding:3rem 1.5rem 4rem;width:100%;flex:1}
+.ep-tag{display:inline-block;background:var(--purple-light);color:var(--purple);padding:.3rem .9rem;border-radius:50px;font-size:.72rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;margin-bottom:.75rem}
+.ep-num{font-size:.82rem;color:var(--text-muted);font-weight:500;margin-bottom:.4rem}
+.ep-title{font-family:'DM Serif Display',serif;font-size:clamp(1.6rem,4vw,2.2rem);color:var(--text);line-height:1.2;letter-spacing:-.02em;margin-bottom:1rem}
+.ep-meta{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem}
+.meta-badge{display:inline-flex;align-items:center;gap:.3rem;padding:.3rem .75rem;border-radius:50px;font-size:.75rem;font-weight:600}
+.badge-b1{background:var(--green-light);color:var(--green)}
+.badge-b2{background:#fff3e0;color:#e65100}
+.badge-c1{background:#fce4ec;color:#880e4f}
+.badge-topic{background:var(--purple-light);color:var(--purple)}
+.badge-format{background:var(--sky-light);color:var(--sky)}
+.badge-dur{background:rgba(26,39,68,.06);color:var(--text-muted)}
+.ep-desc{font-style:italic;color:var(--text-muted);font-size:.95rem;line-height:1.65;margin-bottom:1rem;padding:.75rem 1rem;border-left:3px solid var(--purple);background:var(--purple-light);border-radius:0 var(--radius) var(--radius) 0}
+.ep-speakers{font-size:.85rem;color:var(--text-muted);padding:.5rem .75rem;background:var(--surface);border:1px solid var(--border);border-radius:50px;display:inline-block}
+.sec-divider{height:1px;background:var(--border);margin:2.5rem 0}
+.yt-label{font-size:.78rem;color:var(--text-muted);font-weight:500;margin-bottom:.6rem}
+.yt-wrap{position:relative;padding-top:56.25%;border-radius:var(--radius-lg);overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.12)}
+.yt-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.yt-tip{font-size:.78rem;color:var(--text-muted);margin-top:.65rem;text-align:center}
+.sec-title{font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--text);margin-bottom:.3rem}
+.sec-sub{font-size:.88rem;color:var(--text-muted);margin-bottom:1.25rem}
+.vocab-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.85rem}
+.vocab-card{background:var(--purple-light);border:1px solid rgba(108,61,177,.15);border-radius:var(--radius);padding:1rem 1.1rem;transition:.2s}
+.vocab-card:hover{transform:translateY(-2px);box-shadow:0 4px 14px rgba(108,61,177,.12)}
+.vocab-word{font-weight:700;color:var(--purple);font-size:1rem;margin-bottom:.1rem}
+.vocab-pos{font-size:.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.35rem}
+.vocab-def{font-size:.84rem;color:var(--text);line-height:1.5;margin-bottom:.4rem}
+.vocab-ex{font-size:.8rem;color:var(--text-muted);font-style:italic;line-height:1.45}
+.transcript-toggle{width:100%;padding:.75rem 1.25rem;background:transparent;border:1.5px solid var(--purple);border-radius:50px;font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:600;color:var(--purple);cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:.2s;margin-bottom:1rem}
+.transcript-toggle:hover{background:var(--purple-light)}
+.toggle-arrow{display:inline-block;transition:transform .3s;font-size:.85rem}
+.toggle-arrow.open{transform:rotate(180deg)}
+.transcript-box{display:none;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;max-height:400px;overflow-y:auto;font-size:.95rem;line-height:1.85;color:var(--text)}
+.transcript-box.open{display:block}
+.spk{font-weight:700;color:var(--purple)}
+.progress-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:.85rem 1.25rem;margin-bottom:1.5rem}
+.prog-row{display:flex;justify-content:space-between;font-size:.8rem;color:var(--text-muted);font-weight:500;margin-bottom:.5rem}
+.prog-track{height:6px;background:rgba(108,61,177,.1);border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--purple),var(--purple-mid));border-radius:3px;transition:width .4s;width:0%}
+.q-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.25rem;margin-bottom:.85rem;transition:.2s}
+.q-card.flagged{border-color:var(--gold);background:var(--gold-light)}
+.q-top{display:flex;align-items:flex-start;justify-content:space-between;gap:.75rem;margin-bottom:.85rem}
+.q-num{background:var(--purple);color:#fff;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0;margin-top:.1rem}
+.q-text{font-size:.9rem;line-height:1.55;flex:1;color:var(--text)}
+.flag-btn{background:transparent;border:1px solid var(--border);border-radius:50px;padding:.2rem .55rem;font-size:.78rem;cursor:pointer;transition:.15s;color:var(--text-muted);flex-shrink:0}
+.flag-btn:hover{background:var(--gold-light);border-color:var(--gold)}.flag-btn.active{background:var(--gold-light);border-color:var(--gold);color:var(--gold)}
+.opts{display:flex;flex-direction:column;gap:.45rem}
+.opt-btn{background:var(--cream);border:1.5px solid var(--border);border-radius:10px;padding:.6rem .9rem;font-family:'DM Sans',sans-serif;font-size:.87rem;text-align:left;cursor:pointer;color:var(--text);transition:.15s;display:flex;align-items:center;gap:.6rem}
+.opt-btn:hover:not(:disabled){border-color:var(--purple);background:var(--purple-light)}.opt-btn:disabled{cursor:default}
+.opt-btn.correct{background:var(--green-light);border-color:var(--green);color:var(--green);font-weight:600}
+.opt-btn.wrong{background:var(--red-light);border-color:var(--red);color:var(--red);font-weight:600}
+.opt-key{font-weight:700;min-width:18px;flex-shrink:0}
+.tfng-row{display:flex;gap:.5rem;flex-wrap:wrap}
+.tfng-btn{flex:1;min-width:80px;background:var(--cream);border:1.5px solid var(--border);border-radius:50px;padding:.45rem .75rem;font-family:'DM Sans',sans-serif;font-size:.84rem;font-weight:600;cursor:pointer;color:var(--text);transition:.15s;text-align:center}
+.tfng-btn:hover:not(:disabled){border-color:var(--purple);background:var(--purple-light)}.tfng-btn:disabled{cursor:default}
+.tfng-btn.correct{background:var(--green-light);border-color:var(--green);color:var(--green)}
+.tfng-btn.wrong{background:var(--red-light);border-color:var(--red);color:var(--red)}
+.fill-wrap{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+.fill-input{border:none;border-bottom:2px solid var(--purple);background:transparent;font-family:'DM Sans',sans-serif;font-size:.88rem;color:var(--navy);outline:none;width:160px;padding:.1rem .3rem;text-align:center;transition:.2s}
+.fill-input:focus{border-color:var(--purple-mid)}.fill-input.answered{border-color:var(--green)}
+.check-fill-btn{background:var(--purple);color:#fff;border:none;border-radius:50px;padding:.3rem .85rem;font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer;transition:.2s}
+.check-fill-btn:hover{background:var(--purple-mid)}.check-fill-btn:disabled{opacity:.5;cursor:default}
+.q-feedback{margin-top:.65rem;font-size:.82rem;padding:.5rem .85rem;border-radius:10px;display:none;line-height:1.5}
+.q-feedback.show{display:block}.q-feedback.ok{background:var(--green-light);color:var(--green)}.q-feedback.bad{background:var(--red-light);color:var(--red)}
+.score-box{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:1.75rem;text-align:center;margin-top:1.5rem;display:none}
+.score-box.show{display:block}
+.score-emoji{font-size:2.5rem;margin-bottom:.5rem}
+.score-num{font-family:'DM Serif Display',serif;font-size:2.2rem;margin-bottom:.3rem}
+.score-num.great{color:var(--green)}.score-num.ok{color:var(--gold)}.score-num.low{color:var(--red)}
+.score-label{font-size:.9rem;color:var(--text-muted);margin-bottom:1.25rem}
+.mark-btn{width:100%;padding:.85rem;background:var(--purple);color:#fff;border:none;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:.2s}
+.mark-btn:hover{background:var(--purple-mid);transform:translateY(-1px);box-shadow:0 4px 16px rgba(108,61,177,.3)}
+.mark-btn:disabled{background:var(--green);cursor:default;transform:none;box-shadow:none}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(108,61,177,.25);border-radius:3px}
+@media(max-width:600px){.vocab-grid{grid-template-columns:1fr}.page-wrap{padding:2rem 1rem 3rem}#top-bar{padding:.6rem 1rem}}
+</style>
+</head>
+<body>
+<div id="auth-overlay">
+  <div class="auth-card">
+    <div style="font-size:2.5rem;margin-bottom:.5rem">🎧</div>
+    <h2>Sign in to listen</h2>
+    <p>You need an English Flow account to access podcast episodes.</p>
+    <input type="email" id="auth-email" class="auth-input" placeholder="Email address" onkeydown="if(event.key==='Enter')doSignIn()">
+    <input type="password" id="auth-pass" class="auth-input" placeholder="Password" onkeydown="if(event.key==='Enter')doSignIn()">
+    <button class="auth-btn" id="auth-btn" onclick="doSignIn()">Sign In</button>
+    <div id="auth-msg" class="auth-msg"></div>
+    <p style="margin-top:1rem;font-size:.8rem;color:var(--text-muted)">No account? <a href="../../ielts.html" style="color:var(--purple)">Sign up on the IELTS page</a></p>
+  </div>
+</div>
+<div id="top-bar">
+  <div class="logo">English<span class="logo-dot">Flow</span></div>
+  <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">🌙</button>
+  <div class="user-area"><div class="user-pill" id="user-pill">Student</div><button class="signout-btn" onclick="doSignOut()">Sign out</button></div>
+</div>
+<div id="breadcrumb">
+  <a href="../../index.html">← Home</a><span class="bc-sep">/</span>
+  <a href="../index.html">← Listening</a><span class="bc-sep">/</span>
+  <span class="bc-active">Best Night's Sleep</span>
+</div>
+<div class="page-wrap">
+  <div class="ep-tag">😴 Health</div>
+  <div class="ep-num">Episode 12</div>
+  <h1 class="ep-title">How to get your best night's sleep</h1>
+  <div class="ep-meta">
+    <span class="meta-badge badge-b2">B2</span>
+    <span class="meta-badge badge-topic">😴 Health</span>
+    <span class="meta-badge badge-format">🎙 Podcast</span>
+    <span class="meta-badge badge-dur">⏱ ~15 min</span>
+  </div>
+  <p class="ep-desc">BBC World Service's 'What in the World' podcast explores the science of sleep — from circadian rhythms to the damage caused by bad sleep — with practical advice on how to sleep better.</p>
+  <div class="ep-speakers">🗣 BBC World Service · Sleep science experts</div>
+  <div class="sec-divider"></div>
+  <div class="yt-label">🎬 Watch / Listen</div>
+  <div class="yt-wrap"><iframe src="https://www.youtube.com/embed/wv01kkwGzb8" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+  <p class="yt-tip">💡 Tip: Try listening without reading the transcript first — then use the vocabulary and transcript to check your understanding.</p>
+  <div class="sec-divider"></div>
+  <h2 class="sec-title">📚 Key Vocabulary</h2>
+  <p class="sec-sub">Learn these words before or after listening</p>
+  <div class="vocab-grid"><div class="vocab-card"><div class="vocab-word">circadian rhythm</div><div class="vocab-pos">noun phrase</div><div class="vocab-def">the body's natural 24-hour internal clock that controls sleep and wakefulness</div><div class="vocab-ex">"Shift workers often struggle because their jobs disrupt their circadian rhythm."</div></div><div class="vocab-card"><div class="vocab-word">insomnia</div><div class="vocab-pos">noun</div><div class="vocab-def">a condition in which a person has difficulty falling or staying asleep</div><div class="vocab-ex">"Millions of people worldwide suffer from chronic insomnia."</div></div><div class="vocab-card"><div class="vocab-word">tossing and turning</div><div class="vocab-pos">phrase</div><div class="vocab-def">moving around in bed because you cannot sleep</div><div class="vocab-ex">"She spent the whole night tossing and turning, unable to switch off her mind."</div></div><div class="vocab-card"><div class="vocab-word">restorative</div><div class="vocab-pos">adjective</div><div class="vocab-def">helping to refresh, repair or restore strength</div><div class="vocab-ex">"Deep sleep is the most restorative stage of the sleep cycle."</div></div><div class="vocab-card"><div class="vocab-word">deprivation</div><div class="vocab-pos">noun</div><div class="vocab-def">the state of not having enough of something essential</div><div class="vocab-ex">"Sleep deprivation can affect memory, mood and immune function."</div></div><div class="vocab-card"><div class="vocab-word">melatonin</div><div class="vocab-pos">noun</div><div class="vocab-def">a hormone produced by the brain that helps regulate sleep</div><div class="vocab-ex">"The body produces more melatonin in darkness, signalling that it is time to sleep."</div></div><div class="vocab-card"><div class="vocab-word">wind down</div><div class="vocab-pos">phrasal verb</div><div class="vocab-def">gradually relax after a period of activity; prepare for sleep</div><div class="vocab-ex">"Avoid screens for an hour before bed to help your body wind down."</div></div><div class="vocab-card"><div class="vocab-word">consistent</div><div class="vocab-pos">adjective</div><div class="vocab-def">happening regularly in the same way</div><div class="vocab-ex">"Going to bed at a consistent time each night improves sleep quality."</div></div><div class="vocab-card"><div class="vocab-word">drowsy</div><div class="vocab-pos">adjective</div><div class="vocab-def">feeling sleepy and unable to stay fully awake</div><div class="vocab-ex">"She felt drowsy after lunch and found it hard to concentrate."</div></div><div class="vocab-card"><div class="vocab-word">disrupted</div><div class="vocab-pos">adjective</div><div class="vocab-def">interrupted or prevented from continuing normally</div><div class="vocab-ex">"Disrupted sleep patterns are linked to higher risks of health problems."</div></div></div>
+  <div class="sec-divider"></div>
+  <button class="transcript-toggle" onclick="toggleTranscript()">
+    <span id="trans-lbl">📄 Show Transcript</span><span class="toggle-arrow" id="toggle-arrow">▼</span>
+  </button>
+  <div class="transcript-box" id="transcript-box"><p><span class="spk">BBC Host:</span> Do you find yourself tossing and turning for hours while struggling to fall asleep? Or perhaps you drop off quickly but wake up at 3am, mind racing, unable to get back to sleep? You're not alone.</p>
+<p>We spend around a third of our lives asleep, but a third of us regularly struggle. And recent research shows that bad sleep can increase the risk of multiple health conditions — from heart disease to depression to a weakened immune system.</p>
+<p><span class="spk">Sleep expert:</span> Sleep is not a passive state. When we sleep, our brains are actively consolidating memories, repairing cells, clearing toxic waste products and regulating hormones. One of the most important is melatonin — the body's sleep signal — which rises naturally in the evening as light fades. The problem is that modern life floods our evenings with artificial light, especially from screens, which suppresses melatonin production and pushes our sleep later and later.</p>
+<p><span class="spk">BBC Host:</span> Circadian rhythms — our internal body clock — are set primarily by light. Morning light exposure is one of the most powerful tools for anchoring your sleep schedule. Getting bright light in the first hour after waking helps reset the clock and makes it easier to fall asleep at the right time in the evening.</p>
+<p><span class="spk">Sleep expert:</span> Consistency is key. Going to bed and waking up at the same time every day — including weekends — is probably the single most important thing you can do. Your brain loves regularity. When your sleep schedule varies wildly, it's like giving yourself a version of jet lag every week.</p>
+<p><span class="spk">BBC Host:</span> Wind down before bed. Avoid stimulating activities — work emails, social media, news — in the hour before sleep. Keep your bedroom cool, dark, and quiet. And if you can't sleep, don't lie there watching the clock. Get up, do something calm and boring, and only return to bed when you feel genuinely drowsy.</p>
+<p>The good news: most sleep problems respond well to simple behavioural changes. You don't always need medication. You need a consistent routine — and a little patience.</p></div>
+  <div class="sec-divider"></div>
+  <h2 class="sec-title">🎯 Comprehension Check</h2>
+  <p class="sec-sub">Answer the questions based on what you heard</p>
+  <div class="progress-wrap">
+    <div class="prog-row"><span>Questions answered</span><span id="prog-text">0 / 7</span></div>
+    <div class="prog-track"><div class="prog-fill" id="prog-fill"></div></div>
+  </div>
+  <div class="q-card" id="card-1"><div class="q-top"><div class="q-num">1</div><div class="q-text">Approximately what fraction of people regularly struggle with sleep?</div><button class="flag-btn" onclick="toggleFlag(1)">🚩</button></div><div class="opts" id="opts-1"><button class="opt-btn" onclick="answerMC(1,'A','C')"><span class="opt-key">A</span> One tenth</button><button class="opt-btn" onclick="answerMC(1,'B','C')"><span class="opt-key">B</span> One quarter</button><button class="opt-btn" onclick="answerMC(1,'C','C')"><span class="opt-key">C</span> One third</button><button class="opt-btn" onclick="answerMC(1,'D','C')"><span class="opt-key">D</span> One half</button></div><div class="q-feedback" id="fb-1"></div></div><div class="q-card" id="card-2"><div class="q-top"><div class="q-num">2</div><div class="q-text">During sleep, the brain is passive and does very little activity.</div><button class="flag-btn" onclick="toggleFlag(2)">🚩</button></div><div class="tfng-row" id="opts-2"><button class="tfng-btn" onclick="answerTFNG(2,'TRUE','FALSE')">TRUE</button><button class="tfng-btn" onclick="answerTFNG(2,'FALSE','FALSE')">FALSE</button><button class="tfng-btn" onclick="answerTFNG(2,'NOT GIVEN','FALSE')">NOT GIVEN</button></div><div class="q-feedback" id="fb-2"></div></div><div class="q-card" id="card-3"><div class="q-top"><div class="q-num">3</div><div class="q-text">What hormone helps signal to the body that it is time to sleep?</div><button class="flag-btn" onclick="toggleFlag(3)">🚩</button></div><div class="opts" id="opts-3"><button class="opt-btn" onclick="answerMC(3,'A','C')"><span class="opt-key">A</span> Adrenaline</button><button class="opt-btn" onclick="answerMC(3,'B','C')"><span class="opt-key">B</span> Cortisol</button><button class="opt-btn" onclick="answerMC(3,'C','C')"><span class="opt-key">C</span> Melatonin</button><button class="opt-btn" onclick="answerMC(3,'D','C')"><span class="opt-key">D</span> Serotonin</button></div><div class="q-feedback" id="fb-3"></div></div><div class="q-card" id="card-4"><div class="q-top"><div class="q-num">4</div><div class="q-text">What is described as one of the most powerful tools for anchoring your sleep schedule?</div><button class="flag-btn" onclick="toggleFlag(4)">🚩</button></div><div class="opts" id="opts-4"><button class="opt-btn" onclick="answerMC(4,'A','B')"><span class="opt-key">A</span> Taking sleeping pills</button><button class="opt-btn" onclick="answerMC(4,'B','B')"><span class="opt-key">B</span> Morning light exposure</button><button class="opt-btn" onclick="answerMC(4,'C','B')"><span class="opt-key">C</span> Eating a big breakfast</button><button class="opt-btn" onclick="answerMC(4,'D','B')"><span class="opt-key">D</span> Avoiding all exercise</button></div><div class="q-feedback" id="fb-4"></div></div><div class="q-card" id="card-5"><div class="q-top"><div class="q-num">5</div><div class="q-text">The expert recommends sleeping at different times each day to keep your body flexible.</div><button class="flag-btn" onclick="toggleFlag(5)">🚩</button></div><div class="tfng-row" id="opts-5"><button class="tfng-btn" onclick="answerTFNG(5,'TRUE','FALSE')">TRUE</button><button class="tfng-btn" onclick="answerTFNG(5,'FALSE','FALSE')">FALSE</button><button class="tfng-btn" onclick="answerTFNG(5,'NOT GIVEN','FALSE')">NOT GIVEN</button></div><div class="q-feedback" id="fb-5"></div></div><div class="q-card" id="card-6"><div class="q-top"><div class="q-num">6</div><div class="q-text">What should you do if you cannot fall asleep after getting into bed?</div><button class="flag-btn" onclick="toggleFlag(6)">🚩</button></div><div class="opts" id="opts-6"><button class="opt-btn" onclick="answerMC(6,'A','C')"><span class="opt-key">A</span> Check your phone to distract yourself</button><button class="opt-btn" onclick="answerMC(6,'B','C')"><span class="opt-key">B</span> Count sheep until you fall asleep</button><button class="opt-btn" onclick="answerMC(6,'C','C')"><span class="opt-key">C</span> Get up and do something calm until you feel drowsy</button><button class="opt-btn" onclick="answerMC(6,'D','C')"><span class="opt-key">D</span> Take a sleeping tablet immediately</button></div><div class="q-feedback" id="fb-6"></div></div><div class="q-card" id="card-7"><div class="q-top"><div class="q-num">7</div><div class="q-text">Complete: Going to bed at a ___ time each night improves sleep quality. (ONE WORD)</div><button class="flag-btn" onclick="toggleFlag(7)">🚩</button></div><div class="fill-wrap"><input class="fill-input" id="fill-7" placeholder="one word" autocomplete="off" spellcheck="false"><button class="check-fill-btn" id="check-7" onclick="answerFill(7,["consistent"])">Check</button></div><div class="q-feedback" id="fb-7"></div></div>
+  <div class="score-box" id="score-box">
+    <div class="score-emoji" id="score-emoji">🎉</div>
+    <div class="score-num" id="score-num">0 / 7</div>
+    <div class="score-label" id="score-label">questions correct</div>
+    <button class="mark-btn" id="mark-btn" onclick="markListened()">✓ Mark as Listened</button>
+  </div>
+</div>
+<script>
+const EPISODE_ID='ep-12-best-nights-sleep';
+const TOTAL=7;
+const EXPS={"1": "The host says: 'a third of us regularly struggle' with sleep.", "2": "The expert says: 'Sleep is not a passive state. When we sleep, our brains are actively consolidating memories, repairing cells, clearing toxic waste.'", "3": "The expert says: 'One of the most important is melatonin \u2014 the body's sleep signal \u2014 which rises naturally in the evening.'", "4": "The host says: 'Morning light exposure is one of the most powerful tools for anchoring your sleep schedule.'", "5": "The expert says consistency is key \u2014 'Going to bed and waking up at the same time every day' is the most important thing.", "6": "The host advises: 'Get up, do something calm and boring, and only return to bed when you feel genuinely drowsy.'", "7": "The expert says: 'Consistency is key. Going to bed and waking up at the same time every day.'"};
+const SUPABASE_URL='https://evhceswvapszaghnvmxl.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGNlc3d2YXBzemFnaG52bXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3OTQwNzMsImV4cCI6MjA5MzM3MDA3M30.yV7tavgR7JKc45uSGtS8Lf6m1ZMuuvQ23hmAb8n6k3A';
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+let currentUser=null,answered={},flagged={},score=0;
+async function initAuth(){const{data:{session}}=await sb.auth.getSession();if(session){currentUser=session.user;showApp()}}
+async function doSignIn(){const email=document.getElementById('auth-email').value.trim(),pass=document.getElementById('auth-pass').value,btn=document.getElementById('auth-btn');if(!email||!pass){showMsg('Please enter email and password.',true);return}btn.disabled=true;btn.textContent='Signing in…';const{data,error}=await sb.auth.signInWithPassword({email,password:pass});btn.disabled=false;btn.textContent='Sign In';if(error){showMsg(error.message,true);return}currentUser=data.user;showApp()}
+function showMsg(t,e){const el=document.getElementById('auth-msg');el.textContent=t;el.className='auth-msg '+(e?'error':'success');el.style.display='block'}
+function showApp(){document.getElementById('auth-overlay').style.display='none';const name=currentUser.user_metadata?.name||currentUser.email.split('@')[0];document.getElementById('user-pill').textContent='👋 '+name.split(' ')[0]}
+async function doSignOut(){await sb.auth.signOut();location.reload()}
+function loadTheme(){if(localStorage.getItem('ef_dark')==='1'){document.body.classList.add('dark-mode');document.getElementById('theme-btn').textContent='☀'}}
+function toggleTheme(){const d=document.body.classList.toggle('dark-mode');localStorage.setItem('ef_dark',d?'1':'0');document.getElementById('theme-btn').textContent=d?'☀':'🌙'}
+function toggleTranscript(){const box=document.getElementById('transcript-box'),arrow=document.getElementById('toggle-arrow'),lbl=document.getElementById('trans-lbl'),open=box.classList.toggle('open');arrow.classList.toggle('open',open);lbl.textContent=open?'📄 Hide Transcript':'📄 Show Transcript'}
+function toggleFlag(q){flagged[q]=!flagged[q];document.getElementById('card-'+q).classList.toggle('flagged',!!flagged[q]);const btn=document.getElementById('card-'+q).querySelector('.flag-btn');btn.classList.toggle('active',!!flagged[q])}
+function updateProg(){const c=Object.keys(answered).length;document.getElementById('prog-text').textContent=c+' / '+TOTAL;document.getElementById('prog-fill').style.width=(c/TOTAL*100)+'%';if(c===TOTAL)setTimeout(showScore,500)}
+function answerMC(q,chosen,correct){if(answered[q])return;const isOk=chosen===correct;if(isOk)score++;answered[q]=chosen;document.querySelectorAll('#opts-'+q+' .opt-btn').forEach(b=>{b.disabled=true;const k=b.querySelector('.opt-key').textContent;if(k===correct)b.classList.add('correct');else if(k===chosen&&!isOk)b.classList.add('wrong')});showFB(q,isOk);updateProg()}
+function answerTFNG(q,chosen,correct){if(answered[q])return;const isOk=chosen===correct;if(isOk)score++;answered[q]=chosen;document.querySelectorAll('#opts-'+q+' .tfng-btn').forEach(b=>{b.disabled=true;if(b.textContent===correct)b.classList.add('correct');else if(b.textContent===chosen&&!isOk)b.classList.add('wrong')});showFB(q,isOk);updateProg()}
+function answerFill(q,accepts){if(answered[q])return;const input=document.getElementById('fill-'+q),given=input.value.trim().toLowerCase(),isOk=accepts.some(a=>given===a.toLowerCase()||given.includes(a.toLowerCase()));if(isOk)score++;answered[q]=given;input.disabled=true;document.getElementById('check-'+q).disabled=true;input.classList.add('answered');showFB(q,isOk);updateProg()}
+function showFB(q,isOk){const fb=document.getElementById('fb-'+q);fb.className='q-feedback show '+(isOk?'ok':'bad');fb.textContent=(isOk?'✓ Correct! ':'✗ Not quite. ')+EXPS[q]}
+function showScore(){const box=document.getElementById('score-box'),pct=score/TOTAL*100,numEl=document.getElementById('score-num'),emo=document.getElementById('score-emoji');numEl.textContent=score+' / '+TOTAL;if(pct>=80){numEl.className='score-num great';emo.textContent='🎉'}else if(pct>=60){numEl.className='score-num ok';emo.textContent='👍'}else{numEl.className='score-num low';emo.textContent='📚'}document.getElementById('score-label').textContent=pct>=80?'Excellent work!':pct>=60?'Good effort — keep practising!':'Review the transcript and try again.';box.classList.add('show');box.scrollIntoView({behavior:'smooth',block:'center'})}
+async function markListened(){const btn=document.getElementById('mark-btn');btn.disabled=true;btn.textContent='Saving…';try{await sb.from('podcast_listens').upsert({user_id:currentUser.id,episode_id:EPISODE_ID,score_raw:score,score_total:TOTAL,completed_at:new Date().toISOString()},{onConflict:'user_id,episode_id'});btn.textContent='✓ Saved!'}catch(e){btn.disabled=false;btn.textContent='✓ Mark as Listened';console.warn(e)}}
+loadTheme();initAuth();
+</script>
+</body>
+</html>
