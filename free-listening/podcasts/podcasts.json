@@ -8,8 +8,6 @@
     "duration": "~3 min",
     "level": "B2",
     "topic": "Technology",
-    "format": "News Report",
-    "source": "BBC News",
     "coming_soon": false
   },
   {
@@ -21,8 +19,6 @@
     "duration": "~7 min",
     "level": "B2",
     "topic": "Science",
-    "format": "Documentary",
-    "source": "BBC Ideas",
     "coming_soon": false
   },
   {
@@ -34,8 +30,6 @@
     "duration": "~10 min",
     "level": "B2",
     "topic": "Health",
-    "format": "Documentary",
-    "source": "BBC",
     "coming_soon": false
   },
   {
@@ -47,8 +41,6 @@
     "duration": "~8 min",
     "level": "C1",
     "topic": "Technology",
-    "format": "News Report",
-    "source": "BBC World Service",
     "coming_soon": false
   },
   {
@@ -60,21 +52,72 @@
     "duration": "~5 min",
     "level": "B1",
     "topic": "Society",
-    "format": "Documentary",
-    "source": "BBC Reel",
     "coming_soon": false
   },
   {
     "id": "ep-6-talking-about-lunch",
     "file": "ep-6-talking-about-lunch.html",
     "title": "Ep 6 — Talking About Lunch",
-    "description": "A natural everyday conversation about what people eat for lunch — great for practising real-life English and common food vocabulary.",
+    "description": "A natural everyday conversation about what people eat for lunch — great for practising real-life English and food vocabulary.",
     "emoji": "🥪",
     "duration": "~5 min",
     "level": "B1",
     "topic": "Everyday English",
-    "format": "Conversation",
-    "source": "Real Easy English",
+    "coming_soon": false
+  },
+  {
+    "id": "ep-7-yakutsk-newborn",
+    "file": "ep-7-yakutsk-newborn.html",
+    "title": "Ep 7 — Day in the Life with a Newborn at −64°C",
+    "description": "A documentary following a mother through a full day in Yakutsk — the coldest inhabited city on Earth — caring for a newborn in extreme winter.",
+    "emoji": "🥶",
+    "duration": "~10 min",
+    "level": "B1",
+    "topic": "Society",
+    "coming_soon": false
+  },
+  {
+    "id": "ep-8-diet-memory",
+    "file": "ep-8-diet-memory.html",
+    "title": "Ep 8 — Can Diet Improve Memory?",
+    "description": "BBC News Review looks at research showing that flavanols in dark chocolate, berries and leafy greens may help keep memory sharp as we age.",
+    "emoji": "🍫",
+    "duration": "~6 min",
+    "level": "B2",
+    "topic": "Health",
+    "coming_soon": false
+  },
+  {
+    "id": "ep-9-naps-brain",
+    "file": "ep-9-naps-brain.html",
+    "title": "Ep 9 — Naps: Good for Your Brain?",
+    "description": "BBC News Review explores whether regular power naps can preserve brain size, keep your mind sharp and reduce the risk of Alzheimer's disease.",
+    "emoji": "😴",
+    "duration": "~6 min",
+    "level": "B2",
+    "topic": "Health",
+    "coming_soon": false
+  },
+  {
+    "id": "ep-10-first-arab-woman-space",
+    "file": "ep-10-first-arab-woman-space.html",
+    "title": "Ep 10 — First Arab Woman in Space",
+    "description": "BBC News Review covers Rayyanah Barnawi's historic mission to the ISS — and teaches three key vocabulary phrases from the headlines.",
+    "emoji": "🚀",
+    "duration": "~6 min",
+    "level": "B2",
+    "topic": "Science",
+    "coming_soon": false
+  },
+  {
+    "id": "ep-11-worth-going-university",
+    "file": "ep-11-worth-going-university.html",
+    "title": "Ep 11 — Is It Still Worth Going to University?",
+    "description": "With £50,000 of debt and a changing job market, BBC asks whether a university degree is still a sound investment in 2026.",
+    "emoji": "🎓",
+    "duration": "~8 min",
+    "level": "C1",
+    "topic": "Education",
     "coming_soon": false
   }
 ]
