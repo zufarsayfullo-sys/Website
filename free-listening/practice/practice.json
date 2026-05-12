@@ -1,26 +1,14 @@
 [
   {
-    "id": "ielts-listening-test-1",
-    "file": "ielts-listening-test-1.html",
-    "title": "IELTS Listening Test 1",
-    "description": "A full IELTS Academic Listening test with four sections — everyday conversation, monologue, academic discussion and lecture.",
-    "icon": "🎧",
-    "type": "IELTS Academic",
-    "difficulty": "Medium",
-    "questions": 40,
-    "time": "30 min",
-    "coming_soon": true
-  },
-  {
-    "id": "ielts-listening-test-2",
-    "file": "ielts-listening-test-2.html",
-    "title": "IELTS Listening Test 2",
-    "description": "A second full IELTS Academic Listening test — four sections covering form filling, multiple choice, matching and note completion.",
+    "id": "cambridge-14-test-2",
+    "file": "cambridge-14-test-2.html",
+    "title": "Cambridge 14 – Listening Test 2",
+    "description": "Full IELTS Academic Listening test: clinic form, castle visit (MC + map), woolly mammoths (MC + matching), weather forecasting notes.",
     "icon": "🎧",
     "type": "IELTS Academic",
     "difficulty": "Hard",
     "questions": 40,
     "time": "30 min",
-    "coming_soon": true
+    "coming_soon": false
   }
 ]
