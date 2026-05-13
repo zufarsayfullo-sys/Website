@@ -1,1 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cambridge 14 Listening Test 1 — Section 4 | English Flow</title>
+<link rel="icon" href="data:,">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--navy:#1a2744;--navy-mid:#243358;--sky:#2e6fad;--sky-light:#e8f2fc;
+  --gold:#c9922a;--gold-light:#fdf3e3;--cream:#f9f7f4;--surface:#fff;
+  --text:#1a2744;--text-muted:#5a6a8a;--border:rgba(26,39,68,.1);
+  --green:#1e6e4e;--green-light:#e8f5ee;--red:#b91c1c;--red-light:#fef2f2;
+  --radius:12px;--radius-lg:20px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#e8e0d4;color:var(--text);min-height:100vh;line-height:1.6}
+#auth-overlay{position:fixed;inset:0;z-index:9999;background:rgba(26,39,68,.92);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:1rem}
+.auth-card{background:#fff;border-radius:var(--radius-lg);padding:2.5rem;width:100%;max-width:400px;text-align:center;box-shadow:0 32px 80px rgba(0,0,0,.4)}
+.auth-card h2{font-family:'DM Serif Display',serif;font-size:1.65rem;color:var(--navy);margin-bottom:.4rem}
+.auth-card p{color:var(--text-muted);font-size:.87rem;margin-bottom:1.4rem}
+.auth-input{width:100%;padding:.72rem 1rem;border:1.5px solid var(--border);border-radius:50px;font-family:'DM Sans',sans-serif;font-size:.9rem;color:var(--text);outline:none;margin-bottom:.65rem;transition:.2s}
+.auth-input:focus{border-color:var(--sky)}
+.auth-btn-el{width:100%;padding:.78rem;background:var(--navy);color:#fff;border:none;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:.93rem;font-weight:600;cursor:pointer;transition:.2s}
+.auth-btn-el:hover{background:var(--navy-mid)}.auth-btn-el:disabled{opacity:.6;cursor:default}
+.auth-msg{font-size:.8rem;margin-top:.65rem;padding:.4rem .9rem;border-radius:50px;display:none}
+.auth-msg.error{background:var(--red-light);color:var(--red)}.auth-msg.success{background:var(--green-light);color:var(--green)}
+#confirm-overlay{position:fixed;inset:0;z-index:8000;background:rgba(26,39,68,.75);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center}
+#confirm-overlay.show{display:flex}
+.confirm-card{background:#fff;border-radius:var(--radius-lg);padding:2rem;max-width:420px;width:90%;text-align:center}
+.confirm-card h3{font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--navy);margin-bottom:.6rem}
+.confirm-card p{font-size:.87rem;color:var(--text-muted);margin-bottom:1.35rem;line-height:1.6}
+.confirm-btns{display:flex;gap:.6rem;justify-content:center}
+.btn-submit-yes{background:var(--navy);color:#fff;border:none;border-radius:50px;padding:.58rem 1.6rem;font-family:'DM Sans',sans-serif;font-weight:600;cursor:pointer;transition:.2s}
+.btn-submit-yes:hover{background:var(--navy-mid)}
+.btn-submit-no{background:transparent;color:var(--text-muted);border:1.5px solid var(--border);border-radius:50px;padding:.58rem 1.6rem;font-family:'DM Sans',sans-serif;font-weight:500;cursor:pointer;transition:.2s}
+.btn-submit-no:hover{border-color:var(--navy);color:var(--navy)}
+#top-bar{background:linear-gradient(135deg,var(--navy),var(--navy-mid));padding:.65rem 1.25rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:300;gap:.5rem}
+.logo{font-family:'DM Serif Display',serif;font-size:1.2rem;color:#fff;text-decoration:none;white-space:nowrap}
+.logo-dot{color:var(--gold)}
+.topbar-center{display:flex;align-items:center;gap:1rem}
+.timer-wrap{text-align:center}
+.timer-lbl{font-size:.6rem;text-transform:uppercase;letter-spacing:.09em;color:rgba(255,255,255,.55)}
+#timer{font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--gold);letter-spacing:.04em;line-height:1}
+#timer.warning{color:#ff8c42}
+#timer.danger{color:#ff4444;animation:blink .5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.topbar-right{display:flex;align-items:center;gap:.5rem}
+.user-pill{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.2);border-radius:50px;padding:.26rem .75rem;font-size:.78rem;color:#fff;font-weight:500;white-space:nowrap}
+.signout-btn{background:transparent;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.75);border-radius:50px;padding:.26rem .7rem;font-family:'DM Sans',sans-serif;font-size:.73rem;cursor:pointer;transition:.2s}
+.signout-btn:hover{background:rgba(255,255,255,.1);color:#fff}
+.fullscreen-btn{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);color:#fff;border-radius:8px;padding:.3rem .75rem;font-family:'DM Sans',sans-serif;font-size:.75rem;font-weight:600;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:.3rem;white-space:nowrap}
+.fullscreen-btn:hover{background:rgba(255,255,255,.22)}
+.fullscreen-btn svg{width:13px;height:13px;fill:#fff;flex-shrink:0}
+#breadcrumb{background:#d4ccbf;border-bottom:1px solid rgba(26,39,68,.12);padding:.48rem 1.25rem;display:flex;align-items:center;gap:.6rem;font-size:.82rem;flex-wrap:wrap;position:sticky;top:50px;z-index:290}
+#breadcrumb a{color:var(--sky);text-decoration:none;font-weight:500}
+#breadcrumb a:hover{color:var(--navy)}
+.bc-sep{color:var(--text-muted)}
+.bc-active{background:var(--navy);color:#fff;border-radius:50px;padding:.15rem .65rem;font-size:.73rem;font-weight:600;white-space:nowrap}
+#audio-bar{background:#2a3550;border-bottom:2px solid #1a2744;padding:.6rem 1.25rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;position:sticky;top:82px;z-index:280}
+.audio-section-info{color:rgba(255,255,255,.65);font-size:.78rem;font-weight:500}
+.audio-section-info strong{color:#fff}
+.audio-player-wrap{flex:1;min-width:280px;display:flex;align-items:center;gap:.75rem}
+.play-btn{width:36px;height:36px;border-radius:50%;background:var(--sky);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.2s}
+.play-btn:hover{background:#1d5a9a;transform:scale(1.06)}
+.play-btn svg{fill:#fff;width:14px;height:14px}
+.audio-track{flex:1;min-width:0}
+.audio-bar-bg{height:4px;background:rgba(255,255,255,.12);border-radius:2px;cursor:pointer;overflow:hidden;margin-bottom:.22rem}
+.audio-bar-fill{height:100%;background:linear-gradient(90deg,var(--sky),#5ba8e8);border-radius:2px;width:0%;transition:width .5s linear}
+.audio-time-row{display:flex;justify-content:space-between;font-size:.65rem;color:rgba(255,255,255,.4)}
+.audio-vol{font-size:.85rem;color:rgba(255,255,255,.4);flex-shrink:0}
+.prog-pill{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:50px;padding:.22rem .75rem;font-size:.73rem;color:rgba(255,255,255,.75);font-weight:600;white-space:nowrap}
+#section-nav{background:#c8bfb0;border-bottom:1px solid rgba(26,39,68,.12);padding:.45rem 1.25rem;display:flex;align-items:center;gap:.4rem;flex-wrap:wrap}
+.nav-part{background:transparent;border:1.5px solid rgba(26,39,68,.2);border-radius:6px;padding:.28rem .85rem;font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:600;color:var(--text-muted);text-decoration:none;transition:.15s}
+.nav-part:hover{border-color:var(--sky);color:var(--sky);background:rgba(46,111,173,.06)}
+.nav-part.nav-active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.nav-label{font-size:.73rem;color:var(--text-muted);font-weight:500;margin-right:.25rem}
+#questions-area{flex:1;max-width:900px;margin:0 auto;width:100%;padding:1.75rem 1.5rem 4rem}
+.ielts-section-hdr{background:var(--navy);color:#fff;border-radius:var(--radius) var(--radius) 0 0;padding:.85rem 1.35rem;margin-bottom:0}
+.ielts-sec-label{font-size:.66rem;letter-spacing:.13em;text-transform:uppercase;opacity:.6;margin-bottom:.15rem}
+.ielts-sec-title{font-family:'DM Serif Display',serif;font-size:1.1rem}
+.ielts-section-body{background:var(--surface);border:1.5px solid rgba(26,39,68,.15);border-top:none;border-radius:0 0 var(--radius-lg) var(--radius-lg);padding:1.35rem;margin-bottom:2rem}
+.instr{font-size:.86rem;color:var(--text-muted);margin-bottom:1.1rem;padding:.52rem .85rem;background:var(--sky-light);border-left:3px solid var(--sky);border-radius:0 8px 8px 0;line-height:1.55}
+.instr strong{color:var(--sky)}
+.instr-plain{font-size:.86rem;color:var(--text-muted);margin-bottom:.75rem;font-style:italic}
+.sec-rule{height:1px;background:var(--border);margin:1.35rem 0}
+.q-card{background:#fafaf8;border:1.5px solid var(--border);border-radius:var(--radius);padding:.9rem 1rem;margin-bottom:.6rem;transition:border-color .15s}
+.q-card.flagged{border-color:var(--gold);background:var(--gold-light)}
+.q-top{display:flex;align-items:flex-start;justify-content:space-between;gap:.6rem;margin-bottom:.65rem}
+.q-num{background:var(--sky);color:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0;margin-top:.1rem}
+.q-text{font-size:.9rem;line-height:1.55;flex:1;color:var(--text)}
+.flag-btn{background:transparent;border:1px solid var(--border);border-radius:50px;padding:.16rem .48rem;font-size:.72rem;cursor:pointer;flex-shrink:0;transition:.15s;color:var(--text-muted)}
+.flag-btn:hover{background:var(--gold-light);border-color:var(--gold)}
+.flag-btn.active{background:var(--gold-light);border-color:var(--gold);color:var(--gold)}
+.mc-opts{display:flex;flex-direction:column;gap:.35rem}
+.mc-opt{background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:.5rem .8rem;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.87rem;text-align:left;color:var(--text);transition:.15s;display:flex;align-items:flex-start;gap:.5rem}
+.mc-opt:hover{border-color:var(--sky);background:var(--sky-light)}
+.mc-opt.selected{background:var(--navy);color:#fff;border-color:var(--navy)}
+.mc-key{font-weight:700;min-width:15px;flex-shrink:0;margin-top:.05rem}
+.map-opts{display:flex;flex-wrap:wrap;gap:.32rem}
+.map-opt{background:#fff;border:1.5px solid var(--border);border-radius:7px;padding:.35rem .68rem;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.84rem;font-weight:700;color:var(--text);transition:.15s;min-width:40px;text-align:center}
+.map-opt:hover{border-color:var(--sky);background:var(--sky-light)}
+.map-opt.selected{background:var(--navy);color:#fff;border-color:var(--navy)}
+.fill-input{border:none;border-bottom:2px solid var(--sky);background:transparent;font-family:'DM Sans',sans-serif;font-size:.87rem;color:var(--navy);outline:none;width:135px;padding:.06rem .22rem;text-align:center;transition:.2s;margin:0 .1rem}
+.fill-input:focus{border-color:var(--navy);background:rgba(46,111,173,.05)}
+.fill-input.has-val{border-color:var(--green)}
+.q-inline{display:inline-flex;align-items:center;gap:.22rem;margin:0 .08rem}
+.q-badge{background:var(--sky);color:#fff;border-radius:50%;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;flex-shrink:0}
+.form-box{background:#fff;border:2px solid var(--navy);border-radius:var(--radius);padding:1rem 1.3rem;margin-top:.6rem}
+.form-box-title{font-family:'DM Serif Display',serif;font-size:1.05rem;color:var(--navy);text-align:center;margin-bottom:.8rem;padding-bottom:.55rem;border-bottom:1px solid var(--border)}
+.form-sec-label{font-weight:700;font-size:.78rem;color:var(--navy);text-transform:uppercase;letter-spacing:.06em;margin:.7rem 0 .32rem}
+.form-row{display:flex;align-items:flex-start;gap:.45rem;padding:.26rem 0;font-size:.86rem;flex-wrap:wrap;color:var(--text)}
+.form-row-lbl{color:var(--text-muted);min-width:148px;flex-shrink:0;font-size:.81rem;padding-top:.04rem}
+.form-row-val{color:var(--text);font-style:italic}
+.notes-box{background:#fff;border:2px solid var(--navy);border-radius:var(--radius);padding:1rem 1.3rem;margin-top:.6rem}
+.notes-box-title{font-family:'DM Serif Display',serif;font-size:1rem;color:var(--navy);text-align:center;margin-bottom:.6rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+.notes-sub{font-weight:700;font-size:.78rem;color:var(--navy);margin:.7rem 0 .32rem;text-transform:uppercase;letter-spacing:.05em}
+.notes-list{list-style:none;padding-left:.2rem}
+.notes-list li{padding:.22rem 0;font-size:.86rem;line-height:1.8;color:var(--text);display:flex;align-items:flex-start;gap:.32rem;flex-wrap:wrap}
+.notes-list li::before{content:'•';color:var(--sky);font-weight:700;flex-shrink:0;margin-top:.14rem}
+.actions-box{background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);padding:.9rem 1.2rem;margin-bottom:.8rem}
+.actions-title{font-weight:700;font-size:.8rem;color:var(--navy);margin-bottom:.55rem}
+.actions-grid{display:grid;grid-template-columns:1fr 1fr;gap:.18rem .7rem;font-size:.83rem;color:var(--text)}
+.actions-grid span strong{color:var(--navy)}
+.policy-box{background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);padding:.9rem 1.2rem;margin-bottom:.8rem}
+.policy-title{font-weight:700;font-size:.82rem;color:var(--navy);margin-bottom:.55rem}
+.policy-grid{display:grid;grid-template-columns:1fr;gap:.18rem;font-size:.83rem;color:var(--text)}
+.policy-grid span strong{color:var(--navy)}
+.submit-wrap{padding:1.25rem 0 0;text-align:center}
+#submit-btn{padding:.82rem 3rem;background:var(--navy);color:#fff;border:none;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:.2s}
+#submit-btn:hover{background:var(--navy-mid);transform:translateY(-1px);box-shadow:0 4px 16px rgba(26,39,68,.25)}
+#results-screen{display:none;position:fixed;inset:0;background:var(--cream);z-index:500;overflow-y:auto;padding:2.5rem 1rem}
+.results-inner{max-width:760px;margin:0 auto}
+.results-hero{text-align:center;margin-bottom:2.5rem}
+.results-hero h1{font-family:'DM Serif Display',serif;font-size:1.85rem;color:var(--navy);margin-bottom:.2rem}
+.results-sub{font-size:.86rem;color:var(--text-muted);margin-bottom:1.2rem}
+.band-ring{width:138px;height:138px;border-radius:50%;margin:1.2rem auto;background:conic-gradient(var(--gold) 0%,var(--gold) var(--fill,0%),rgba(26,39,68,.07) var(--fill,0%));display:flex;align-items:center;justify-content:center;position:relative;box-shadow:0 0 40px rgba(201,146,42,.18)}
+.band-ring::before{content:'';position:absolute;inset:11px;border-radius:50%;background:var(--cream)}
+.band-inner{position:relative;z-index:1;text-align:center}
+.band-num{font-family:'DM Serif Display',serif;font-size:2.2rem;color:var(--gold);line-height:1}
+.band-lbl{font-size:.67rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em}
+.score-raw{font-size:.98rem;color:var(--text-muted);margin-top:.4rem}
+.score-raw strong{color:var(--navy);font-size:1.25rem}
+.results-nav{display:flex;gap:.4rem;justify-content:center;margin:1.2rem 0 2rem;flex-wrap:wrap}
+.results-nav a{background:var(--surface);border:1.5px solid var(--border);border-radius:50px;padding:.35rem .9rem;font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:600;color:var(--text-muted);text-decoration:none;transition:.2s}
+.results-nav a:hover{border-color:var(--sky);color:var(--sky)}
+.results-nav a.nav-active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.review-list{display:flex;flex-direction:column;gap:.8rem;margin-bottom:2rem}
+.review-item{background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);padding:.95rem 1.1rem}
+.review-item.correct-item{border-color:var(--green)}.review-item.wrong-item{border-color:var(--red)}
+.rq-num{font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.28rem}
+.correct-item .rq-num{color:var(--green)}.wrong-item .rq-num{color:var(--red)}
+.rq-text{font-size:.86rem;color:var(--text-muted);margin-bottom:.45rem;line-height:1.5}
+.rq-answers{display:flex;gap:1.2rem;flex-wrap:wrap;margin-bottom:.38rem}
+.rq-block{font-size:.83rem}
+.rq-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);margin-bottom:.15rem}
+.rq-val.correct{color:var(--green);font-weight:700}.rq-val.wrong{color:var(--red);font-weight:700}.rq-val.answer{color:var(--navy);font-weight:700}
+.rq-exp{font-size:.79rem;color:var(--text-muted);line-height:1.6;padding:.45rem .75rem;background:var(--cream);border-radius:7px;margin-top:.38rem}
+.back-btn{display:inline-block;background:var(--navy);color:#fff;border-radius:50px;padding:.68rem 1.8rem;font-family:'DM Sans',sans-serif;font-size:.93rem;font-weight:600;text-decoration:none;transition:.2s}
+.back-btn:hover{background:var(--navy-mid)}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(26,39,68,.15);border-radius:3px}
+@media(max-width:768px){#top-bar,#breadcrumb,#audio-bar,#section-nav{position:static}#questions-area{padding:1.2rem .85rem 2.5rem}.form-row{flex-direction:column;align-items:flex-start}.actions-grid{grid-template-columns:1fr}.topbar-center{gap:.6rem}}
+</style>
+</head>
+<body>
+<div id="auth-overlay">
+  <div class="auth-card">
+    <div style="font-size:2rem;margin-bottom:.4rem">🎧</div>
+    <h2>Sign in to practise</h2>
+    <p>You need an English Flow account to access listening tests.</p>
+    <input type="email" id="auth-email" class="auth-input" placeholder="Email address" onkeydown="if(event.key==='Enter')doSignIn()">
+    <input type="password" id="auth-pass" class="auth-input" placeholder="Password" onkeydown="if(event.key==='Enter')doSignIn()">
+    <button class="auth-btn-el" id="auth-btn-el" onclick="doSignIn()">Sign In</button>
+    <div id="auth-msg" class="auth-msg"></div>
+    <p style="margin-top:.85rem;font-size:.77rem;color:var(--text-muted)">No account? <a href="../../../ielts.html" style="color:var(--sky)">Sign up on the IELTS page</a></p>
+  </div>
+</div>
+<div id="confirm-overlay">
+  <div class="confirm-card">
+    <h3>Submit Answers?</h3>
+    <p>You cannot change your answers after submitting. Unanswered questions will be marked wrong.</p>
+    <div class="confirm-btns">
+      <button class="btn-submit-yes" onclick="submitAnswers()">Yes, Submit</button>
+      <button class="btn-submit-no" onclick="closeConfirm()">Go Back</button>
+    </div>
+  </div>
+</div>
+<div id="top-bar">
+  <a href="../../../index.html" class="logo">English<span class="logo-dot">Flow</span></a>
+  <div class="topbar-center">
+    <div class="timer-wrap"><div class="timer-lbl">Time remaining</div><div id="timer">30:00</div></div>
+  </div>
+  <div class="topbar-right">
+    <div class="user-pill" id="user-pill">Student</div>
+    <button class="fullscreen-btn" onclick="toggleFullscreen()" id="fs-btn">
+      <svg viewBox="0 0 24 24"><path d="M3 3h6v2H5v4H3V3zm12 0h6v6h-2V5h-4V3zm6 12v6h-6v-2h4v-4h2zM3 21v-6h2v4h4v2H3z"/></svg>
+      <span id="fs-label">Full Screen</span>
+    </button>
+    <button class="signout-btn" onclick="doSignOut()">Sign out</button>
+  </div>
+</div>
+<div id="breadcrumb">
+  <a href="../../../index.html">← Home</a><span class="bc-sep">/</span>
+  <a href="../../index.html">← Listening</a><span class="bc-sep">/</span>
+  <span class="bc-active">Cambridge 14 · Test 1 · Section 4</span>
+</div>
+<div id="audio-bar">
+  <div class="audio-section-info">
+    <strong>Cambridge 14 – Test 1 · Section 4</strong><br>
+    <span>Section 4: Marine Renewable Energy</span>
+  </div>
+  <div class="audio-player-wrap">
+    <audio id="audio-el" src="C14-Test1-Section4.mp3" preload="auto" style="display:none"></audio>
+    <button class="play-btn" onclick="togglePlay()" title="Play / Pause">
+      <svg viewBox="0 0 24 24"><polygon id="play-icon" points="5,3 19,12 5,21"/></svg>
+    </button>
+    <div class="audio-track">
+      <div class="audio-bar-bg" onclick="seekAudio(event)"><div class="audio-bar-fill" id="audio-bar-fill"></div></div>
+      <div class="audio-time-row"><span id="elapsed-time">00:00</span><span id="audio-dur">--:--</span></div>
+    </div>
+    <span class="audio-vol">🔊</span>
+  </div>
+  <div class="prog-pill" id="prog-pill">0 / 10 answered</div>
+</div>
+<div id="section-nav">
+  <span class="nav-label">Sections:</span>
+  <a href="part1.html" class="nav-part ">Section 1</a><a href="part2.html" class="nav-part ">Section 2</a><a href="part3.html" class="nav-part ">Section 3</a><a href="part4.html" class="nav-part nav-active">Section 4</a>
+</div>
+<div id="exam-wrap">
+  <div id="questions-area">
+    <div class="ielts-section-hdr">
+      <div class="ielts-sec-label">Section 4</div>
+      <div class="ielts-sec-title">Marine Renewable Energy</div>
+    </div>
+    <div class="ielts-section-body">
 
+      <div class="instr"><strong>Complete the notes below.</strong><br>Write <strong>ONE WORD ONLY</strong> for each answer.</div>
+      <div class="notes-box">
+        <div class="notes-box-title">Marine Renewable Energy (Ocean Energy)</div>
+        <div class="notes-sub">Introduction</div>
+        <ul class="notes-list">
+          <li>More energy required because of growth in population and <span class="q-inline"><span class="q-badge">31</span><input class="fill-input" id="q31" data-q="31" style="width:135px" placeholder="…" oninput="onFill(this)" autocomplete="off" spellcheck="false"></span></li>
+          <li>What's needed: renewable energy sources · methods that won't create pollution</li>
+        </ul>
+        <div class="notes-sub">Wave Energy</div>
+        <ul class="notes-list">
+          <li>Advantage: waves provide a <span class="q-inline"><span class="q-badge">32</span><input class="fill-input" id="q32" data-q="32" style="width:135px" placeholder="…" oninput="onFill(this)" autocomplete="off" spellcheck="false"></span> source of renewable energy</li>
+          <li>Electricity can be generated using offshore or onshore systems</li>
+          <li>Onshore systems may use a reservoir</li>
+          <li>Problems: waves can move in any <span class="q-inline"><span class="q-badge">33</span><input class="fill-input" id="q33" data-q="33" style="width:135px" placeholder="…" oninput="onFill(this)" autocomplete="off" spellcheck="false"></span></li>
+          <li>movement of sand, etc. on the <span class="q-inline"><span class="q-badge">34</span><input class="fill-input" id="q34" data-q="34" style="width:135px" placeholder="…" oninput="onFill(this)" autocomplete="off" spellcheck="false"></span> of the ocean may be affected</li>
+        </ul>
+        <div class="notes-sub">Tidal Energy</div>
+        <ul class="notes-list">
+          <li>Tides are more <span class="q-inline"><span class="q-badge">35</span><input class="fill-input" id="q35" data-q="35" style="width:135px" placeholder="…" oninput="onFill(this)" autocomplete="off" spellcheck="false"></span> than waves</li>
+          <li>Planned tidal lagoon in Wales: will be created in a <span class="q-inline"><span class="q-badge">36</span><input class="fill-input" id="q36" data-q="36" style="width:135px" placeholder="…" oninput="onFill(this)" autocomplete="off" spellcheck="false"></span> at Swansea</li>
+          <li>breakwater (dam) containing 16 turbines</li>
+          <li>rising tide forces water through turbines, generating electricity</li>
+          <li>stored water is released through <span class="q-inline"><span class="q-badge">37</span><input class="fill-input" id="q37" data-q="37" style="width:135px" placeholder="…" oninput="onFill(this)" autocomplete="off" spellcheck="false"></span>, driving the turbines in the reverse direction</li>
+          <li>Advantages: not dependent on weather · no <span class="q-inline"><span class="q-badge">38</span><input class="fill-input" id="q38" data-q="38" style="width:135px" placeholder="…" oninput="onFill(this)" autocomplete="off" spellcheck="false"></span> is required · likely to create a number of <span class="q-inline"><span class="q-badge">39</span><input class="fill-input" id="q39" data-q="39" style="width:135px" placeholder="…" oninput="onFill(this)" autocomplete="off" spellcheck="false"></span></li>
+          <li>Problem: may harm fish and birds, e.g. by affecting <span class="q-inline"><span class="q-badge">40</span><input class="fill-input" id="q40" data-q="40" style="width:135px" placeholder="…" oninput="onFill(this)" autocomplete="off" spellcheck="false"></span> and building up silt</li>
+        </ul>
+        <div class="notes-sub">Ocean Thermal Energy Conversion</div>
+        <ul class="notes-list">
+          <li>Uses a difference in temperature between the surface and lower levels</li>
+          <li>Water brought to the surface in a pipe</li>
+        </ul>
+      </div>
+
+    </div>
+    <div class="submit-wrap"><button id="submit-btn" onclick="showConfirm()">Submit Answers</button></div>
+  </div>
+</div>
+<div id="results-screen">
+  <div class="results-inner">
+    <div class="results-hero">
+      <h1>Section Results</h1>
+      <p class="results-sub">Cambridge 14 – Listening Test 1 · Section 4</p>
+      <div class="band-ring" id="band-ring"><div class="band-inner"><div class="band-num" id="band-num">—</div><div class="band-lbl">Band</div></div></div>
+      <div class="score-raw"><strong id="raw-score">0</strong> / 10 correct</div>
+    </div>
+    <p style="text-align:center;font-size:.83rem;color:var(--text-muted);margin-bottom:.7rem">Continue to the next section or review your answers below.</p>
+    <div class="results-nav"><a href="part1.html" class="nav-part ">Section 1</a><a href="part2.html" class="nav-part ">Section 2</a><a href="part3.html" class="nav-part ">Section 3</a><a href="part4.html" class="nav-part nav-active">Section 4</a></div>
+    <div class="review-list" id="review-list"></div>
+    <div style="text-align:center;margin-bottom:2rem"><a href="../../index.html" class="back-btn">← Back to Listening</a></div>
+  </div>
+</div>
+<script>
+const TEST_ID='cambridge-14-test-1-part4',QSTART=31,QEND=40;
+const ANSWERS={"31": {"correct": ["industry"], "type": "fill", "text": "More energy required because of growth in population and ___", "exp": "Population and industry growth require more energy."}, "32": {"correct": ["constant"], "type": "fill", "text": "Waves provide a ___ source of renewable energy", "exp": "Waves provide a constant source of renewable energy."}, "33": {"correct": ["direction"], "type": "fill", "text": "Waves can move in any ___", "exp": "A problem is that waves can move in any direction."}, "34": {"correct": ["floor"], "type": "fill", "text": "Movement of sand on the ___ of the ocean may be affected", "exp": "Movement of sand on the floor of the ocean may be affected."}, "35": {"correct": ["predictable"], "type": "fill", "text": "Tides are more ___ than waves", "exp": "Tides are more predictable than waves."}, "36": {"correct": ["bay"], "type": "fill", "text": "Tidal lagoon in Wales will be created in a ___", "exp": "The tidal lagoon will be created in a bay at Swansea."}, "37": {"correct": ["gates"], "type": "fill", "text": "Stored water is released through ___", "exp": "Stored water is released through gates, driving turbines in reverse."}, "38": {"correct": ["fuel"], "type": "fill", "text": "No ___ is required to make it work", "exp": "No fuel is required — it is powered by tidal movement."}, "39": {"correct": ["jobs"], "type": "fill", "text": "Likely to create a number of ___", "exp": "The tidal lagoon is likely to create a number of jobs."}, "40": {"correct": ["migration"], "type": "fill", "text": "May harm fish by affecting ___", "exp": "It may harm fish and birds by affecting migration and building up silt."}};
+
+const SUPABASE_URL='https://evhceswvapszaghnvmxl.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGNlc3d2YXBzemFnaG52bXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3OTQwNzMsImV4cCI6MjA5MzM3MDA3M30.yV7tavgR7JKc45uSGtS8Lf6m1ZMuuvQ23hmAb8n6k3A';
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+let currentUser=null,userAnswers={},flagged={},timerSec=1800,timerInt=null,playing=false;
+async function initAuth(){const{data:{session}}=await sb.auth.getSession();if(session){currentUser=session.user;showApp()}}
+async function doSignIn(){const email=document.getElementById('auth-email').value.trim(),pass=document.getElementById('auth-pass').value,btn=document.getElementById('auth-btn-el');if(!email||!pass){showAuthMsg('Please enter email and password.',true);return}btn.disabled=true;btn.textContent='Signing in…';const{data,error}=await sb.auth.signInWithPassword({email,password:pass});btn.disabled=false;btn.textContent='Sign In';if(error){showAuthMsg(error.message,true);return}currentUser=data.user;showApp()}
+function showAuthMsg(t,e){const el=document.getElementById('auth-msg');el.textContent=t;el.className='auth-msg '+(e?'error':'success');el.style.display='block'}
+function showApp(){document.getElementById('auth-overlay').style.display='none';const n=currentUser.user_metadata?.name||currentUser.email.split('@')[0];document.getElementById('user-pill').textContent='👤 '+n.split(' ')[0];startTimer();loadAudioMeta()}
+async function doSignOut(){await sb.auth.signOut();location.reload()}
+function startTimer(){updateTimer();timerInt=setInterval(()=>{timerSec--;updateTimer();if(timerSec<=0){clearInterval(timerInt);submitAnswers()}},1000)}
+function updateTimer(){const m=Math.floor(timerSec/60),s=timerSec%60,el=document.getElementById('timer');el.textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;el.className='';if(timerSec<=60)el.classList.add('danger');else if(timerSec<=300)el.classList.add('warning')}
+function toggleFullscreen(){if(!document.fullscreenElement){document.documentElement.requestFullscreen().catch(()=>{});document.getElementById('fs-label').textContent='Exit Full Screen';document.getElementById('fs-btn').querySelector('svg').innerHTML='<path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/>';}else{document.exitFullscreen().catch(()=>{});document.getElementById('fs-label').textContent='Full Screen';document.getElementById('fs-btn').querySelector('svg').innerHTML='<path d="M3 3h6v2H5v4H3V3zm12 0h6v6h-2V5h-4V3zm6 12v6h-6v-2h4v-4h2zM3 21v-6h2v4h4v2H3z"/>';}}
+document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement){document.getElementById('fs-label').textContent='Full Screen';document.getElementById('fs-btn').querySelector('svg').innerHTML='<path d="M3 3h6v2H5v4H3V3zm12 0h6v6h-2V5h-4V3zm6 12v6h-6v-2h4v-4h2zM3 21v-6h2v4h4v2H3z"/>';}})
+function loadAudioMeta(){const a=document.getElementById('audio-el');a.addEventListener('loadedmetadata',()=>{document.getElementById('audio-dur').textContent=fmtTime(Math.floor(a.duration))});a.addEventListener('timeupdate',()=>{if(a.duration){document.getElementById('audio-bar-fill').style.width=(a.currentTime/a.duration*100)+'%';document.getElementById('elapsed-time').textContent=fmtTime(Math.floor(a.currentTime))}});a.addEventListener('ended',()=>{playing=false;document.getElementById('play-icon').innerHTML='<polygon points="5,3 19,12 5,21"/>'})}
+function togglePlay(){const a=document.getElementById('audio-el');if(!playing){a.play().catch(()=>{});document.getElementById('play-icon').innerHTML='<rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/>';playing=true}else{a.pause();document.getElementById('play-icon').innerHTML='<polygon points="5,3 19,12 5,21"/>';playing=false}}
+function seekAudio(e){const a=document.getElementById('audio-el');if(!a.duration)return;const rect=e.currentTarget.getBoundingClientRect();a.currentTime=(e.clientX-rect.left)/rect.width*a.duration}
+function fmtTime(s){return `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`}
+function toggleFlag(q){flagged[q]=!flagged[q];const c=document.getElementById(`card-${q}`),b=c?.querySelector('.flag-btn');if(c)c.classList.toggle('flagged',!!flagged[q]);if(b)b.classList.toggle('active',!!flagged[q])}
+function selectMC(q,val){userAnswers[q]=val;document.querySelectorAll(`#opts-${q} .mc-opt,#opts-${q} .map-opt`).forEach(b=>{const k=b.querySelector('.mc-key')?.textContent||b.textContent.trim();b.classList.toggle('selected',k===val)});updateProgress()}
+function onFill(el){const q=parseInt(el.dataset.q);userAnswers[q]=el.value.trim();el.classList.toggle('has-val',el.value.trim().length>0);updateProgress()}
+function updateProgress(){let c=0;for(let i=QSTART;i<=QEND;i++){const v=userAnswers[i];if(v!==undefined&&String(v).trim()!=='')c++}const total=QEND-QSTART+1;document.getElementById('prog-pill').textContent=`${c} / ${total} answered`}
+function showConfirm(){document.getElementById('confirm-overlay').classList.add('show')}
+function closeConfirm(){document.getElementById('confirm-overlay').classList.remove('show')}
+async function submitAnswers(){
+  closeConfirm();clearInterval(timerInt);
+  let correct=0;
+  for(let i=QSTART;i<=QEND;i++){const a=ANSWERS[i],given=String(userAnswers[i]||'').trim().toLowerCase();if(a.type==='mc'){if(given===a.correct.toLowerCase())correct++}else{if(a.correct.some(c=>c.toLowerCase()===given))correct++}}
+  const total=QEND-QSTART+1,band=getBand(correct,total);
+  if(currentUser){try{await sb.from('listening_scores').upsert({user_id:currentUser.id,test_id:TEST_ID,band_score:band,score_raw:correct,total,completed_at:new Date().toISOString()},{onConflict:'user_id,test_id'})}catch(e){console.warn(e)}}
+  showResults(correct,total,band);
+}
+function getBand(r,t){const s=(r/t)*40;if(s>=39)return 9.0;if(s>=37)return 8.5;if(s>=35)return 8.0;if(s>=33)return 7.5;if(s>=30)return 7.0;if(s>=27)return 6.5;if(s>=23)return 6.0;if(s>=19)return 5.5;if(s>=15)return 5.0;if(s>=13)return 4.5;if(s>=10)return 4.0;return 3.5}
+function showResults(correct,total,band){
+  document.getElementById('results-screen').style.display='block';
+  document.getElementById('band-num').textContent=band.toFixed(1);
+  document.getElementById('raw-score').textContent=correct;
+  document.getElementById('band-ring').style.setProperty('--fill',Math.min(100,(band/9)*100)+'%');
+  const list=document.getElementById('review-list');list.innerHTML='';
+  for(let i=QSTART;i<=QEND;i++){const a=ANSWERS[i],given=String(userAnswers[i]||'').trim(),gl=given.toLowerCase();const isOk=a.type==='mc'?gl===a.correct.toLowerCase():a.correct.some(c=>c.toLowerCase()===gl);const cd=Array.isArray(a.correct)?a.correct[0]:a.correct;const div=document.createElement('div');div.className='review-item '+(isOk?'correct-item':'wrong-item');div.innerHTML=`<div class="rq-num">${isOk?'✓':'✗'} Question ${i}</div><div class="rq-text">${a.text}</div><div class="rq-answers"><div class="rq-block"><div class="rq-label">Your answer</div><div class="rq-val ${isOk?'correct':'wrong'}">${given||'(no answer)'}</div></div>${!isOk?`<div class="rq-block"><div class="rq-label">Correct answer</div><div class="rq-val answer">${cd}</div></div>`:''}</div><div class="rq-exp">💡 ${a.exp}</div>`;list.appendChild(div);}
+}
+initAuth();
+
+</script>
+</body>
+</html>
