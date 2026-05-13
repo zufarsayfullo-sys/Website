@@ -2,8 +2,8 @@
   {
     "id": "cambridge-14-test-2-part1",
     "file": "test2/part1.html",
-    "title": "Cambridge 14 Test 2 – Part 1",
-    "description": "Section 1: Total Health Clinic — complete the patient registration form. Write ONE WORD AND/OR A NUMBER for each answer.",
+    "title": "Cambridge 14 Test 2 – Section 1",
+    "description": "Total Health Clinic: complete the patient registration form. ONE WORD AND/OR A NUMBER.",
     "icon": "📋",
     "type": "IELTS Academic",
     "difficulty": "Hard",
@@ -14,8 +14,8 @@
   {
     "id": "cambridge-14-test-2-part2",
     "file": "test2/part2.html",
-    "title": "Cambridge 14 Test 2 – Part 2",
-    "description": "Section 2: A guided visit to Branley Castle. Multiple choice (Q11–15) + map labelling A–H (Q16–20).",
+    "title": "Cambridge 14 Test 2 – Section 2",
+    "description": "Branley Castle visit: multiple choice (Q11–15) + map labelling A–H (Q16–20).",
     "icon": "🏰",
     "type": "IELTS Academic",
     "difficulty": "Hard",
@@ -26,8 +26,8 @@
   {
     "id": "cambridge-14-test-2-part3",
     "file": "test2/part3.html",
-    "title": "Cambridge 14 Test 2 – Part 3",
-    "description": "Section 3: Woolly mammoths on St Paul's Island. Multiple choice (Q21–24) + matching actions A–H (Q25–30).",
+    "title": "Cambridge 14 Test 2 – Section 3",
+    "description": "Woolly mammoths on St Paul's Island: multiple choice (Q21–24) + matching actions A–H (Q25–30).",
     "icon": "🦣",
     "type": "IELTS Academic",
     "difficulty": "Hard",
@@ -38,8 +38,8 @@
   {
     "id": "cambridge-14-test-2-part4",
     "file": "test2/part4.html",
-    "title": "Cambridge 14 Test 2 – Part 4",
-    "description": "Section 4: The history of weather forecasting. Complete the notes — ONE WORD ONLY for each answer.",
+    "title": "Cambridge 14 Test 2 – Section 4",
+    "description": "History of weather forecasting: complete the notes. ONE WORD ONLY for each answer.",
     "icon": "🌦",
     "type": "IELTS Academic",
     "difficulty": "Hard",
