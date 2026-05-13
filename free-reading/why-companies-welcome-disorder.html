@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Why Companies Should Welcome Disorder – English Flow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root {
+  --navy: #1a2744;
+  --navy-mid: #243358;
+  --sky: #2e6fad;
+  --sky-light: #e8f2fc;
+  --gold: #c9922a;
+  --gold-light: #fdf3e3;
+  --cream: #f9f7f4;
+  --surface: #ffffff;
+  --text: #1a2744;
+  --text-muted: #5a6a8a;
+  --border: rgba(26,39,68,0.1);
+  --green: #1e6e4e;
+  --green-light: #e8f5ee;
+  --radius: 16px;
+  --radius-lg: 24px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; font-family: 'DM Sans', sans-serif; color: var(--text); background: var(--cream); }
+
+/* TOP BAR */
+#top-bar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 1.5rem; height: 56px;
+}
+.logo { font-family: 'DM Serif Display', serif; color: #fff; font-size: 1.25rem; letter-spacing: 0.01em; }
+.logo span { color: var(--gold); }
+#timer { font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 1.1rem; color: var(--gold); letter-spacing: 0.05em; }
+.top-right { display: flex; align-items: center; gap: 0.75rem; }
+.user-pill { background: rgba(255,255,255,0.15); color: #fff; border-radius: 99px; padding: 0.25rem 0.9rem; font-size: 0.85rem; font-weight: 500; }
+.btn-signout { background: transparent; border: 1px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.8); border-radius: 8px; padding: 0.25rem 0.75rem; font-size: 0.8rem; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
+.btn-signout:hover { background: rgba(255,255,255,0.1); }
+
+/* QUICK LINKS */
+#quick-links {
+  position: fixed; top: 56px; left: 0; right: 0; z-index: 99;
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 0.5rem; padding: 0 1.5rem; height: 44px;
+}
+.ql-link { color: var(--sky); text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: color 0.2s; }
+.ql-link:hover { color: var(--navy); }
+.ql-sep { color: var(--border); }
+.ql-active { background: var(--navy); color: #fff; border-radius: 99px; padding: 0.2rem 0.8rem; font-size: 0.8rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 260px; }
+
+/* SPLIT LAYOUT */
+#main {
+  display: flex;
+  height: calc(100vh - 100px);
+  margin-top: 100px;
+}
+#passage-col {
+  width: 55%; overflow-y: auto; background: var(--cream);
+  padding: 1.5rem; border-right: 1px solid var(--border);
+}
+#questions-col {
+  width: 45%; overflow-y: auto; background: var(--cream);
+  padding: 1.5rem;
+}
+
+/* PASSAGE */
+.passage-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; flex-wrap: wrap; }
+.passage-title { font-family: 'DM Serif Display', serif; font-size: 1.5rem; color: var(--navy); }
+.difficulty-badge { padding: 0.2rem 0.7rem; border-radius: 99px; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.03em; }
+.diff-medium { background: var(--gold-light); color: var(--gold); }
+.diff-hard { background: #fde8e8; color: #c0392b; }
+.diff-easy { background: var(--green-light); color: var(--green); }
+
+/* HIGHLIGHT TOOLBAR */
+#highlight-toolbar {
+  display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 0.5rem 0.75rem; flex-wrap: wrap;
+}
+.hl-label { font-size: 0.78rem; font-weight: 600; color: var(--text-muted); margin-right: 0.25rem; }
+.hl-btn { width: 22px; height: 22px; border-radius: 50%; border: 2px solid rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.15s; }
+.hl-btn:hover { transform: scale(1.2); }
+#hl-clear { background: none; border: 1px solid var(--border); color: var(--text-muted); border-radius: 8px; padding: 0.2rem 0.6rem; font-size: 0.78rem; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
+#hl-clear:hover { background: var(--cream); }
+
+.passage-text { font-size: 1rem; line-height: 1.85; color: var(--text); }
+.passage-section { margin-bottom: 1.25rem; }
+.section-label { font-weight: 700; color: var(--navy); margin-right: 0.6rem; font-size: 1rem; }
+mark.hl-yellow { background: #fff176; border-radius: 3px; }
+mark.hl-green  { background: #c8e6c9; border-radius: 3px; }
+mark.hl-pink   { background: #f8bbd0; border-radius: 3px; }
+
+/* PROGRESS BAR */
+#progress-wrap { margin-bottom: 1.25rem; }
+.progress-label { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.4rem; font-weight: 500; }
+.progress-track { height: 6px; background: var(--border); border-radius: 99px; overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--sky), var(--navy)); border-radius: 99px; transition: width 0.4s ease; }
+
+/* QUESTIONS */
+.q-section-title { font-family: 'DM Serif Display', serif; font-size: 1.1rem; color: var(--navy); margin: 1.5rem 0 0.3rem; }
+.q-instruction { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1rem; line-height: 1.5; }
+.question-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 1rem 1rem 0.75rem; margin-bottom: 0.75rem; transition: border-color 0.2s;
+}
+.question-card.flagged { border-color: var(--gold); background: var(--gold-light); }
+.q-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.75rem; }
+.q-number { font-weight: 700; color: var(--navy); font-size: 0.9rem; min-width: 1.5rem; }
+.q-text { font-size: 0.92rem; color: var(--text); line-height: 1.55; flex: 1; }
+.flag-btn { background: none; border: none; cursor: pointer; font-size: 1rem; padding: 0 0.25rem; opacity: 0.4; transition: opacity 0.2s; flex-shrink: 0; }
+.flag-btn.active { opacity: 1; }
+.q-options { display: flex; flex-direction: column; gap: 0.5rem; }
+.q-option { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.88rem; }
+.q-option input[type="radio"] { accent-color: var(--navy); flex-shrink: 0; }
+.q-input { width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 0.45rem 0.7rem; font-size: 0.9rem; font-family: 'DM Sans', sans-serif; color: var(--text); background: var(--cream); outline: none; transition: border-color 0.2s; }
+.q-input:focus { border-color: var(--sky); background: #fff; }
+.q-select { width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 0.45rem 0.7rem; font-size: 0.9rem; font-family: 'DM Sans', sans-serif; color: var(--text); background: var(--cream); outline: none; cursor: pointer; }
+
+/* SUBMIT */
+#submit-btn {
+  width: 100%; margin-top: 1.5rem; padding: 0.9rem;
+  background: var(--navy); color: #fff; border: none; border-radius: var(--radius);
+  font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 600;
+  cursor: pointer; transition: background 0.2s; letter-spacing: 0.02em;
+}
+#submit-btn:hover { background: var(--navy-mid); }
+
+/* MODAL */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(10,18,40,0.7); z-index: 200;
+  display: flex; align-items: center; justify-content: center; padding: 1rem;
+}
+.modal-box {
+  background: var(--surface); border-radius: var(--radius-lg); padding: 2rem;
+  width: 100%; max-width: 420px; box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+}
+.modal-title { font-family: 'DM Serif Display', serif; font-size: 1.5rem; color: var(--navy); margin-bottom: 0.4rem; }
+.modal-sub { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.5rem; }
+.form-group { margin-bottom: 1rem; }
+.form-label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.35rem; text-transform: uppercase; letter-spacing: 0.04em; }
+.form-input { width: 100%; border: 1px solid var(--border); border-radius: 10px; padding: 0.65rem 0.9rem; font-size: 0.95rem; font-family: 'DM Sans', sans-serif; color: var(--text); outline: none; transition: border-color 0.2s; }
+.form-input:focus { border-color: var(--sky); }
+.form-error { color: #c0392b; font-size: 0.82rem; margin-top: 0.75rem; }
+.btn-primary {
+  width: 100%; padding: 0.75rem; background: var(--navy); color: #fff;
+  border: none; border-radius: 10px; font-family: 'DM Sans', sans-serif;
+  font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 0.5rem; transition: background 0.2s;
+}
+.btn-primary:hover { background: var(--navy-mid); }
+
+/* RESULTS */
+#results-page {
+  min-height: 100vh; background: var(--cream); padding: 2rem 1rem;
+  display: none; flex-direction: column; align-items: center;
+}
+.result-header { text-align: center; margin-bottom: 2rem; }
+.band-circle {
+  width: 130px; height: 130px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold) 0%, #e8a930 100%);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  margin: 0 auto 1rem; box-shadow: 0 8px 32px rgba(201,146,42,0.3);
+}
+.band-label { font-size: 0.75rem; font-weight: 700; color: rgba(255,255,255,0.8); text-transform: uppercase; letter-spacing: 0.06em; }
+.band-score { font-family: 'DM Serif Display', serif; font-size: 2.8rem; color: #fff; line-height: 1; }
+.result-score-text { font-family: 'DM Serif Display', serif; font-size: 1.5rem; color: var(--navy); }
+.result-score-sub { color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem; }
+.review-list { width: 100%; max-width: 780px; }
+.review-card {
+  background: var(--surface); border-radius: var(--radius); padding: 1rem 1.25rem;
+  margin-bottom: 0.75rem; border-left: 4px solid var(--border);
+}
+.review-card.correct { border-left-color: var(--green); }
+.review-card.incorrect { border-left-color: #e74c3c; }
+.review-q { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 0.4rem; }
+.review-user-ans { font-weight: 600; font-size: 0.95rem; }
+.review-user-ans.correct { color: var(--green); }
+.review-user-ans.incorrect { color: #e74c3c; }
+.review-correct-ans { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem; }
+.review-explanation { font-size: 0.83rem; color: var(--text-muted); margin-top: 0.35rem; font-style: italic; }
+.btn-back {
+  margin-top: 2rem; padding: 0.75rem 2.5rem; background: var(--navy); color: #fff;
+  border: none; border-radius: var(--radius); font-family: 'DM Sans', sans-serif;
+  font-size: 1rem; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-block;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+  #main { flex-direction: column; height: auto; }
+  #passage-col, #questions-col { width: 100%; overflow-y: visible; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div id="top-bar">
+  <div class="logo">English <span>Flow</span>.</div>
+  <div id="timer">20:00</div>
+  <div class="top-right">
+    <div class="user-pill" id="user-name-pill"></div>
+    <button class="btn-signout" onclick="signOut()">Sign out</button>
+  </div>
+</div>
+
+<!-- QUICK LINKS -->
+<div id="quick-links">
+  <a class="ql-link" href="../index.html">← Home</a>
+  <span class="ql-sep">|</span>
+  <a class="ql-link" href="../free-reading/index.html">← Reading</a>
+  <span class="ql-sep">|</span>
+  <span class="ql-active">Why Companies Should Welcome Disorder</span>
+</div>
+
+<!-- MAIN SPLIT -->
+<div id="main">
+  <!-- PASSAGE COLUMN -->
+  <div id="passage-col">
+    <div class="passage-header">
+      <div class="passage-title">Why companies should welcome disorder</div>
+      <span class="difficulty-badge diff-medium">Medium</span>
+    </div>
+
+    <!-- HIGHLIGHT TOOLBAR -->
+    <div id="highlight-toolbar">
+      <span class="hl-label">Highlight:</span>
+      <button class="hl-btn" style="background:#fff176;" onclick="setHighlight('hl-yellow')" title="Yellow"></button>
+      <button class="hl-btn" style="background:#c8e6c9;" onclick="setHighlight('hl-green')" title="Green"></button>
+      <button class="hl-btn" style="background:#f8bbd0;" onclick="setHighlight('hl-pink')" title="Pink"></button>
+      <button id="hl-clear" onclick="clearHighlights()">✕ Clear</button>
+    </div>
+
+    <!-- PASSAGE TEXT -->
+    <div class="passage-text" id="passage-text" onmouseup="applyHighlight()">
+      <div class="passage-section">
+        <span class="section-label">A</span>Organisation is big business. Whether it is of our lives – all those inboxes and calendars – or how companies are structured, a multi-billion dollar industry helps to meet this need.<br><br>
+        We have more strategies for time management, project management and self-organisation than at any other time in human history. We are told that we ought to organise our company, our home life, our week, our day and even our sleep, all as a means to becoming more productive. Every week, countless seminars and workshops take place around the world to tell a paying public that they ought to structure their lives in order to achieve this.<br><br>
+        This rhetoric has also crept into the thinking of business leaders and entrepreneurs, much to the delight of self-proclaimed perfectionists with the need to get everything right. The number of business schools and graduates has massively increased over the past 50 years, essentially teaching people how to organise well.
+      </div>
+      <div class="passage-section">
+        <span class="section-label">B</span>Ironically, however, the number of businesses that fail has also steadily increased. Work-related stress has increased. A large proportion of workers from all demographics claim to be dissatisfied with the way their work is structured and the way they are managed.<br><br>
+        This begs the question: what has gone wrong? Why is it that on paper the drive for organisation seems a sure shot for increasing productivity, but in reality falls well short of what is expected?
+      </div>
+      <div class="passage-section">
+        <span class="section-label">C</span>This has been a problem for a while now. Frederick Taylor was one of the forefathers of scientific management. Writing in the first half of the 20th century, he designed a number of principles to improve the efficiency of the work process, which have since become widespread in modern companies. So the approach has been around for a while.
+      </div>
+      <div class="passage-section">
+        <span class="section-label">D</span>New research suggests that this obsession with efficiency is misguided. The problem is not necessarily the management theories or strategies we use to organise our work; it's the basic assumptions we hold in approaching how we work. Here it's the assumption that order is a necessary condition for productivity. This assumption has also fostered the idea that disorder must be detrimental to organisational productivity. The result is that businesses and people spend time and money organising themselves for the sake of organising, rather than actually looking at the end goal and usefulness of such an effort.
+      </div>
+      <div class="passage-section">
+        <span class="section-label">E</span>What's more, recent studies show that order actually has diminishing returns. Order does increase productivity to a certain extent, but eventually the usefulness of the process of organisation, and the benefit it yields, reduce until the point where any further increase in order reduces productivity. Some argue that in a business, if the cost of formally structuring something outweighs the benefit of doing it, then that thing ought not to be formally structured. Instead, the resources involved can be better used elsewhere.
+      </div>
+      <div class="passage-section">
+        <span class="section-label">F</span>In fact, research shows that, when innovating, the best approach is to create an environment devoid of structure and hierarchy and enable everyone involved to engage as one organic group. These environments can lead to new solutions that, under conventionally structured environments (filled with bottlenecks in terms of information flow, power structures, rules, and routines) would never be reached.
+      </div>
+      <div class="passage-section">
+        <span class="section-label">G</span>In recent times companies have slowly started to embrace this disorganisation. Many of them embrace it in terms of perception (embracing the idea of disorder, as opposed to fearing it) and in terms of process (putting mechanisms in place to reduce structure).<br><br>
+        For example, Oticon, a large Danish manufacturer of hearing aids, used what it called a 'spaghetti' structure in order to reduce the organisation's rigid hierarchies. This involved scrapping formal job titles and giving staff huge amounts of ownership over their own time and projects. This approach proved to be highly successful initially, with clear improvements in worker productivity in all facets of the business.<br><br>
+        In similar fashion, the former chairman of General Electric embraced disorganisation, putting forward the idea of the 'boundaryless' organisation. Again, it involves breaking down the barriers between different parts of a company and encouraging virtual collaboration and flexible working. Google and a number of other tech companies have embraced (at least in part) these kinds of flexible structures, facilitated by technology and strong company values which glue people together.
+      </div>
+      <div class="passage-section">
+        <span class="section-label">H</span>A word of warning to others thinking of jumping on this bandwagon: the evidence so far suggests disorder, much like order, also seems to have diminishing utility, and can also have detrimental effects on performance if overused. Like order, disorder should be embraced only so far as it is useful. But we should not fear it – nor venerate one over the other. This research also shows that we should continually question whether or not our existing assumptions work.
+      </div>
+    </div>
+  </div>
+
+  <!-- QUESTIONS COLUMN -->
+  <div id="questions-col">
+    <!-- PROGRESS -->
+    <div id="progress-wrap">
+      <div class="progress-label" id="progress-label">0 / 14 answered</div>
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+
+    <!-- Q 27–34: Matching Headings -->
+    <div class="q-section-title">Questions 27–34</div>
+    <div class="q-instruction">Reading Passage 3 has eight sections, <strong>A–H</strong>.<br>Choose the correct heading for each section from the list of headings below.<br>Write the correct number, <em>i–ix</em>, in boxes 27–34.</div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;margin-bottom:1.25rem;font-size:0.88rem;line-height:1.8;">
+      <strong>List of Headings</strong><br>
+      i &nbsp; Complaints about the impact of a certain approach<br>
+      ii &nbsp; Fundamental beliefs that are in fact incorrect<br>
+      iii &nbsp; Early recommendations concerning business activities<br>
+      iv &nbsp; Organisations that put a new approach into practice<br>
+      v &nbsp; Companies that have suffered from changing their approach<br>
+      vi &nbsp; What people are increasingly expected to do<br>
+      vii &nbsp; How to achieve outcomes that are currently impossible<br>
+      viii &nbsp; Neither approach guarantees continuous improvement<br>
+      ix &nbsp; Evidence that a certain approach can have more disadvantages than advantages
+    </div>
+
+    <!-- Q27 -->
+    <div class="question-card" id="qc-27">
+      <div class="q-header">
+        <span class="q-number">27</span>
+        <span class="q-text">Section A</span>
+        <button class="flag-btn" onclick="toggleFlag(27)" id="flag-27">🚩</button>
+      </div>
+      <select class="q-select" id="q27" onchange="recordAnswer(27, this.value)">
+        <option value="">— Select heading —</option>
+        <option value="i">i</option><option value="ii">ii</option><option value="iii">iii</option>
+        <option value="iv">iv</option><option value="v">v</option><option value="vi">vi</option>
+        <option value="vii">vii</option><option value="viii">viii</option><option value="ix">ix</option>
+      </select>
+    </div>
+    <!-- Q28 -->
+    <div class="question-card" id="qc-28">
+      <div class="q-header"><span class="q-number">28</span><span class="q-text">Section B</span><button class="flag-btn" onclick="toggleFlag(28)" id="flag-28">🚩</button></div>
+      <select class="q-select" id="q28" onchange="recordAnswer(28, this.value)">
+        <option value="">— Select heading —</option>
+        <option value="i">i</option><option value="ii">ii</option><option value="iii">iii</option>
+        <option value="iv">iv</option><option value="v">v</option><option value="vi">vi</option>
+        <option value="vii">vii</option><option value="viii">viii</option><option value="ix">ix</option>
+      </select>
+    </div>
+    <!-- Q29 -->
+    <div class="question-card" id="qc-29">
+      <div class="q-header"><span class="q-number">29</span><span class="q-text">Section C</span><button class="flag-btn" onclick="toggleFlag(29)" id="flag-29">🚩</button></div>
+      <select class="q-select" id="q29" onchange="recordAnswer(29, this.value)">
+        <option value="">— Select heading —</option>
+        <option value="i">i</option><option value="ii">ii</option><option value="iii">iii</option>
+        <option value="iv">iv</option><option value="v">v</option><option value="vi">vi</option>
+        <option value="vii">vii</option><option value="viii">viii</option><option value="ix">ix</option>
+      </select>
+    </div>
+    <!-- Q30 -->
+    <div class="question-card" id="qc-30">
+      <div class="q-header"><span class="q-number">30</span><span class="q-text">Section D</span><button class="flag-btn" onclick="toggleFlag(30)" id="flag-30">🚩</button></div>
+      <select class="q-select" id="q30" onchange="recordAnswer(30, this.value)">
+        <option value="">— Select heading —</option>
+        <option value="i">i</option><option value="ii">ii</option><option value="iii">iii</option>
+        <option value="iv">iv</option><option value="v">v</option><option value="vi">vi</option>
+        <option value="vii">vii</option><option value="viii">viii</option><option value="ix">ix</option>
+      </select>
+    </div>
+    <!-- Q31 -->
+    <div class="question-card" id="qc-31">
+      <div class="q-header"><span class="q-number">31</span><span class="q-text">Section E</span><button class="flag-btn" onclick="toggleFlag(31)" id="flag-31">🚩</button></div>
+      <select class="q-select" id="q31" onchange="recordAnswer(31, this.value)">
+        <option value="">— Select heading —</option>
+        <option value="i">i</option><option value="ii">ii</option><option value="iii">iii</option>
+        <option value="iv">iv</option><option value="v">v</option><option value="vi">vi</option>
+        <option value="vii">vii</option><option value="viii">viii</option><option value="ix">ix</option>
+      </select>
+    </div>
+    <!-- Q32 -->
+    <div class="question-card" id="qc-32">
+      <div class="q-header"><span class="q-number">32</span><span class="q-text">Section F</span><button class="flag-btn" onclick="toggleFlag(32)" id="flag-32">🚩</button></div>
+      <select class="q-select" id="q32" onchange="recordAnswer(32, this.value)">
+        <option value="">— Select heading —</option>
+        <option value="i">i</option><option value="ii">ii</option><option value="iii">iii</option>
+        <option value="iv">iv</option><option value="v">v</option><option value="vi">vi</option>
+        <option value="vii">vii</option><option value="viii">viii</option><option value="ix">ix</option>
+      </select>
+    </div>
+    <!-- Q33 -->
+    <div class="question-card" id="qc-33">
+      <div class="q-header"><span class="q-number">33</span><span class="q-text">Section G</span><button class="flag-btn" onclick="toggleFlag(33)" id="flag-33">🚩</button></div>
+      <select class="q-select" id="q33" onchange="recordAnswer(33, this.value)">
+        <option value="">— Select heading —</option>
+        <option value="i">i</option><option value="ii">ii</option><option value="iii">iii</option>
+        <option value="iv">iv</option><option value="v">v</option><option value="vi">vi</option>
+        <option value="vii">vii</option><option value="viii">viii</option><option value="ix">ix</option>
+      </select>
+    </div>
+    <!-- Q34 -->
+    <div class="question-card" id="qc-34">
+      <div class="q-header"><span class="q-number">34</span><span class="q-text">Section H</span><button class="flag-btn" onclick="toggleFlag(34)" id="flag-34">🚩</button></div>
+      <select class="q-select" id="q34" onchange="recordAnswer(34, this.value)">
+        <option value="">— Select heading —</option>
+        <option value="i">i</option><option value="ii">ii</option><option value="iii">iii</option>
+        <option value="iv">iv</option><option value="v">v</option><option value="vi">vi</option>
+        <option value="vii">vii</option><option value="viii">viii</option><option value="ix">ix</option>
+      </select>
+    </div>
+
+    <!-- Q 35–37: Fill in the Blank -->
+    <div class="q-section-title">Questions 35–37</div>
+    <div class="q-instruction">Complete the sentences below.<br>Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</div>
+
+    <div class="question-card" id="qc-35">
+      <div class="q-header"><span class="q-number">35</span><span class="q-text">Numerous training sessions are aimed at people who feel they are not ____________ enough.</span><button class="flag-btn" onclick="toggleFlag(35)" id="flag-35">🚩</button></div>
+      <input class="q-input" type="text" id="q35" placeholder="One word only" oninput="recordAnswer(35, this.value)">
+    </div>
+    <div class="question-card" id="qc-36">
+      <div class="q-header"><span class="q-number">36</span><span class="q-text">Being organised appeals to people who regard themselves as ____________.</span><button class="flag-btn" onclick="toggleFlag(36)" id="flag-36">🚩</button></div>
+      <input class="q-input" type="text" id="q36" placeholder="One word only" oninput="recordAnswer(36, this.value)">
+    </div>
+    <div class="question-card" id="qc-37">
+      <div class="q-header"><span class="q-number">37</span><span class="q-text">Many people feel ____________ with aspects of their work.</span><button class="flag-btn" onclick="toggleFlag(37)" id="flag-37">🚩</button></div>
+      <input class="q-input" type="text" id="q37" placeholder="One word only" oninput="recordAnswer(37, this.value)">
+    </div>
+
+    <!-- Q 38–40: True/False/Not Given -->
+    <div class="q-section-title">Questions 38–40</div>
+    <div class="q-instruction">Do the following statements agree with the information given in Reading Passage 3?<br>
+    <strong>TRUE</strong> – if the statement agrees with the information<br>
+    <strong>FALSE</strong> – if the statement contradicts the information<br>
+    <strong>NOT GIVEN</strong> – if there is no information on this</div>
+
+    <div class="question-card" id="qc-38">
+      <div class="q-header"><span class="q-number">38</span><span class="q-text">Both businesses and people aim at order without really considering its value.</span><button class="flag-btn" onclick="toggleFlag(38)" id="flag-38">🚩</button></div>
+      <div class="q-options">
+        <label class="q-option"><input type="radio" name="q38" value="TRUE" onchange="recordAnswer(38,'TRUE')"> TRUE</label>
+        <label class="q-option"><input type="radio" name="q38" value="FALSE" onchange="recordAnswer(38,'FALSE')"> FALSE</label>
+        <label class="q-option"><input type="radio" name="q38" value="NOT GIVEN" onchange="recordAnswer(38,'NOT GIVEN')"> NOT GIVEN</label>
+      </div>
+    </div>
+    <div class="question-card" id="qc-39">
+      <div class="q-header"><span class="q-number">39</span><span class="q-text">Innovation is most successful if the people involved have distinct roles.</span><button class="flag-btn" onclick="toggleFlag(39)" id="flag-39">🚩</button></div>
+      <div class="q-options">
+        <label class="q-option"><input type="radio" name="q39" value="TRUE" onchange="recordAnswer(39,'TRUE')"> TRUE</label>
+        <label class="q-option"><input type="radio" name="q39" value="FALSE" onchange="recordAnswer(39,'FALSE')"> FALSE</label>
+        <label class="q-option"><input type="radio" name="q39" value="NOT GIVEN" onchange="recordAnswer(39,'NOT GIVEN')"> NOT GIVEN</label>
+      </div>
+    </div>
+    <div class="question-card" id="qc-40">
+      <div class="q-header"><span class="q-number">40</span><span class="q-text">Google was inspired to adopt flexibility by the success of General Electric.</span><button class="flag-btn" onclick="toggleFlag(40)" id="flag-40">🚩</button></div>
+      <div class="q-options">
+        <label class="q-option"><input type="radio" name="q40" value="TRUE" onchange="recordAnswer(40,'TRUE')"> TRUE</label>
+        <label class="q-option"><input type="radio" name="q40" value="FALSE" onchange="recordAnswer(40,'FALSE')"> FALSE</label>
+        <label class="q-option"><input type="radio" name="q40" value="NOT GIVEN" onchange="recordAnswer(40,'NOT GIVEN')"> NOT GIVEN</label>
+      </div>
+    </div>
+
+    <button id="submit-btn" onclick="attemptSubmit()">Submit Answers</button>
+  </div>
+</div>
+
+<!-- RESULTS PAGE -->
+<div id="results-page">
+  <div class="result-header">
+    <div class="band-circle">
+      <span class="band-label">Band</span>
+      <span class="band-score" id="res-band">—</span>
+    </div>
+    <div class="result-score-text" id="res-score-text"></div>
+    <div class="result-score-sub" id="res-score-sub"></div>
+  </div>
+  <div class="review-list" id="review-list"></div>
+  <a class="btn-back" href="../free-reading/index.html">← Back to Reading</a>
+</div>
+
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="auth-modal">
+  <div class="modal-box">
+    <div class="modal-title">English <span style="color:var(--gold)">Flow</span>.</div>
+    <div class="modal-sub">Sign in to access this passage</div>
+    <div class="form-group">
+      <label class="form-label" for="auth-email">Email</label>
+      <input class="form-input" type="email" id="auth-email" placeholder="you@example.com">
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="auth-password">Password</label>
+      <input class="form-input" type="password" id="auth-password" placeholder="••••••••">
+    </div>
+    <div id="auth-error" class="form-error" style="display:none;"></div>
+    <button class="btn-primary" onclick="signIn()">Sign In</button>
+  </div>
+</div>
+
+<script>
+const PASSAGE_ID = 'why-companies-welcome-disorder';
+const TOTAL_Q = 14;
+const SUPABASE_URL = 'https://evhceswvapszaghnvmxl.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGNlc3d2YXBzemFnaG52bXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3OTQwNzMsImV4cCI6MjA5MzM3MDA3M30.yV7tavgR7JKc45uSGtS8Lf6m1ZMuuvQ23hmAb8n6k3A';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ANSWERS KEY
+const ANSWER_KEY = {
+  27: 'vi', 28: 'i', 29: 'iii', 30: 'ii', 31: 'ix',
+  32: 'vii', 33: 'iv', 34: 'viii',
+  35: 'productive', 36: 'perfectionists', 37: 'dissatisfied',
+  38: 'TRUE', 39: 'FALSE', 40: 'NOT GIVEN'
+};
+const EXPLANATIONS = {
+  27: 'Section A describes the booming organisation industry and how people are told to structure every aspect of their lives – what people are increasingly expected to do.',
+  28: 'Section B describes ironically how business failures and worker dissatisfaction have increased despite the drive for organisation – complaints about the impact of this approach.',
+  29: 'Section C references Frederick Taylor and his early principles for improving work efficiency – early recommendations concerning business activities.',
+  30: 'Section D challenges the assumption that order is always necessary for productivity – fundamental beliefs that are in fact incorrect.',
+  31: 'Section E presents evidence that order has diminishing returns and can hurt productivity – evidence that a certain approach can have more disadvantages than advantages.',
+  32: 'Section F argues that removing structure enables innovation and new solutions that would never otherwise be reached – how to achieve outcomes that are currently impossible.',
+  33: 'Section G gives examples of Oticon and GE embracing disorganisation – organisations that put a new approach into practice.',
+  34: 'Section H warns that disorder, like order, has diminishing utility and neither should be favoured – neither approach guarantees continuous improvement.',
+  35: 'Section A states seminars teach people they ought to structure their lives to become more "productive".',
+  36: 'Section A refers to "self-proclaimed perfectionists" who are drawn to the rhetoric of organisation.',
+  37: 'Section B states a large proportion of workers are "dissatisfied" with the way their work is structured.',
+  38: 'Section D states "businesses and people spend time and money organising themselves for the sake of organising, rather than actually looking at the end goal and usefulness of such an effort." – TRUE.',
+  39: 'Section F says the best approach to innovation is for everyone to engage as "one organic group" without structure – the opposite of distinct roles. – FALSE.',
+  40: 'The passage mentions both General Electric and Google embracing flexible structures, but does not say Google was inspired by GE\'s success. – NOT GIVEN.'
+};
+
+let userAnswers = {};
+let flagged = {};
+let timerInterval;
+let secondsLeft = 20 * 60;
+let currentUser = null;
+let submitted = false;
+let activeHighlight = null;
+
+// AUTH
+async function checkAuth() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) {
+    currentUser = session.user;
+    document.getElementById('auth-modal').style.display = 'none';
+    const meta = currentUser.user_metadata;
+    const name = meta?.first_name || meta?.full_name?.split(' ')[0] || currentUser.email.split('@')[0];
+    document.getElementById('user-name-pill').textContent = name;
+    startTimer();
+  } else {
+    document.getElementById('auth-modal').style.display = 'flex';
+  }
+}
+
+async function signIn() {
+  const email = document.getElementById('auth-email').value.trim();
+  const password = document.getElementById('auth-password').value;
+  const errEl = document.getElementById('auth-error');
+  errEl.style.display = 'none';
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+  if (error) { errEl.textContent = error.message; errEl.style.display = 'block'; return; }
+  currentUser = data.user;
+  document.getElementById('auth-modal').style.display = 'none';
+  const meta = currentUser.user_metadata;
+  const name = meta?.first_name || meta?.full_name?.split(' ')[0] || currentUser.email.split('@')[0];
+  document.getElementById('user-name-pill').textContent = name;
+  startTimer();
+}
+
+async function signOut() {
+  await sb.auth.signOut();
+  location.reload();
+}
+
+// TIMER
+function startTimer() {
+  timerInterval = setInterval(() => {
+    secondsLeft--;
+    if (secondsLeft <= 0) { secondsLeft = 0; clearInterval(timerInterval); submitAnswers(); }
+    const m = String(Math.floor(secondsLeft / 60)).padStart(2,'0');
+    const s = String(secondsLeft % 60).padStart(2,'0');
+    document.getElementById('timer').textContent = m + ':' + s;
+  }, 1000);
+}
+
+// ANSWERS
+function recordAnswer(qNum, val) {
+  userAnswers[qNum] = val;
+  updateProgress();
+}
+
+function updateProgress() {
+  const answered = Object.values(userAnswers).filter(v => v && v.trim() !== '').length;
+  document.getElementById('progress-label').textContent = answered + ' / ' + TOTAL_Q + ' answered';
+  document.getElementById('progress-fill').style.width = (answered / TOTAL_Q * 100) + '%';
+}
+
+function toggleFlag(qNum) {
+  flagged[qNum] = !flagged[qNum];
+  const card = document.getElementById('qc-' + qNum);
+  const btn = document.getElementById('flag-' + qNum);
+  if (flagged[qNum]) { card.classList.add('flagged'); btn.classList.add('active'); }
+  else { card.classList.remove('flagged'); btn.classList.remove('active'); }
+}
+
+// HIGHLIGHT
+function setHighlight(cls) { activeHighlight = cls; }
+function applyHighlight() {
+  if (!activeHighlight) return;
+  const sel = window.getSelection();
+  if (!sel || sel.isCollapsed) return;
+  const range = sel.getRangeAt(0);
+  const passageEl = document.getElementById('passage-text');
+  if (!passageEl.contains(range.commonAncestorContainer)) return;
+  const mark = document.createElement('mark');
+  mark.className = activeHighlight;
+  try { range.surroundContents(mark); } catch(e) {}
+  sel.removeAllRanges();
+}
+function clearHighlights() {
+  document.querySelectorAll('#passage-text mark').forEach(m => {
+    const parent = m.parentNode;
+    while (m.firstChild) parent.insertBefore(m.firstChild, m);
+    parent.removeChild(m);
+  });
+}
+
+// SUBMIT
+function attemptSubmit() {
+  if (submitted) return;
+  const confirmed = confirm('Are you sure? You cannot change your answers after submitting.');
+  if (confirmed) submitAnswers();
+}
+
+async function submitAnswers() {
+  if (submitted) return;
+  submitted = true;
+  clearInterval(timerInterval);
+
+  let correct = 0;
+  for (const [qNum, correctAns] of Object.entries(ANSWER_KEY)) {
+    const userAns = (userAnswers[qNum] || '').trim().toLowerCase();
+    if (userAns === correctAns.toLowerCase()) correct++;
+  }
+
+  const bandScore = calcBand(correct, TOTAL_Q);
+
+  // Save to Supabase
+  if (currentUser) {
+    await sb.from('reading_scores').upsert({
+      user_id: currentUser.id,
+      passage_id: PASSAGE_ID,
+      band_score: bandScore,
+      score_raw: correct,
+      total: TOTAL_Q,
+      completed_at: new Date().toISOString()
+    }, { onConflict: 'user_id,passage_id' });
+  }
+
+  showResults(correct, bandScore);
+}
+
+function calcBand(correct, total) {
+  const scaled = (correct / total) * 40;
+  if (scaled >= 39) return 9.0;
+  if (scaled >= 37) return 8.5;
+  if (scaled >= 35) return 8.0;
+  if (scaled >= 33) return 7.5;
+  if (scaled >= 30) return 7.0;
+  if (scaled >= 27) return 6.5;
+  if (scaled >= 23) return 6.0;
+  if (scaled >= 19) return 5.5;
+  if (scaled >= 15) return 5.0;
+  if (scaled >= 13) return 4.5;
+  if (scaled >= 10) return 4.0;
+  return 3.5;
+}
+
+function showResults(correct, bandScore) {
+  document.getElementById('main').style.display = 'none';
+  document.getElementById('top-bar').style.display = 'none';
+  document.getElementById('quick-links').style.display = 'none';
+
+  const rp = document.getElementById('results-page');
+  rp.style.display = 'flex';
+  document.getElementById('res-band').textContent = bandScore.toFixed(1);
+  document.getElementById('res-score-text').textContent = correct + ' / ' + TOTAL_Q + ' correct';
+  document.getElementById('res-score-sub').textContent = 'IELTS Academic Reading Band Score';
+
+  const list = document.getElementById('review-list');
+  list.innerHTML = '';
+
+  const qLabels = {
+    27:'Section A (Matching Heading)', 28:'Section B (Matching Heading)',
+    29:'Section C (Matching Heading)', 30:'Section D (Matching Heading)',
+    31:'Section E (Matching Heading)', 32:'Section F (Matching Heading)',
+    33:'Section G (Matching Heading)', 34:'Section H (Matching Heading)',
+    35:'Sentence completion (Q35)', 36:'Sentence completion (Q36)',
+    37:'Sentence completion (Q37)',
+    38:'True/False/Not Given (Q38)', 39:'True/False/Not Given (Q39)',
+    40:'True/False/Not Given (Q40)'
+  };
+
+  for (const [qNum, correctAns] of Object.entries(ANSWER_KEY)) {
+    const userAns = (userAnswers[qNum] || '').trim();
+    const isCorrect = userAns.toLowerCase() === correctAns.toLowerCase();
+    const card = document.createElement('div');
+    card.className = 'review-card ' + (isCorrect ? 'correct' : 'incorrect');
+    card.innerHTML = `
+      <div class="review-q"><strong>Q${qNum}</strong> — ${qLabels[qNum] || ''}</div>
+      <div class="review-user-ans ${isCorrect ? 'correct' : 'incorrect'}">
+        Your answer: ${userAns || '(no answer)'} ${isCorrect ? '✓' : '✗'}
+      </div>
+      ${!isCorrect ? `<div class="review-correct-ans">Correct answer: <strong>${correctAns}</strong></div>` : ''}
+      <div class="review-explanation">${EXPLANATIONS[qNum] || ''}</div>
+    `;
+    list.appendChild(card);
+  }
+}
+
+// INIT
+checkAuth();
+</script>
+</body>
+</html>
