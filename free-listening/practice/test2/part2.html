@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cambridge 14 Test 2 – Part 2 | English Flow</title>
+<link rel="icon" href="data:,">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--navy:#1a2744;--navy-mid:#243358;--sky:#2e6fad;--sky-light:#e8f2fc;
+  --gold:#c9922a;--gold-light:#fdf3e3;--cream:#f9f7f4;--surface:#fff;
+  --text:#1a2744;--text-muted:#5a6a8a;--border:rgba(26,39,68,.1);
+  --green:#1e6e4e;--green-light:#e8f5ee;--red:#b91c1c;--red-light:#fef2f2;
+  --radius:16px;--radius-lg:24px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
+  min-height:100vh;display:flex;flex-direction:column;line-height:1.6}
+
+/* ── AUTH ── */
+#auth-overlay{position:fixed;inset:0;z-index:9999;background:rgba(26,39,68,.9);
+  backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:1rem}
+.auth-card{background:#fff;border-radius:var(--radius-lg);padding:2.5rem;width:100%;
+  max-width:420px;text-align:center;box-shadow:0 32px 64px rgba(0,0,0,.3)}
+.auth-card h2{font-family:'DM Serif Display',serif;font-size:1.7rem;color:var(--navy);margin-bottom:.4rem}
+.auth-card p{color:var(--text-muted);font-size:.88rem;margin-bottom:1.5rem}
+.auth-input{width:100%;padding:.75rem 1rem;border:1.5px solid var(--border);border-radius:50px;
+  font-family:'DM Sans',sans-serif;font-size:.92rem;color:var(--text);outline:none;margin-bottom:.7rem;transition:.2s}
+.auth-input:focus{border-color:var(--sky)}
+.auth-btn-el{width:100%;padding:.8rem;background:var(--navy);color:#fff;border:none;border-radius:50px;
+  font-family:'DM Sans',sans-serif;font-size:.95rem;font-weight:600;cursor:pointer;transition:.2s}
+.auth-btn-el:hover{background:var(--navy-mid)}.auth-btn-el:disabled{opacity:.6;cursor:default}
+.auth-msg{font-size:.82rem;margin-top:.7rem;padding:.45rem 1rem;border-radius:50px;display:none}
+.auth-msg.error{background:var(--red-light);color:var(--red)}
+.auth-msg.success{background:var(--green-light);color:var(--green)}
+
+/* ── TOP BAR ── */
+#top-bar{background:linear-gradient(135deg,var(--navy),var(--navy-mid));color:#fff;
+  padding:.7rem 1.5rem;display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:200;flex-shrink:0}
+.logo{font-family:'DM Serif Display',serif;font-size:1.25rem;color:#fff;text-decoration:none}
+.logo-dot{color:var(--gold)}
+.timer-wrap{text-align:center}
+.timer-lbl{font-size:.65rem;text-transform:uppercase;letter-spacing:.09em;color:rgba(255,255,255,.6)}
+#timer{font-family:'DM Serif Display',serif;font-size:1.55rem;color:var(--gold);letter-spacing:.04em}
+#timer.warning{color:#ff8c42}
+#timer.danger{color:#ff4444;animation:blink .5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+.user-area{display:flex;align-items:center;gap:.5rem}
+.user-pill{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.22);
+  border-radius:50px;padding:.28rem .8rem;font-size:.8rem;color:#fff;font-weight:500}
+.signout-btn{background:transparent;border:1px solid rgba(255,255,255,.22);color:rgba(255,255,255,.8);
+  border-radius:50px;padding:.28rem .75rem;font-family:'DM Sans',sans-serif;font-size:.75rem;cursor:pointer;transition:.2s}
+.signout-btn:hover{background:rgba(255,255,255,.1);color:#fff}
+
+/* ── BREADCRUMB ── */
+#breadcrumb{background:var(--surface);border-bottom:1px solid var(--border);
+  padding:.55rem 1.5rem;display:flex;align-items:center;gap:.65rem;font-size:.83rem;
+  flex-wrap:wrap;position:sticky;top:53px;z-index:190}
+#breadcrumb a{color:var(--sky);text-decoration:none;font-weight:500}
+#breadcrumb a:hover{color:var(--navy)}
+.bc-sep{color:var(--text-muted)}
+.bc-active{background:var(--navy);color:#fff;border-radius:50px;padding:.18rem .7rem;
+  font-size:.75rem;font-weight:600;white-space:nowrap}
+
+/* ── PLAYER ZONE ── */
+#player-zone{background:var(--surface);border-bottom:2px solid var(--border);
+  box-shadow:0 2px 16px rgba(26,39,68,.07);position:sticky;top:95px;z-index:180;padding:.85rem 1.5rem}
+.player-header{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:.6rem}
+.test-title-row{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+.test-title{font-family:'DM Serif Display',serif;font-size:1.05rem;color:var(--navy)}
+.part-badge{font-size:.66rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  padding:.2rem .65rem;border-radius:50px;background:var(--sky-light);color:var(--sky)}
+.diff-badge{font-size:.66rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  padding:.2rem .65rem;border-radius:50px;background:#fff3e0;color:#e65100}
+
+/* ── AUDIO PLAYER ── */
+.audio-label-row{display:flex;align-items:center;justify-content:space-between;
+  gap:.75rem;margin-bottom:.5rem;flex-wrap:wrap}
+.audio-label-txt{font-size:.76rem;color:var(--text-muted);font-weight:500}
+.fullscreen-btn{background:var(--navy);color:#fff;border:none;border-radius:8px;
+  padding:.32rem .85rem;font-size:.72rem;font-weight:600;cursor:pointer;transition:.2s;
+  display:flex;align-items:center;gap:.35rem;white-space:nowrap}
+.fullscreen-btn:hover{background:var(--navy-mid);transform:translateY(-1px)}
+.fullscreen-btn svg{width:13px;height:13px;fill:#fff;flex-shrink:0}
+
+.audio-shell{background:#0f1923;border-radius:var(--radius);padding:.65rem .9rem;
+  display:flex;align-items:center;gap:.8rem;position:relative;overflow:hidden}
+.audio-shell::before{content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(46,111,173,.1),transparent);pointer-events:none}
+.play-btn{width:40px;height:40px;border-radius:50%;background:var(--sky);border:none;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  transition:.2s;box-shadow:0 0 12px rgba(46,111,173,.4)}
+.play-btn:hover{background:#1d5a9a;transform:scale(1.06)}
+.play-btn svg{fill:#fff;width:16px;height:16px}
+.audio-info{flex:1;min-width:0}
+.audio-track-title{font-size:.78rem;font-weight:600;color:#d0e8ff;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:.32rem}
+.audio-bar-wrap{height:5px;background:rgba(255,255,255,.1);border-radius:3px;
+  position:relative;cursor:pointer;overflow:hidden}
+.audio-bar-fill{height:100%;background:linear-gradient(90deg,var(--sky),#5ba3e0);
+  border-radius:3px;width:0%;transition:width .3s}
+.audio-time-row{display:flex;justify-content:space-between;
+  font-size:.66rem;color:rgba(255,255,255,.4);margin-top:.28rem}
+.vol-icon{font-size:.95rem;color:rgba(255,255,255,.4);flex-shrink:0}
+
+/* ── PROGRESS ── */
+.prog-wrap{margin-top:.6rem}
+.prog-label{display:flex;justify-content:space-between;
+  font-size:.76rem;color:var(--text-muted);font-weight:500;margin-bottom:.28rem}
+.prog-track{height:5px;background:rgba(26,39,68,.08);border-radius:3px;overflow:hidden}
+#prog-fill{height:100%;background:linear-gradient(90deg,var(--sky),var(--navy));
+  border-radius:3px;transition:width .3s;width:0%}
+
+/* ── PART NAV ── */
+.part-nav{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.65rem}
+.part-nav a{background:var(--cream);border:1.5px solid var(--border);border-radius:50px;
+  padding:.28rem .8rem;font-size:.76rem;font-weight:600;color:var(--text-muted);
+  text-decoration:none;transition:.2s}
+.part-nav a:hover{border-color:var(--sky);color:var(--sky)}
+.part-nav a.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+/* ── FULLSCREEN OVERLAY ── */
+#fs-overlay{display:none;position:fixed;inset:0;z-index:5000;background:#000;
+  flex-direction:column;align-items:center;justify-content:center}
+#fs-overlay.show{display:flex}
+.fs-inner{width:100%;height:100%;max-width:1280px;max-height:100vh;
+  position:relative;display:flex;align-items:center;justify-content:center}
+.fs-inner iframe{width:100%;aspect-ratio:16/9;border:0;max-height:100vh}
+.fs-close{position:fixed;top:1rem;right:1rem;background:rgba(255,255,255,.15);
+  border:none;color:#fff;border-radius:50%;width:44px;height:44px;font-size:1.25rem;
+  cursor:pointer;transition:.2s;z-index:5001;display:flex;align-items:center;justify-content:center}
+.fs-close:hover{background:rgba(255,255,255,.3)}
+
+/* ── QUESTIONS ZONE ── */
+#questions-zone{max-width:840px;margin:0 auto;width:100%;padding:2rem 1.5rem 4rem}
+
+/* ── SECTION HEADER ── */
+.section-hdr{background:var(--navy);color:#fff;border-radius:var(--radius) var(--radius) 0 0;padding:.9rem 1.4rem}
+.section-num{font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;opacity:.65;margin-bottom:.18rem}
+.section-title-txt{font-family:'DM Serif Display',serif;font-size:1.12rem}
+.section-body{background:var(--surface);border:1.5px solid var(--border);
+  border-top:none;border-radius:0 0 var(--radius-lg) var(--radius-lg);padding:1.4rem;margin-bottom:2rem}
+.section-instr{font-size:.86rem;color:var(--text-muted);margin-bottom:1.1rem;
+  padding:.55rem .85rem;background:var(--sky-light);border-left:3px solid var(--sky);
+  border-radius:0 8px 8px 0;line-height:1.55}
+.section-instr strong{color:var(--sky)}
+.sec-divider{height:1px;background:var(--border);margin:1.5rem 0}
+
+/* ── Q CARDS ── */
+.q-card{background:var(--cream);border:1.5px solid var(--border);border-radius:var(--radius);
+  padding:.95rem 1.05rem;margin-bottom:.65rem;transition:border-color .15s}
+.q-card.flagged{border-color:var(--gold);background:var(--gold-light)}
+.q-top{display:flex;align-items:flex-start;justify-content:space-between;gap:.65rem;margin-bottom:.7rem}
+.q-num{background:var(--sky);color:#fff;border-radius:50%;width:25px;height:25px;
+  display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;flex-shrink:0;margin-top:.1rem}
+.q-text{font-size:.9rem;line-height:1.55;flex:1;color:var(--text)}
+.flag-btn{background:transparent;border:1px solid var(--border);border-radius:50px;
+  padding:.18rem .5rem;font-size:.75rem;cursor:pointer;flex-shrink:0;transition:.15s;color:var(--text-muted)}
+.flag-btn:hover{background:var(--gold-light);border-color:var(--gold)}
+.flag-btn.active{background:var(--gold-light);border-color:var(--gold);color:var(--gold)}
+
+/* ── MC OPTIONS ── */
+.mc-opts{display:flex;flex-direction:column;gap:.38rem}
+.mc-opt{background:var(--surface);border:1.5px solid var(--border);border-radius:10px;
+  padding:.52rem .82rem;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.87rem;
+  text-align:left;color:var(--text);transition:.15s;display:flex;align-items:flex-start;gap:.55rem}
+.mc-opt:hover{border-color:var(--sky);background:var(--sky-light)}
+.mc-opt.selected{background:var(--navy);color:#fff;border-color:var(--navy)}
+.mc-key{font-weight:700;min-width:16px;flex-shrink:0;margin-top:.05rem}
+
+/* ── MAP OPTS ── */
+.map-opts{display:flex;flex-wrap:wrap;gap:.35rem}
+.map-opt{background:var(--surface);border:1.5px solid var(--border);border-radius:8px;
+  padding:.38rem .72rem;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.84rem;
+  font-weight:700;color:var(--text);transition:.15s;min-width:42px;text-align:center}
+.map-opt:hover{border-color:var(--sky);background:var(--sky-light)}
+.map-opt.selected{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+/* ── FILL INPUTS ── */
+.fill-input{border:none;border-bottom:2px solid var(--sky);background:transparent;
+  font-family:'DM Sans',sans-serif;font-size:.87rem;color:var(--navy);outline:none;
+  width:140px;padding:.08rem .25rem;text-align:center;transition:.2s;margin:0 .12rem}
+.fill-input:focus{border-color:var(--navy);background:rgba(46,111,173,.06)}
+.fill-input.has-val{border-color:var(--green)}
+.q-inline{display:inline-flex;align-items:center;gap:.25rem;margin:0 .1rem}
+.q-badge{background:var(--sky);color:#fff;border-radius:50%;width:19px;height:19px;
+  display:inline-flex;align-items:center;justify-content:center;font-size:.62rem;font-weight:700;flex-shrink:0}
+
+/* ── FORM BOX ── */
+.form-box{background:var(--surface);border:2px solid var(--navy);border-radius:var(--radius);
+  padding:1.1rem 1.35rem;margin-top:.65rem}
+.form-box-title{font-family:'DM Serif Display',serif;font-size:1.05rem;color:var(--navy);
+  text-align:center;margin-bottom:.85rem;padding-bottom:.6rem;border-bottom:1px solid var(--border)}
+.form-section-label{font-weight:700;font-size:.78rem;color:var(--navy);
+  text-transform:uppercase;letter-spacing:.06em;margin:.75rem 0 .35rem}
+.form-row{display:flex;align-items:flex-start;gap:.5rem;padding:.28rem 0;font-size:.87rem;flex-wrap:wrap;color:var(--text)}
+.form-row-label{color:var(--text-muted);min-width:140px;flex-shrink:0;font-size:.83rem;padding-top:.05rem}
+.form-row-val{color:var(--text);font-style:italic}
+
+/* ── NOTES BOX ── */
+.notes-box{background:var(--surface);border:2px solid var(--navy);border-radius:var(--radius);
+  padding:1.1rem 1.35rem;margin-top:.65rem}
+.notes-box-title{font-family:'DM Serif Display',serif;font-size:1rem;color:var(--navy);
+  text-align:center;margin-bottom:.65rem;padding-bottom:.55rem;border-bottom:1px solid var(--border)}
+.notes-sub{font-weight:700;font-size:.78rem;color:var(--navy);margin:.75rem 0 .35rem;
+  text-transform:uppercase;letter-spacing:.05em}
+.notes-list{list-style:none;padding-left:.25rem}
+.notes-list li{padding:.25rem 0;font-size:.87rem;line-height:1.8;color:var(--text);
+  display:flex;align-items:flex-start;gap:.35rem;flex-wrap:wrap}
+.notes-list li::before{content:'•';color:var(--sky);font-weight:700;flex-shrink:0;margin-top:.15rem}
+
+/* ── MAP SVG ── */
+.map-container{background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--radius);padding:1.1rem;margin:.65rem 0}
+.map-title{font-family:'DM Serif Display',serif;font-size:1rem;color:var(--navy);
+  text-align:center;margin-bottom:.85rem}
+.map-svg-wrap{max-width:460px;margin:0 auto}
+
+/* ── ACTIONS BOX ── */
+.actions-box{background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--radius);padding:1rem 1.25rem;margin-bottom:.85rem}
+.actions-box-title{font-weight:700;font-size:.82rem;color:var(--navy);margin-bottom:.6rem}
+.actions-grid{display:grid;grid-template-columns:1fr 1fr;gap:.2rem .75rem;font-size:.84rem;color:var(--text)}
+.actions-grid span strong{color:var(--navy)}
+
+/* ── CONFIRM ── */
+#confirm-overlay{position:fixed;inset:0;z-index:800;background:rgba(26,39,68,.72);
+  backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center}
+#confirm-overlay.show{display:flex}
+.confirm-card{background:#fff;border-radius:var(--radius-lg);padding:2rem;max-width:400px;width:90%;text-align:center}
+.confirm-card h3{font-family:'DM Serif Display',serif;font-size:1.35rem;color:var(--navy);margin-bottom:.65rem}
+.confirm-card p{font-size:.88rem;color:var(--text-muted);margin-bottom:1.4rem;line-height:1.6}
+.confirm-btns{display:flex;gap:.65rem;justify-content:center}
+.confirm-yes{background:var(--navy);color:#fff;border:none;border-radius:50px;
+  padding:.6rem 1.65rem;font-family:'DM Sans',sans-serif;font-weight:600;cursor:pointer;transition:.2s}
+.confirm-yes:hover{background:var(--navy-mid)}
+.confirm-no{background:transparent;color:var(--text-muted);border:1.5px solid var(--border);
+  border-radius:50px;padding:.6rem 1.65rem;font-family:'DM Sans',sans-serif;font-weight:500;cursor:pointer;transition:.2s}
+.confirm-no:hover{border-color:var(--navy);color:var(--navy)}
+
+/* ── SUBMIT ── */
+.submit-wrap{padding:1.25rem 0 0}
+#submit-btn{width:100%;padding:.85rem;background:var(--navy);color:#fff;border:none;
+  border-radius:50px;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:.2s}
+#submit-btn:hover{background:var(--navy-mid);transform:translateY(-1px);box-shadow:0 4px 16px rgba(26,39,68,.25)}
+
+/* ── RESULTS ── */
+#results-screen{display:none;position:fixed;inset:0;background:var(--cream);z-index:500;overflow-y:auto;padding:2.5rem 1rem}
+.results-inner{max-width:760px;margin:0 auto}
+.results-hero{text-align:center;margin-bottom:2.5rem}
+.results-hero h1{font-family:'DM Serif Display',serif;font-size:1.9rem;color:var(--navy);margin-bottom:.2rem}
+.results-sub{font-size:.88rem;color:var(--text-muted);margin-bottom:1.25rem}
+.band-ring{width:140px;height:140px;border-radius:50%;margin:1.25rem auto;
+  background:conic-gradient(var(--gold) 0%,var(--gold) var(--fill,0%),rgba(26,39,68,.08) var(--fill,0%));
+  display:flex;align-items:center;justify-content:center;position:relative;
+  box-shadow:0 0 36px rgba(201,146,42,.2)}
+.band-ring::before{content:'';position:absolute;inset:12px;border-radius:50%;background:var(--cream)}
+.band-inner{position:relative;z-index:1;text-align:center}
+.band-num{font-family:'DM Serif Display',serif;font-size:2.3rem;color:var(--gold);line-height:1}
+.band-lbl{font-size:.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em}
+.score-raw{font-size:1rem;color:var(--text-muted);margin-top:.4rem}
+.score-raw strong{color:var(--navy);font-size:1.3rem}
+.results-nav{display:flex;gap:.45rem;justify-content:center;margin:1.25rem 0 2rem;flex-wrap:wrap}
+.results-nav a{background:var(--surface);border:1.5px solid var(--border);border-radius:50px;
+  padding:.38rem .95rem;font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:600;
+  color:var(--text-muted);text-decoration:none;transition:.2s}
+.results-nav a:hover{border-color:var(--sky);color:var(--sky)}
+.results-nav a.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.review-list{display:flex;flex-direction:column;gap:.85rem;margin-bottom:2rem}
+.review-item{background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);padding:1rem 1.15rem}
+.review-item.correct-item{border-color:var(--green)}.review-item.wrong-item{border-color:var(--red)}
+.review-q-num{font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.3rem}
+.correct-item .review-q-num{color:var(--green)}.wrong-item .review-q-num{color:var(--red)}
+.review-q-text{font-size:.87rem;color:var(--text-muted);margin-bottom:.5rem;line-height:1.5}
+.review-answer-row{display:flex;gap:1.25rem;flex-wrap:wrap;margin-bottom:.4rem}
+.ra-block{font-size:.84rem}
+.ra-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);margin-bottom:.18rem}
+.ra-val.correct{color:var(--green);font-weight:700}
+.ra-val.wrong{color:var(--red);font-weight:700}
+.ra-val.answer{color:var(--navy);font-weight:700}
+.review-exp{font-size:.8rem;color:var(--text-muted);line-height:1.6;
+  padding:.5rem .8rem;background:var(--cream);border-radius:8px;margin-top:.4rem}
+.back-btn{display:inline-block;background:var(--navy);color:#fff;border-radius:50px;
+  padding:.7rem 1.85rem;font-family:'DM Sans',sans-serif;font-size:.95rem;font-weight:600;
+  text-decoration:none;transition:.2s}
+.back-btn:hover{background:var(--navy-mid)}
+
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(26,39,68,.15);border-radius:3px}
+
+@media(max-width:768px){
+  #player-zone,#breadcrumb,#top-bar{position:static}
+  #questions-zone{padding:1.25rem .85rem 2.5rem}
+  .form-row{flex-direction:column;align-items:flex-start}
+  .actions-grid{grid-template-columns:1fr}
+  .fs-inner iframe{width:100vw;max-height:56.25vw}
+}
+</style>
+</head>
+<body>
+
+<!-- AUTH -->
+<div id="auth-overlay">
+  <div class="auth-card">
+    <div style="font-size:2.2rem;margin-bottom:.4rem">🎧</div>
+    <h2>Sign in to practise</h2>
+    <p>You need an English Flow account to access listening tests.</p>
+    <input type="email" id="auth-email" class="auth-input" placeholder="Email address" onkeydown="if(event.key==='Enter')doSignIn()">
+    <input type="password" id="auth-pass" class="auth-input" placeholder="Password" onkeydown="if(event.key==='Enter')doSignIn()">
+    <button class="auth-btn-el" id="auth-btn-el" onclick="doSignIn()">Sign In</button>
+    <div id="auth-msg" class="auth-msg"></div>
+    <p style="margin-top:.85rem;font-size:.78rem;color:var(--text-muted)">No account? <a href="../../../ielts.html" style="color:var(--sky)">Sign up on the IELTS page</a></p>
+  </div>
+</div>
+
+<!-- FULLSCREEN -->
+<div id="fs-overlay">
+  <div class="fs-inner">
+    <iframe id="fs-yt-frame" src="" allow="autoplay;fullscreen;accelerometer;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe>
+  </div>
+  <button class="fs-close" onclick="closeFullscreen()">✕</button>
+</div>
+
+<!-- CONFIRM -->
+<div id="confirm-overlay">
+  <div class="confirm-card">
+    <h3>Submit Answers?</h3>
+    <p>You cannot change your answers after submitting. Make sure you have answered all the questions you can.</p>
+    <div class="confirm-btns">
+      <button class="confirm-yes" onclick="submitAnswers()">Yes, Submit</button>
+      <button class="confirm-no" onclick="closeConfirm()">Go Back</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOP BAR -->
+<div id="top-bar">
+  <a href="../../../index.html" class="logo">English<span class="logo-dot">Flow</span></a>
+  <div class="timer-wrap"><div class="timer-lbl">Time remaining</div><div id="timer">30:00</div></div>
+  <div class="user-area"><div class="user-pill" id="user-pill">Student</div><button class="signout-btn" onclick="doSignOut()">Sign out</button></div>
+</div>
+
+<!-- BREADCRUMB -->
+<div id="breadcrumb">
+  <a href="../../../index.html">← Home</a><span class="bc-sep">/</span>
+  <a href="../../index.html">← Listening</a><span class="bc-sep">/</span>
+  <span class="bc-active">C14 Test 2 · Part 2</span>
+</div>
+
+<!-- PLAYER -->
+<div id="player-zone">
+  <div class="player-header">
+    <div class="test-title-row">
+      <span class="test-title">Cambridge 14 – Listening Test 2</span>
+      <span class="part-badge">Part 2</span>
+      <span class="diff-badge">Hard · IELTS Academic</span>
+    </div>
+  </div>
+  <div class="audio-label-row">
+    <span class="audio-label-txt">🎧 Listen carefully — you can replay as many times as needed</span>
+    <button class="fullscreen-btn" onclick="openFullscreen()">
+      <svg viewBox="0 0 24 24"><path d="M3 3h6v2H5v4H3V3zm12 0h6v6h-2V5h-4V3zm6 12v6h-6v-2h4v-4h2zM3 21v-6h2v4h4v2H3z"/></svg>
+      Watch Video
+    </button>
+  </div>
+  <!-- MP3 AUDIO (hidden) -->
+  <audio id="audio-el" src="part2.mp3" preload="auto" style="display:none"></audio>
+  <!-- YT src stored for fullscreen -->
+  <input type="hidden" id="yt-src" value="https://www.youtube.com/embed/3BF_uLusTog?start=445&enablejsapi=1">
+  <div class="audio-shell">
+    <button class="play-btn" onclick="togglePlay()" title="Play / Pause">
+      <svg viewBox="0 0 24 24"><polygon id="play-icon" points="5,3 19,12 5,21"/></svg>
+    </button>
+    <div class="audio-info">
+      <div class="audio-track-title">🎧 Part 2: Visit to Branley Castle</div>
+      <div class="audio-bar-wrap"><div class="audio-bar-fill" id="audio-bar-fill"></div></div>
+      <div class="audio-time-row">
+        <span id="elapsed-time">00:00</span>
+        <span id="play-hint">▶ Press play to begin</span>
+      </div>
+    </div>
+    <span class="vol-icon">🔊</span>
+  </div>
+  <div class="prog-wrap">
+    <div class="prog-label"><span>Questions answered</span><span id="prog-text">0 / 10</span></div>
+    <div class="prog-track"><div id="prog-fill"></div></div>
+  </div>
+  <div class="part-nav">
+    <a href="part1.html" class="">Part 1</a>
+<a href="part2.html" class="active">Part 2</a>
+<a href="part3.html" class="">Part 3</a>
+<a href="part4.html" class="">Part 4</a>
+  </div>
+</div>
+
+<!-- QUESTIONS -->
+<div id="questions-zone">
+
+<div class="section-hdr">
+  <div class="section-num">Section 2 · Questions 11–20</div>
+  <div class="section-title-txt">Visit to Branley Castle</div>
+</div>
+<div class="section-body">
+  <div class="section-instr"><strong>Questions 11–15:</strong> Choose the correct letter, <strong>A, B or C</strong>.</div>
+<div class="q-card" id="card-11"><div class="q-top"><div class="q-num">11</div><div class="q-text">Before Queen Elizabeth I visited the castle in 1576,</div><button class="flag-btn" onclick="toggleFlag(11)">🚩</button></div><div class="mc-opts" id="opts-11"><button class="mc-opt" onclick="selectMC(11,'A')"><span class="mc-key">A</span> repairs were carried out to the guest rooms.</button><button class="mc-opt" onclick="selectMC(11,'B')"><span class="mc-key">B</span> a new building was constructed for her.</button><button class="mc-opt" onclick="selectMC(11,'C')"><span class="mc-key">C</span> a fire damaged part of the main hall.</button></div></div>
+<div class="q-card" id="card-12"><div class="q-top"><div class="q-num">12</div><div class="q-text">In 1982, the castle was sold to</div><button class="flag-btn" onclick="toggleFlag(12)">🚩</button></div><div class="mc-opts" id="opts-12"><button class="mc-opt" onclick="selectMC(12,'A')"><span class="mc-key">A</span> the government.</button><button class="mc-opt" onclick="selectMC(12,'B')"><span class="mc-key">B</span> the Fenys family.</button><button class="mc-opt" onclick="selectMC(12,'C')"><span class="mc-key">C</span> an entertainment company.</button></div></div>
+<div class="q-card" id="card-13"><div class="q-top"><div class="q-num">13</div><div class="q-text">In some of the rooms, visitors can</div><button class="flag-btn" onclick="toggleFlag(13)">🚩</button></div><div class="mc-opts" id="opts-13"><button class="mc-opt" onclick="selectMC(13,'A')"><span class="mc-key">A</span> speak to experts on the history of the castle.</button><button class="mc-opt" onclick="selectMC(13,'B')"><span class="mc-key">B</span> interact with actors dressed as famous characters.</button><button class="mc-opt" onclick="selectMC(13,'C')"><span class="mc-key">C</span> see models of historical figures moving and talking.</button></div></div>
+<div class="q-card" id="card-14"><div class="q-top"><div class="q-num">14</div><div class="q-text">In the castle park, visitors can</div><button class="flag-btn" onclick="toggleFlag(14)">🚩</button></div><div class="mc-opts" id="opts-14"><button class="mc-opt" onclick="selectMC(14,'A')"><span class="mc-key">A</span> see an 800-year-old tree.</button><button class="mc-opt" onclick="selectMC(14,'B')"><span class="mc-key">B</span> go to an art exhibition.</button><button class="mc-opt" onclick="selectMC(14,'C')"><span class="mc-key">C</span> visit a small zoo.</button></div></div>
+<div class="q-card" id="card-15"><div class="q-top"><div class="q-num">15</div><div class="q-text">At the end of the visit, the group will have</div><button class="flag-btn" onclick="toggleFlag(15)">🚩</button></div><div class="mc-opts" id="opts-15"><button class="mc-opt" onclick="selectMC(15,'A')"><span class="mc-key">A</span> afternoon tea in the conservatory.</button><button class="mc-opt" onclick="selectMC(15,'B')"><span class="mc-key">B</span> the chance to meet the castle's owners.</button><button class="mc-opt" onclick="selectMC(15,'C')"><span class="mc-key">C</span> a photograph together on the Great Staircase.</button></div></div>
+
+  <div class="sec-divider"></div>
+  <div class="section-instr"><strong>Questions 16–20:</strong> Label the plan of Branley Castle below. Write the correct letter, <strong>A–H</strong>, next to Questions 16–20.</div>
+  <div class="map-container">
+    <div class="map-title">Branley Castle — Plan</div>
+    <div class="map-svg-wrap">
+      <svg viewBox="0 0 440 345" xmlns="http://www.w3.org/2000/svg" style="width:100%;font-family:'DM Sans',sans-serif">
+        <!-- River -->
+        <path d="M 8 48 Q 85 24 170 34 Q 235 44 300 28 Q 365 12 432 33" stroke="#7ec8e3" stroke-width="16" fill="none" opacity=".6"/>
+        <text x="220" y="22" font-size="11" fill="#5a6a8a" text-anchor="middle">River</text>
+        <!-- Outer moat path -->
+        <ellipse cx="218" cy="193" rx="158" ry="130" stroke="#c0c8d8" stroke-width="1.5" fill="none" stroke-dasharray="6,3"/>
+        <!-- Castle walls circle -->
+        <circle cx="218" cy="178" r="72" stroke="#1a2744" stroke-width="2.5" fill="rgba(46,111,173,.04)"/>
+        <!-- Walls label -->
+        <text x="286" y="172" font-size="9" fill="#5a6a8a">Walls</text>
+        <!-- Great Hall -->
+        <rect x="170" y="146" width="66" height="60" rx="5" fill="#e8f2fc" stroke="#2e6fad" stroke-width="1.5"/>
+        <text x="203" y="170" font-size="10" fill="#1a2744" text-anchor="middle" font-weight="600">Great</text>
+        <text x="203" y="184" font-size="10" fill="#1a2744" text-anchor="middle" font-weight="600">Hall</text>
+        <!-- Tower -->
+        <circle cx="276" cy="160" r="16" fill="#fdf3e3" stroke="#c9922a" stroke-width="1.5"/>
+        <text x="276" y="164" font-size="9" fill="#1a2744" text-anchor="middle">Tower</text>
+        <!-- North gate -->
+        <rect x="200" y="104" width="36" height="15" rx="3" fill="#e8f5ee" stroke="#1e6e4e" stroke-width="1.5"/>
+        <text x="218" y="115" font-size="9" fill="#1a2744" text-anchor="middle">N. gate</text>
+        <!-- South gate -->
+        <rect x="200" y="238" width="36" height="15" rx="3" fill="#e8f5ee" stroke="#1e6e4e" stroke-width="1.5"/>
+        <text x="218" y="249" font-size="9" fill="#1a2744" text-anchor="middle">S. gate</text>
+        <!-- Compass -->
+        <text x="48" y="82" font-size="9" fill="#5a6a8a" text-anchor="middle">N</text>
+        <text x="48" y="108" font-size="9" fill="#5a6a8a" text-anchor="middle">S</text>
+        <text x="30" y="97" font-size="9" fill="#5a6a8a" text-anchor="middle">W</text>
+        <text x="64" y="97" font-size="9" fill="#5a6a8a" text-anchor="middle">E</text>
+        <line x1="48" y1="84" x2="48" y2="106" stroke="#5a6a8a" stroke-width="1"/>
+        <line x1="32" y1="95" x2="62" y2="95" stroke="#5a6a8a" stroke-width="1"/>
+        <!-- Labels A–H -->
+        <rect x="378" y="34" width="20" height="17" rx="3" fill="#1a2744"/><text x="388" y="47" font-size="10" fill="white" text-anchor="middle" font-weight="700">A</text>
+        <rect x="222" y="84" width="20" height="17" rx="3" fill="#1a2744"/><text x="232" y="97" font-size="10" fill="white" text-anchor="middle" font-weight="700">B</text>
+        <rect x="222" y="250" width="20" height="17" rx="3" fill="#1a2744"/><text x="232" y="263" font-size="10" fill="white" text-anchor="middle" font-weight="700">C</text>
+        <rect x="54" y="170" width="20" height="17" rx="3" fill="#1a2744"/><text x="64" y="183" font-size="10" fill="white" text-anchor="middle" font-weight="700">D</text>
+        <rect x="180" y="250" width="20" height="17" rx="3" fill="#1a2744"/><text x="190" y="263" font-size="10" fill="white" text-anchor="middle" font-weight="700">E</text>
+        <rect x="378" y="170" width="20" height="17" rx="3" fill="#1a2744"/><text x="388" y="183" font-size="10" fill="white" text-anchor="middle" font-weight="700">F</text>
+        <rect x="28" y="244" width="20" height="17" rx="3" fill="#1a2744"/><text x="38" y="257" font-size="10" fill="white" text-anchor="middle" font-weight="700">G</text>
+        <rect x="208" y="273" width="20" height="17" rx="3" fill="#1a2744"/><text x="218" y="286" font-size="10" fill="white" text-anchor="middle" font-weight="700">H</text>
+        <!-- Main entrance -->
+        <rect x="175" y="307" width="88" height="22" rx="4" fill="white" stroke="#1a2744" stroke-width="1.5"/>
+        <text x="219" y="322" font-size="9" fill="#1a2744" text-anchor="middle">Main entrance</text>
+        <line x1="218" y1="290" x2="218" y2="307" stroke="#1a2744" stroke-width="1.5" stroke-dasharray="3,2"/>
+      </svg>
+    </div>
+  </div>
+<div class="q-card" id="card-16"><div class="q-top"><div class="q-num">16</div><div class="q-text">Starting point for walking the walls</div><button class="flag-btn" onclick="toggleFlag(16)">🚩</button></div><div class="map-opts" id="opts-16"><button class="map-opt" onclick="selectMC(16,'A')">A</button><button class="map-opt" onclick="selectMC(16,'B')">B</button><button class="map-opt" onclick="selectMC(16,'C')">C</button><button class="map-opt" onclick="selectMC(16,'D')">D</button><button class="map-opt" onclick="selectMC(16,'E')">E</button><button class="map-opt" onclick="selectMC(16,'F')">F</button><button class="map-opt" onclick="selectMC(16,'G')">G</button><button class="map-opt" onclick="selectMC(16,'H')">H</button></div></div>
+<div class="q-card" id="card-17"><div class="q-top"><div class="q-num">17</div><div class="q-text">Bow and arrow display</div><button class="flag-btn" onclick="toggleFlag(17)">🚩</button></div><div class="map-opts" id="opts-17"><button class="map-opt" onclick="selectMC(17,'A')">A</button><button class="map-opt" onclick="selectMC(17,'B')">B</button><button class="map-opt" onclick="selectMC(17,'C')">C</button><button class="map-opt" onclick="selectMC(17,'D')">D</button><button class="map-opt" onclick="selectMC(17,'E')">E</button><button class="map-opt" onclick="selectMC(17,'F')">F</button><button class="map-opt" onclick="selectMC(17,'G')">G</button><button class="map-opt" onclick="selectMC(17,'H')">H</button></div></div>
+<div class="q-card" id="card-18"><div class="q-top"><div class="q-num">18</div><div class="q-text">Hunting birds display</div><button class="flag-btn" onclick="toggleFlag(18)">🚩</button></div><div class="map-opts" id="opts-18"><button class="map-opt" onclick="selectMC(18,'A')">A</button><button class="map-opt" onclick="selectMC(18,'B')">B</button><button class="map-opt" onclick="selectMC(18,'C')">C</button><button class="map-opt" onclick="selectMC(18,'D')">D</button><button class="map-opt" onclick="selectMC(18,'E')">E</button><button class="map-opt" onclick="selectMC(18,'F')">F</button><button class="map-opt" onclick="selectMC(18,'G')">G</button><button class="map-opt" onclick="selectMC(18,'H')">H</button></div></div>
+<div class="q-card" id="card-19"><div class="q-top"><div class="q-num">19</div><div class="q-text">Traditional dancing</div><button class="flag-btn" onclick="toggleFlag(19)">🚩</button></div><div class="map-opts" id="opts-19"><button class="map-opt" onclick="selectMC(19,'A')">A</button><button class="map-opt" onclick="selectMC(19,'B')">B</button><button class="map-opt" onclick="selectMC(19,'C')">C</button><button class="map-opt" onclick="selectMC(19,'D')">D</button><button class="map-opt" onclick="selectMC(19,'E')">E</button><button class="map-opt" onclick="selectMC(19,'F')">F</button><button class="map-opt" onclick="selectMC(19,'G')">G</button><button class="map-opt" onclick="selectMC(19,'H')">H</button></div></div>
+<div class="q-card" id="card-20"><div class="q-top"><div class="q-num">20</div><div class="q-text">Shop</div><button class="flag-btn" onclick="toggleFlag(20)">🚩</button></div><div class="map-opts" id="opts-20"><button class="map-opt" onclick="selectMC(20,'A')">A</button><button class="map-opt" onclick="selectMC(20,'B')">B</button><button class="map-opt" onclick="selectMC(20,'C')">C</button><button class="map-opt" onclick="selectMC(20,'D')">D</button><button class="map-opt" onclick="selectMC(20,'E')">E</button><button class="map-opt" onclick="selectMC(20,'F')">F</button><button class="map-opt" onclick="selectMC(20,'G')">G</button><button class="map-opt" onclick="selectMC(20,'H')">H</button></div></div>
+</div>
+
+  <div class="submit-wrap">
+    <button id="submit-btn" onclick="showConfirm()">Submit Answers</button>
+  </div>
+</div><!-- /questions-zone -->
+
+<!-- RESULTS -->
+<div id="results-screen">
+  <div class="results-inner">
+    <div class="results-hero">
+      <h1>Section Results</h1>
+      <p class="results-sub">Cambridge 14 – Listening Test 2 · Part 2</p>
+      <div class="band-ring" id="band-ring">
+        <div class="band-inner"><div class="band-num" id="band-num">—</div><div class="band-lbl">Band</div></div>
+      </div>
+      <div class="score-raw"><strong id="raw-score">0</strong> / <span id="total-score">10</span> correct</div>
+    </div>
+    <p style="text-align:center;font-size:.84rem;color:var(--text-muted);margin-bottom:.75rem">
+      Continue to the next section or review your answers below.
+    </p>
+    <div class="results-nav">
+      <a href="part1.html" class="">Part 1</a>
+<a href="part2.html" class="active">Part 2</a>
+<a href="part3.html" class="">Part 3</a>
+<a href="part4.html" class="">Part 4</a>
+    </div>
+    <div class="review-list" id="review-list"></div>
+    <div style="text-align:center;margin-bottom:2rem">
+      <a href="../../index.html" class="back-btn">← Back to Listening</a>
+    </div>
+  </div>
+</div>
+
+<script>
+const TEST_ID='cambridge-14-test-2-part2',QSTART=11,QEND=20;
+const ANSWERS={"11": {"correct": "B", "type": "mc", "text": "Before Queen Elizabeth I visited in 1576...", "exp": "A new building was constructed for her before the royal visit in 1576."}, "12": {"correct": "B", "type": "mc", "text": "In 1982, the castle was sold to...", "exp": "The castle was sold to the Fenys family in 1982."}, "13": {"correct": "C", "type": "mc", "text": "In some rooms, visitors can...", "exp": "Visitors can see models of historical figures moving and talking in some rooms."}, "14": {"correct": "A", "type": "mc", "text": "In the castle park, visitors can...", "exp": "The park contains an 800-year-old tree."}, "15": {"correct": "C", "type": "mc", "text": "At the end of the visit, the group will have...", "exp": "The group will have a photograph together on the Great Staircase."}, "16": {"correct": "B", "type": "mc", "text": "Starting point for walking the walls", "exp": "The starting point for walking the walls is at position B (North gate area)."}, "17": {"correct": "F", "type": "mc", "text": "Bow and arrow display", "exp": "The bow and arrow display is at position F (east outer area)."}, "18": {"correct": "D", "type": "mc", "text": "Hunting birds display", "exp": "The hunting birds display is at position D (west outer area)."}, "19": {"correct": "E", "type": "mc", "text": "Traditional dancing", "exp": "Traditional dancing takes place at position E (near south gate, left)."}, "20": {"correct": "H", "type": "mc", "text": "Shop", "exp": "The shop is at position H (south, near main entrance path)."}};
+
+const SUPABASE_URL='https://evhceswvapszaghnvmxl.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGNlc3d2YXBzemFnaG52bXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3OTQwNzMsImV4cCI6MjA5MzM3MDA3M30.yV7tavgR7JKc45uSGtS8Lf6m1ZMuuvQ23hmAb8n6k3A';
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+let currentUser=null,userAnswers={},flagged={},timerSec=30*60,timerInt=null,elapsed=0,elInt=null,playing=false;
+
+/* AUTH */
+async function initAuth(){const{data:{session}}=await sb.auth.getSession();if(session){currentUser=session.user;showApp()}}
+async function doSignIn(){
+  const email=document.getElementById('auth-email').value.trim(),pass=document.getElementById('auth-pass').value;
+  const btn=document.getElementById('auth-btn-el');
+  if(!email||!pass){showAuthMsg('Please enter email and password.',true);return}
+  btn.disabled=true;btn.textContent='Signing in…';
+  const{data,error}=await sb.auth.signInWithPassword({email,password:pass});
+  btn.disabled=false;btn.textContent='Sign In';
+  if(error){showAuthMsg(error.message,true);return}
+  currentUser=data.user;showApp();
+}
+function showAuthMsg(t,e){const el=document.getElementById('auth-msg');el.textContent=t;el.className='auth-msg '+(e?'error':'success');el.style.display='block'}
+function showApp(){document.getElementById('auth-overlay').style.display='none';const n=currentUser.user_metadata?.name||currentUser.email.split('@')[0];document.getElementById('user-pill').textContent='👤 '+n.split(' ')[0];startTimer()}
+async function doSignOut(){await sb.auth.signOut();location.reload()}
+
+/* TIMER */
+function startTimer(){updateTimer();timerInt=setInterval(()=>{timerSec--;updateTimer();if(timerSec<=0){clearInterval(timerInt);submitAnswers()}},1000)}
+function updateTimer(){const m=Math.floor(timerSec/60),s=timerSec%60,el=document.getElementById('timer');el.textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;el.className='';if(timerSec<=60)el.classList.add('danger');else if(timerSec<=300)el.classList.add('warning')}
+
+/* FAKE AUDIO PLAYER */
+function togglePlay(){
+  const audio=document.getElementById('audio-el');
+  if(!audio)return;
+  if(!playing){
+    audio.play();
+    document.getElementById('play-icon').innerHTML='<rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/>';
+    playing=true;
+    elInt=setInterval(()=>{elapsed++;document.getElementById('elapsed-time').textContent=fmtTime(elapsed);const bar=document.getElementById('audio-bar-fill');if(bar&&audio.duration){bar.style.width=(audio.currentTime/audio.duration*100)+'%'}},1000);
+    document.getElementById('play-hint').textContent='';
+  } else {
+    audio.pause();
+    document.getElementById('play-icon').innerHTML='<polygon points="5,3 19,12 5,21"/>';
+    playing=false;clearInterval(elInt);
+  }
+}
+function fmtTime(s){return `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`}
+
+/* FULLSCREEN */
+function openFullscreen(){
+  const src=document.getElementById('yt-src').value;
+  document.getElementById('fs-yt-frame').src=src+'&autoplay=1';
+  document.getElementById('fs-overlay').classList.add('show');
+}
+function closeFullscreen(){
+  document.getElementById('fs-overlay').classList.remove('show');
+  document.getElementById('fs-yt-frame').src='';
+}
+
+/* FLAGS */
+function toggleFlag(q){flagged[q]=!flagged[q];const c=document.getElementById(`card-${q}`),b=c?.querySelector('.flag-btn');if(c)c.classList.toggle('flagged',!!flagged[q]);if(b)b.classList.toggle('active',!!flagged[q])}
+
+/* MC */
+function selectMC(q,val){userAnswers[q]=val;document.querySelectorAll(`#opts-${q} .mc-opt,#opts-${q} .map-opt`).forEach(b=>{const k=b.querySelector('.mc-key')?.textContent||b.textContent.trim();b.classList.toggle('selected',k===val)});updateProgress()}
+
+/* FILL */
+function onFill(el){const q=parseInt(el.dataset.q);userAnswers[q]=el.value.trim();el.classList.toggle('has-val',el.value.trim().length>0);updateProgress()}
+
+/* PROGRESS */
+function updateProgress(){let c=0;for(let i=QSTART;i<=QEND;i++){const v=userAnswers[i];if(v!==undefined&&String(v).trim()!=='')c++}const total=QEND-QSTART+1;document.getElementById('prog-text').textContent=`${c} / ${total}`;document.getElementById('prog-fill').style.width=`${c/total*100}%`}
+
+/* CONFIRM */
+function showConfirm(){document.getElementById('confirm-overlay').classList.add('show')}
+function closeConfirm(){document.getElementById('confirm-overlay').classList.remove('show')}
+
+/* SUBMIT */
+async function submitAnswers(){
+  closeConfirm();clearInterval(timerInt);
+  let correct=0;
+  for(let i=QSTART;i<=QEND;i++){
+    const a=ANSWERS[i],given=String(userAnswers[i]||'').trim().toLowerCase();
+    if(a.type==='mc'){if(given===a.correct.toLowerCase())correct++}
+    else{if(a.correct.some(c=>c.toLowerCase()===given))correct++}
+  }
+  const total=QEND-QSTART+1,band=getBand(correct,total);
+  if(currentUser){try{await sb.from('listening_scores').upsert({user_id:currentUser.id,test_id:TEST_ID,band_score:band,score_raw:correct,total,completed_at:new Date().toISOString()},{onConflict:'user_id,test_id'})}catch(e){console.warn(e)}}
+  showResults(correct,total,band);
+}
+function getBand(raw,total){const s=(raw/total)*40;if(s>=39)return 9.0;if(s>=37)return 8.5;if(s>=35)return 8.0;if(s>=33)return 7.5;if(s>=30)return 7.0;if(s>=27)return 6.5;if(s>=23)return 6.0;if(s>=19)return 5.5;if(s>=15)return 5.0;if(s>=13)return 4.5;if(s>=10)return 4.0;return 3.5}
+function showResults(correct,total,band){
+  document.getElementById('results-screen').style.display='block';
+  document.getElementById('band-num').textContent=band.toFixed(1);
+  document.getElementById('raw-score').textContent=correct;
+  document.getElementById('total-score').textContent=total;
+  document.getElementById('band-ring').style.setProperty('--fill',Math.min(100,(band/9)*100)+'%');
+  const list=document.getElementById('review-list');list.innerHTML='';
+  for(let i=QSTART;i<=QEND;i++){
+    const a=ANSWERS[i],given=String(userAnswers[i]||'').trim(),givenLow=given.toLowerCase();
+    const isOk=a.type==='mc'?givenLow===a.correct.toLowerCase():a.correct.some(c=>c.toLowerCase()===givenLow);
+    const cd=Array.isArray(a.correct)?a.correct[0]:a.correct;
+    const div=document.createElement('div');div.className='review-item '+(isOk?'correct-item':'wrong-item');
+    div.innerHTML=`<div class="review-q-num">${isOk?'✓':'✗'} Question ${i}</div>
+<div class="review-q-text">${a.text}</div>
+<div class="review-answer-row">
+  <div class="ra-block"><div class="ra-label">Your answer</div><div class="ra-val ${isOk?'correct':'wrong'}">${given||'(no answer)'}</div></div>
+  ${!isOk?`<div class="ra-block"><div class="ra-label">Correct answer</div><div class="ra-val answer">${cd}</div></div>`:''}
+</div>
+<div class="review-exp">💡 ${a.exp}</div>`;
+    list.appendChild(div);
+  }
+}
+initAuth();
+
+</script></body></html>
