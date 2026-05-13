@@ -24,830 +24,145 @@
     --radius: 16px;
     --radius-lg: 24px;
   }
-
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--cream);
-    color: var(--text);
-    min-height: 100vh;
-    line-height: 1.6;
-  }
-
-  /* === HERO HEADER === */
-  .hero {
-    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 60%, #1f4a7a 100%);
-    padding: 0;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .hero::before {
-    content: '';
-    position: absolute;
-    top: -40%;
-    right: -10%;
-    width: 600px;
-    height: 600px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(46,111,173,0.25) 0%, transparent 70%);
-    pointer-events: none;
-  }
-
-  .hero::after {
-    content: '';
-    position: absolute;
-    bottom: -30%;
-    left: 5%;
-    width: 400px;
-    height: 400px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(201,146,42,0.12) 0%, transparent 70%);
-    pointer-events: none;
-  }
-
-  /* === TOP BAR — compact === */
-  .top-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.55rem 1.5rem;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    position: relative;
-    z-index: 10;
-  }
-
-  .logo {
-    font-family: 'DM Serif Display', serif;
-    color: white;
-    font-size: 1.15rem;
-    letter-spacing: -0.02em;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--text); min-height: 100vh; line-height: 1.6; }
+  .hero { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 60%, #1f4a7a 100%); padding: 0; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: -40%; right: -10%; width: 600px; height: 600px; border-radius: 50%; background: radial-gradient(circle, rgba(46,111,173,0.25) 0%, transparent 70%); pointer-events: none; }
+  .hero::after { content: ''; position: absolute; bottom: -30%; left: 5%; width: 400px; height: 400px; border-radius: 50%; background: radial-gradient(circle, rgba(201,146,42,0.12) 0%, transparent 70%); pointer-events: none; }
+  .top-bar { display: flex; align-items: center; justify-content: space-between; padding: 0.55rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); flex-wrap: wrap; gap: 0.5rem; position: relative; z-index: 10; }
+  .logo { font-family: 'DM Serif Display', serif; color: white; font-size: 1.15rem; letter-spacing: -0.02em; display: flex; align-items: center; gap: 0.5rem; }
   .logo-dot { color: var(--gold); }
-
-  .auth-buttons {
-    display: flex;
-    gap: 0.4rem;
-    align-items: center;
-  }
-
-  .btn-auth {
-    padding: 0.35rem 0.9rem;
-    border-radius: 40px;
-    font-size: 0.78rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-family: 'DM Sans', sans-serif;
-    border: none;
-  }
-
-  .btn-signin {
-    background: transparent;
-    color: rgba(255,255,255,0.85);
-    border: 1px solid rgba(255,255,255,0.3);
-  }
-
-  .btn-signin:hover {
-    background: rgba(255,255,255,0.1);
-    color: white;
-  }
-
-  .btn-signup {
-    background: var(--gold);
-    color: white;
-  }
-
-  .btn-signup:hover {
-    background: #b8821e;
-    transform: translateY(-1px);
-  }
-
-  .user-badge {
-    background: rgba(255,255,255,0.15);
-    color: white;
-    padding: 0.35rem 0.9rem;
-    border-radius: 40px;
-    font-size: 0.78rem;
-    font-weight: 500;
-    display: none;
-    align-items: center;
-    gap: 0.4rem;
-  }
-
-  .btn-signout {
-    background: transparent;
-    color: rgba(255,255,255,0.7);
-    border: 1px solid rgba(255,255,255,0.2);
-    font-size: 0.75rem;
-    padding: 0.3rem 0.7rem;
-  }
-
+  .auth-buttons { display: flex; gap: 0.4rem; align-items: center; }
+  .btn-auth { padding: 0.35rem 0.9rem; border-radius: 40px; font-size: 0.78rem; font-weight: 500; cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif; border: none; }
+  .btn-signin { background: transparent; color: rgba(255,255,255,0.85); border: 1px solid rgba(255,255,255,0.3); }
+  .btn-signin:hover { background: rgba(255,255,255,0.1); color: white; }
+  .btn-signup { background: var(--gold); color: white; }
+  .btn-signup:hover { background: #b8821e; transform: translateY(-1px); }
+  .user-badge { background: rgba(255,255,255,0.15); color: white; padding: 0.35rem 0.9rem; border-radius: 40px; font-size: 0.78rem; font-weight: 500; display: none; align-items: center; gap: 0.4rem; }
+  .btn-signout { background: transparent; color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.2); font-size: 0.75rem; padding: 0.3rem 0.7rem; }
   .btn-signout:hover { color: white; background: rgba(255,255,255,0.1); }
-
-  /* === BANNER TEXT === */
-  .hero-banner {
-    padding: 0.65rem 2rem;
-    background: rgba(255,255,255,0.06);
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-    text-align: center;
-    position: relative;
-    z-index: 10;
-  }
-
-  .hero-banner p {
-    color: rgba(255,255,255,0.75);
-    font-size: 0.82rem;
-    font-weight: 400;
-    letter-spacing: 0.01em;
-  }
-
+  .hero-banner { padding: 0.65rem 2rem; background: rgba(255,255,255,0.06); border-bottom: 1px solid rgba(255,255,255,0.08); text-align: center; position: relative; z-index: 10; }
+  .hero-banner p { color: rgba(255,255,255,0.75); font-size: 0.82rem; font-weight: 400; letter-spacing: 0.01em; }
   .hero-banner span { color: var(--gold); font-weight: 500; }
-
-  /* === HERO CONTENT === */
-  .hero-content {
-    padding: 2.5rem 2rem 2rem;
-    position: relative;
-    z-index: 10;
-  }
-
-  .hero-title {
-    font-family: 'DM Serif Display', serif;
-    font-size: clamp(2rem, 4vw, 3rem);
-    color: white;
-    line-height: 1.15;
-    margin-bottom: 0.75rem;
-    letter-spacing: -0.02em;
-  }
-
-  .hero-title em {
-    font-style: italic;
-    color: var(--gold);
-  }
-
-  .hero-subtitle {
-    color: rgba(255,255,255,0.65);
-    font-size: 1rem;
-    max-width: 540px;
-    font-weight: 300;
-  }
-
-  .hero-pills {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    margin-top: 1.25rem;
-  }
-
-  .pill {
-    background: rgba(255,255,255,0.1);
-    color: rgba(255,255,255,0.8);
-    border: 1px solid rgba(255,255,255,0.15);
-    padding: 0.3rem 0.85rem;
-    border-radius: 40px;
-    font-size: 0.78rem;
-    font-weight: 500;
-  }
-
-  /* === QUICK LINKS BAR — home only === */
-  .quick-links {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 0.6rem 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-  }
-
-  .quick-link {
-    display: flex;
-    align-items: center;
-    gap: 0.35rem;
-    padding: 0.35rem 0.85rem;
-    border-radius: 40px;
-    font-size: 0.82rem;
-    font-weight: 500;
-    cursor: pointer;
-    text-decoration: none;
-    transition: all 0.2s;
-    color: var(--text-muted);
-    border: 1px solid var(--border);
-    background: var(--cream);
-  }
-
-  .quick-link:hover {
-    background: var(--sky-light);
-    color: var(--sky);
-    border-color: rgba(46,111,173,0.2);
-  }
-
-  .quick-link.active {
-    background: var(--navy);
-    color: white;
-    border-color: var(--navy);
-  }
-
-  /* === MAIN LAYOUT === */
-  .main {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 2rem;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-  }
-
-  @media (max-width: 768px) {
-    .main { grid-template-columns: 1fr; padding: 1rem; }
-    .hero-content { padding: 1.5rem 1rem 1.5rem; }
-    .top-bar { padding: 0.5rem 1rem; }
-  }
-
-  /* === SECTION PANELS === */
-  .panel {
-    background: var(--surface);
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--border);
-    overflow: hidden;
-  }
-
-  .panel-header {
-    padding: 1.25rem 1.5rem 1rem;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
-
-  .panel-badge {
-    padding: 0.3rem 0.8rem;
-    border-radius: 40px;
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-  }
-
-  .badge-free {
-    background: var(--green-light);
-    color: var(--green);
-  }
-
-  .badge-premium {
-    background: var(--gold-light);
-    color: var(--gold);
-  }
-
-  .panel-title {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.2rem;
-    color: var(--text);
-    letter-spacing: -0.01em;
-  }
-
-  .panel-subtitle {
-    color: var(--text-muted);
-    font-size: 0.8rem;
-    margin-top: 0.2rem;
-  }
-
-  .panel-body {
-    padding: 1.25rem 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-  /* === FEATURE CARDS === */
-  .feat {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem 1.1rem;
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    text-decoration: none;
-    color: inherit;
-    background: var(--cream);
-    transition: all 0.22s;
-    cursor: pointer;
-  }
-
-  .feat:hover {
-    border-color: var(--sky);
-    background: var(--sky-light);
-    transform: translateX(4px);
-  }
-
-  .feat.premium:hover {
-    border-color: var(--gold);
-    background: var(--gold-light);
-  }
-
-  .feat.locked {
-    opacity: 0.7;
-    cursor: default;
-  }
-
-  .feat.locked:hover {
-    transform: none;
-    border-color: var(--border);
-    background: var(--cream);
-  }
-
-  .feat-icon {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.3rem;
-    flex-shrink: 0;
-  }
-
+  .hero-content { padding: 2.5rem 2rem 2rem; position: relative; z-index: 10; }
+  .hero-title { font-family: 'DM Serif Display', serif; font-size: clamp(2rem, 4vw, 3rem); color: white; line-height: 1.15; margin-bottom: 0.75rem; letter-spacing: -0.02em; }
+  .hero-title em { font-style: italic; color: var(--gold); }
+  .hero-subtitle { color: rgba(255,255,255,0.65); font-size: 1rem; max-width: 540px; font-weight: 300; }
+  .hero-pills { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1.25rem; }
+  .pill { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,0.15); padding: 0.3rem 0.85rem; border-radius: 40px; font-size: 0.78rem; font-weight: 500; }
+  .quick-links { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0.6rem 1.5rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+  .quick-link { display: flex; align-items: center; gap: 0.35rem; padding: 0.35rem 0.85rem; border-radius: 40px; font-size: 0.82rem; font-weight: 500; cursor: pointer; text-decoration: none; transition: all 0.2s; color: var(--text-muted); border: 1px solid var(--border); background: var(--cream); }
+  .quick-link:hover { background: var(--sky-light); color: var(--sky); border-color: rgba(46,111,173,0.2); }
+  .quick-link.active { background: var(--navy); color: white; border-color: var(--navy); }
+  .main { max-width: 1280px; margin: 0 auto; padding: 2rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  @media (max-width: 768px) { .main { grid-template-columns: 1fr; padding: 1rem; } .hero-content { padding: 1.5rem 1rem 1.5rem; } .top-bar { padding: 0.5rem 1rem; } }
+  .panel { background: var(--surface); border-radius: var(--radius-lg); border: 1px solid var(--border); overflow: hidden; }
+  .panel-header { padding: 1.25rem 1.5rem 1rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.75rem; }
+  .panel-badge { padding: 0.3rem 0.8rem; border-radius: 40px; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+  .badge-free { background: var(--green-light); color: var(--green); }
+  .badge-premium { background: var(--gold-light); color: var(--gold); }
+  .panel-title { font-family: 'DM Serif Display', serif; font-size: 1.2rem; color: var(--text); letter-spacing: -0.01em; }
+  .panel-subtitle { color: var(--text-muted); font-size: 0.8rem; margin-top: 0.2rem; }
+  .panel-body { padding: 1.25rem 1.5rem; display: flex; flex-direction: column; gap: 0.75rem; }
+  .feat { display: flex; align-items: center; gap: 1rem; padding: 1rem 1.1rem; border-radius: var(--radius); border: 1px solid var(--border); text-decoration: none; color: inherit; background: var(--cream); transition: all 0.22s; cursor: pointer; }
+  .feat:hover { border-color: var(--sky); background: var(--sky-light); transform: translateX(4px); }
+  .feat.premium:hover { border-color: var(--gold); background: var(--gold-light); }
+  .feat.locked { opacity: 0.7; cursor: default; }
+  .feat.locked:hover { transform: none; border-color: var(--border); background: var(--cream); }
+  .feat-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }
   .icon-free { background: var(--green-light); }
   .icon-premium { background: var(--gold-light); }
-
   .feat-info { flex: 1; min-width: 0; }
-
-  .feat-name {
-    font-weight: 600;
-    font-size: 0.95rem;
-    color: var(--text);
-  }
-
-  .feat-desc {
-    font-size: 0.78rem;
-    color: var(--text-muted);
-    margin-top: 0.1rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .feat-arrow {
-    color: var(--text-muted);
-    font-size: 0.9rem;
-    flex-shrink: 0;
-    transition: transform 0.2s;
-  }
-
+  .feat-name { font-weight: 600; font-size: 0.95rem; color: var(--text); }
+  .feat-desc { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .feat-arrow { color: var(--text-muted); font-size: 0.9rem; flex-shrink: 0; transition: transform 0.2s; }
   .feat:hover .feat-arrow { transform: translateX(3px); color: var(--sky); }
   .feat.premium:hover .feat-arrow { color: var(--gold); }
-
-  .lock-icon {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    flex-shrink: 0;
-  }
-
-  /* === MODALS === */
-  .modal-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(10,20,40,0.55);
-    backdrop-filter: blur(6px);
-    align-items: center;
-    justify-content: center;
-    z-index: 2000;
-    padding: 1rem;
-  }
-
+  .lock-icon { font-size: 0.85rem; color: var(--text-muted); flex-shrink: 0; }
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(10,20,40,0.55); backdrop-filter: blur(6px); align-items: center; justify-content: center; z-index: 2000; padding: 1rem; }
   .modal-overlay.active { display: flex; }
-
-  .modal {
-    background: var(--surface);
-    border-radius: 28px;
-    width: 100%;
-    max-width: 420px;
-    padding: 2rem;
-    animation: popIn 0.25s ease;
-    box-shadow: 0 24px 48px rgba(0,0,0,0.18);
-    border: 1px solid var(--border);
-  }
-
-  @keyframes popIn {
-    from { opacity: 0; transform: scale(0.95) translateY(10px); }
-    to { opacity: 1; transform: scale(1) translateY(0); }
-  }
-
-  .modal-header {
-    text-align: center;
-    margin-bottom: 1.5rem;
-  }
-
+  .modal { background: var(--surface); border-radius: 28px; width: 100%; max-width: 420px; padding: 2rem; animation: popIn 0.25s ease; box-shadow: 0 24px 48px rgba(0,0,0,0.18); border: 1px solid var(--border); }
+  @keyframes popIn { from { opacity: 0; transform: scale(0.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+  .modal-header { text-align: center; margin-bottom: 1.5rem; }
   .modal-icon { font-size: 2rem; margin-bottom: 0.5rem; }
-
-  .modal-title {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.5rem;
-    color: var(--text);
-  }
-
-  .modal-sub {
-    font-size: 0.82rem;
-    color: var(--text-muted);
-    margin-top: 0.25rem;
-  }
-
+  .modal-title { font-family: 'DM Serif Display', serif; font-size: 1.5rem; color: var(--text); }
+  .modal-sub { font-size: 0.82rem; color: var(--text-muted); margin-top: 0.25rem; }
   .form-group { margin-bottom: 0.75rem; }
-
-  .form-label {
-    display: block;
-    font-size: 0.78rem;
-    font-weight: 500;
-    color: var(--text-muted);
-    margin-bottom: 0.35rem;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-  }
-
-  .form-input {
-    width: 100%;
-    padding: 0.7rem 1rem;
-    border-radius: 12px;
-    border: 1.5px solid var(--border);
-    font-size: 0.92rem;
-    font-family: 'DM Sans', sans-serif;
-    color: var(--text);
-    background: var(--cream);
-    transition: border-color 0.2s;
-    outline: none;
-  }
-
+  .form-label { display: block; font-size: 0.78rem; font-weight: 500; color: var(--text-muted); margin-bottom: 0.35rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  .form-input { width: 100%; padding: 0.7rem 1rem; border-radius: 12px; border: 1.5px solid var(--border); font-size: 0.92rem; font-family: 'DM Sans', sans-serif; color: var(--text); background: var(--cream); transition: border-color 0.2s; outline: none; }
   .form-input:focus { border-color: var(--sky); background: white; }
-
-  .phone-row {
-    display: flex;
-    align-items: center;
-    gap: 0;
-    border: 1.5px solid var(--border);
-    border-radius: 12px;
-    background: var(--cream);
-    overflow: hidden;
-    transition: border-color 0.2s;
-  }
-
+  .phone-row { display: flex; align-items: center; gap: 0; border: 1.5px solid var(--border); border-radius: 12px; background: var(--cream); overflow: hidden; transition: border-color 0.2s; }
   .phone-row:focus-within { border-color: var(--sky); background: white; }
-
-  .phone-prefix {
-    padding: 0.7rem 0.75rem;
-    font-size: 0.88rem;
-    color: var(--text-muted);
-    background: transparent;
-    white-space: nowrap;
-    border-right: 1.5px solid var(--border);
-    user-select: none;
-  }
-
-  .phone-input {
-    flex: 1;
-    padding: 0.7rem 0.8rem;
-    border: none;
-    background: transparent;
-    font-size: 0.92rem;
-    font-family: 'DM Sans', sans-serif;
-    color: var(--text);
-    outline: none;
-  }
-
-  .form-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-top: 1.25rem;
-  }
-
-  .btn-form {
-    width: 100%;
-    padding: 0.75rem;
-    border-radius: 12px;
-    border: none;
-    font-size: 0.92rem;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-    transition: all 0.2s;
-  }
-
+  .phone-prefix { padding: 0.7rem 0.75rem; font-size: 0.88rem; color: var(--text-muted); background: transparent; white-space: nowrap; border-right: 1.5px solid var(--border); user-select: none; }
+  .phone-input { flex: 1; padding: 0.7rem 0.8rem; border: none; background: transparent; font-size: 0.92rem; font-family: 'DM Sans', sans-serif; color: var(--text); outline: none; }
+  .form-actions { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1.25rem; }
+  .btn-form { width: 100%; padding: 0.75rem; border-radius: 12px; border: none; font-size: 0.92rem; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
   .btn-form-primary { background: var(--navy); color: white; }
   .btn-form-primary:hover { background: #111c36; }
-
-  .btn-form-ghost {
-    background: transparent;
-    color: var(--text-muted);
-    border: 1.5px solid var(--border);
-  }
-
+  .btn-form-ghost { background: transparent; color: var(--text-muted); border: 1.5px solid var(--border); }
   .btn-form-ghost:hover { background: var(--cream); color: var(--text); }
-
-  .form-msg {
-    font-size: 0.8rem;
-    text-align: center;
-    padding: 0.5rem;
-    border-radius: 8px;
-    margin-top: 0.5rem;
-    display: none;
-  }
-
+  .form-msg { font-size: 0.8rem; text-align: center; padding: 0.5rem; border-radius: 8px; margin-top: 0.5rem; display: none; }
   .form-msg.show { display: block; }
   .form-msg.error { background: #fef2f2; color: #b91c1c; }
   .form-msg.success { background: var(--green-light); color: var(--green); }
-
-  .modal-switch {
-    text-align: center;
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    margin-top: 1rem;
-  }
-
-  .modal-switch a {
-    color: var(--sky);
-    cursor: pointer;
-    text-decoration: none;
-    font-weight: 500;
-  }
-
-  /* === SUPPORT CARD === */
-  .support-section {
-    max-width: 1280px;
-    margin: 0 auto 2rem;
-    padding: 0 2rem;
-  }
-
-  .support-card {
-    background: linear-gradient(135deg, #1a2744, #243358);
-    border-radius: var(--radius-lg);
-    padding: 1.5rem 2rem;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 1.25rem;
-  }
-
-  .support-left h3 {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.2rem;
-    margin-bottom: 0.3rem;
-  }
-
-  .support-left p {
-    color: rgba(255,255,255,0.65);
-    font-size: 0.85rem;
-  }
-
-  .support-card-number {
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 12px;
-    padding: 0.75rem 1.25rem;
-    text-align: center;
-  }
-
-  .card-label {
-    font-size: 0.7rem;
-    color: rgba(255,255,255,0.5);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-bottom: 0.3rem;
-  }
-
-  .card-number {
-    font-family: 'DM Mono', 'Courier New', monospace;
-    font-size: 1.05rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    color: var(--gold);
-  }
-
-  .card-name {
-    font-size: 0.78rem;
-    color: rgba(255,255,255,0.6);
-    margin-top: 0.25rem;
-  }
-
-  /* === COMMENTS SECTION === */
-  .comments-section {
-    max-width: 1280px;
-    margin: 0 auto 2rem;
-    padding: 0 2rem;
-  }
-
-  .section-heading {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.4rem;
-    color: var(--text);
-    margin-bottom: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .comments-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.25rem;
-  }
-
-  @media (max-width: 640px) {
-    .comments-grid { grid-template-columns: 1fr; }
-    .support-section, .comments-section { padding: 0 1rem; }
-    .support-card { flex-direction: column; text-align: center; }
-  }
-
-  .comment-submit-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 1.5rem;
-  }
-
-  .comment-submit-card textarea {
-    width: 100%;
-    padding: 0.75rem 1rem;
-    border: 1.5px solid var(--border);
-    border-radius: 12px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.88rem;
-    color: var(--text);
-    background: var(--cream);
-    resize: vertical;
-    min-height: 90px;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-
+  .modal-switch { text-align: center; font-size: 0.8rem; color: var(--text-muted); margin-top: 1rem; }
+  .modal-switch a { color: var(--sky); cursor: pointer; text-decoration: none; font-weight: 500; }
+  .support-section { max-width: 1280px; margin: 0 auto 2rem; padding: 0 2rem; }
+  .support-card { background: linear-gradient(135deg, #1a2744, #243358); border-radius: var(--radius-lg); padding: 1.5rem 2rem; color: white; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.25rem; }
+  .support-left h3 { font-family: 'DM Serif Display', serif; font-size: 1.2rem; margin-bottom: 0.3rem; }
+  .support-left p { color: rgba(255,255,255,0.65); font-size: 0.85rem; }
+  /* coffee button */
+  .coffee-btn { background: var(--gold); color: #fff; border: none; border-radius: 50px; padding: .65rem 1.4rem; font-family: 'DM Sans', sans-serif; font-size: .9rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: .5rem; transition: .2s; white-space: nowrap; }
+  .coffee-btn:hover { background: #b8821e; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(201,146,42,.35); }
+  .card-reveal { display: none; margin-top: .85rem; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2); border-radius: 12px; padding: .75rem 1.25rem; text-align: center; animation: popIn .2s ease; }
+  .card-reveal .card-label { font-size: .7rem; color: rgba(255,255,255,.5); text-transform: uppercase; letter-spacing: .08em; margin-bottom: .3rem; }
+  .card-reveal .card-number { font-family: 'DM Mono','Courier New',monospace; font-size: 1.05rem; font-weight: 600; letter-spacing: .12em; color: var(--gold); }
+  .card-reveal .card-name { font-size: .78rem; color: rgba(255,255,255,.6); margin-top: .25rem; }
+  .copy-btn { margin-top: .6rem; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2); color: #fff; border-radius: 50px; padding: .3rem .9rem; font-family: 'DM Sans', sans-serif; font-size: .75rem; cursor: pointer; transition: .2s; }
+  .copy-btn:hover { background: rgba(255,255,255,.22); }
+  .comments-section { max-width: 1280px; margin: 0 auto 2rem; padding: 0 2rem; }
+  .section-heading { font-family: 'DM Serif Display', serif; font-size: 1.4rem; color: var(--text); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+  .comments-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+  @media (max-width: 640px) { .comments-grid { grid-template-columns: 1fr; } .support-section, .comments-section { padding: 0 1rem; } .support-card { flex-direction: column; align-items: flex-start; } }
+  .comment-submit-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; }
+  .comment-submit-card textarea { width: 100%; padding: 0.75rem 1rem; border: 1.5px solid var(--border); border-radius: 12px; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; color: var(--text); background: var(--cream); resize: vertical; min-height: 90px; outline: none; transition: border-color 0.2s; }
   .comment-submit-card textarea:focus { border-color: var(--sky); background: white; }
-
-  .btn-send {
-    margin-top: 0.75rem;
-    background: var(--navy);
-    color: white;
-    border: none;
-    padding: 0.6rem 1.5rem;
-    border-radius: 40px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-    transition: all 0.2s;
-  }
-
+  .btn-send { margin-top: 0.75rem; background: var(--navy); color: white; border: none; padding: 0.6rem 1.5rem; border-radius: 40px; font-size: 0.85rem; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
   .btn-send:hover { background: #111c36; transform: translateY(-1px); }
-
-  .comments-display {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 1.5rem;
-    overflow-y: auto;
-    max-height: 260px;
-  }
-
-  .no-comments {
-    text-align: center;
-    color: var(--text-muted);
-    font-size: 0.85rem;
-    padding: 2rem 0;
-  }
-
-  .comment-item {
-    padding: 0.75rem 0;
-    border-bottom: 1px solid var(--border);
-  }
-
+  .comments-display { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; overflow-y: auto; max-height: 260px; }
+  .no-comments { text-align: center; color: var(--text-muted); font-size: 0.85rem; padding: 2rem 0; }
+  .comment-item { padding: 0.75rem 0; border-bottom: 1px solid var(--border); }
   .comment-item:last-child { border-bottom: none; }
-
-  .comment-meta {
-    font-size: 0.72rem;
-    color: var(--text-muted);
-    margin-bottom: 0.25rem;
-  }
-
-  .comment-text {
-    font-size: 0.88rem;
-    color: var(--text);
-  }
-
-  /* === CONTACT BAR === */
-  .contact-bar {
-    background: var(--surface);
-    border-top: 1px solid var(--border);
-    padding: 0.75rem 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    max-width: 100%;
-  }
-
+  .comment-meta { font-size: 0.72rem; color: var(--text-muted); margin-bottom: 0.25rem; }
+  .comment-text { font-size: 0.88rem; color: var(--text); }
+  .contact-bar { background: var(--surface); border-top: 1px solid var(--border); padding: 0.75rem 2rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; }
   .contact-links { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-
-  .contact-link {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.4rem 0.9rem;
-    border-radius: 40px;
-    font-size: 0.8rem;
-    font-weight: 500;
-    text-decoration: none;
-    color: var(--text-muted);
-    border: 1px solid var(--border);
-    transition: all 0.2s;
-  }
-
+  .contact-link { display: flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0.9rem; border-radius: 40px; font-size: 0.8rem; font-weight: 500; text-decoration: none; color: var(--text-muted); border: 1px solid var(--border); transition: all 0.2s; }
   .contact-link:hover { background: var(--sky-light); color: var(--sky); border-color: rgba(46,111,173,0.25); }
-
-  .footer-copy {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-  }
-
-  /* === TOAST === */
-  .toast {
-    position: fixed;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%) translateY(20px);
-    background: var(--navy);
-    color: white;
-    padding: 0.7rem 1.5rem;
-    border-radius: 40px;
-    font-size: 0.85rem;
-    font-weight: 500;
-    z-index: 3000;
-    opacity: 0;
-    transition: all 0.3s;
-    white-space: nowrap;
-    pointer-events: none;
-  }
-
-  .toast.show {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
-
+  .footer-copy { font-size: 0.75rem; color: var(--text-muted); }
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--navy); color: white; padding: 0.7rem 1.5rem; border-radius: 40px; font-size: 0.85rem; font-weight: 500; z-index: 3000; opacity: 0; transition: all 0.3s; white-space: nowrap; pointer-events: none; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
   .toast.error { background: #b91c1c; }
   .toast.success { background: var(--green); }
-
-  /* === PREMIUM UPSELL === */
-  .upsell-note {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: var(--gold-light);
-    border: 1px solid rgba(201,146,42,0.2);
-    border-radius: 12px;
-    padding: 0.65rem 1rem;
-    font-size: 0.8rem;
-    color: #7a5a14;
-    margin-bottom: 0.5rem;
-  }
+  .upsell-note { display: flex; align-items: center; gap: 0.5rem; background: var(--gold-light); border: 1px solid rgba(201,146,42,0.2); border-radius: 12px; padding: 0.65rem 1rem; font-size: 0.8rem; color: #7a5a14; margin-bottom: 0.5rem; }
 </style>
 </head>
 <body>
 
-<!-- HERO SECTION -->
 <div class="hero">
-
-  <!-- TOP BAR — compact, no skill links -->
   <div class="top-bar">
-    <div class="logo">
-      English<span class="logo-dot">Flow</span>
-    </div>
+    <div class="logo">English<span class="logo-dot">Flow</span></div>
     <div class="auth-buttons" id="authZone">
       <button class="btn-auth btn-signin" id="signinBtn">Sign in</button>
       <button class="btn-auth btn-signup" id="signupBtn">Sign up free</button>
     </div>
   </div>
-
-  <!-- PLATFORM DESCRIPTION BANNER -->
   <div class="hero-banner">
-    <p>
-      <span>English Flow</span> is a free IELTS preparation platform built for ambitious students who want to study smarter — offering real exam-style practice, AI-powered writing feedback, and structured learning paths for Academic &amp; General Training.
-    </p>
+    <p><span>English Flow</span> is a free IELTS preparation platform built for ambitious students who want to study smarter — offering real exam-style practice, AI-powered writing feedback, and structured learning paths for Academic &amp; General Training.</p>
   </div>
-
-  <!-- HERO CONTENT -->
   <div class="hero-content">
     <div class="hero-title">Prepare for IELTS<br>with <em>confidence.</em></div>
-    <div class="hero-subtitle">
-      Structured practice across all 4 skills. Free resources for every student, with premium tools for those who want to go further.
-    </div>
+    <div class="hero-subtitle">Structured practice across all 4 skills. Free resources for every student, with premium tools for those who want to go further.</div>
     <div class="hero-pills">
       <span class="pill">Academic Training</span>
       <span class="pill">General Training</span>
@@ -855,19 +170,14 @@
       <span class="pill">Score Tracking</span>
     </div>
   </div>
-
 </div>
 
-<!-- QUICK LINKS — home only -->
 <div class="quick-links">
   <a href="index.html" class="quick-link">← Home</a>
   <span class="quick-link active">All Features</span>
 </div>
 
-<!-- MAIN TWO-COLUMN LAYOUT -->
 <div class="main">
-
-  <!-- LEFT: FREE FEATURES -->
   <div class="panel">
     <div class="panel-header">
       <div>
@@ -877,55 +187,34 @@
       </div>
     </div>
     <div class="panel-body">
-
       <a href="free-reading/" class="feat">
         <div class="feat-icon icon-free">📖</div>
-        <div class="feat-info">
-          <div class="feat-name">Reading Practice</div>
-          <div class="feat-desc">Academic & General passages with questions</div>
-        </div>
+        <div class="feat-info"><div class="feat-name">Reading Practice</div><div class="feat-desc">Academic & General passages with questions</div></div>
         <span class="feat-arrow">→</span>
       </a>
-
       <a href="free-writing/index.html" class="feat">
         <div class="feat-icon icon-free">📝</div>
-        <div class="feat-info">
-          <div class="feat-name">Recent Writing Questions</div>
-          <div class="feat-desc">Latest Task 1 & Task 2 topics from exam reports</div>
-        </div>
+        <div class="feat-info"><div class="feat-name">Recent Writing Questions</div><div class="feat-desc">Latest Task 1 & Task 2 topics from exam reports</div></div>
         <span class="feat-arrow">→</span>
       </a>
-
       <a href="free-speaking/" class="feat">
         <div class="feat-icon icon-free">💬</div>
-        <div class="feat-info">
-          <div class="feat-name">Recent Speaking Questions</div>
-          <div class="feat-desc">Part 1, 2 & 3 prompts from recent exam cycles</div>
-        </div>
+        <div class="feat-info"><div class="feat-name">Recent Speaking Questions</div><div class="feat-desc">Part 1, 2 & 3 prompts from recent exam cycles</div></div>
         <span class="feat-arrow">→</span>
       </a>
-
       <a href="free-listening/" class="feat">
         <div class="feat-icon icon-free">🎧</div>
-        <div class="feat-info">
-          <div class="feat-name">Listening Practice</div>
-          <div class="feat-desc">Section 1–4 audio tasks with answer keys</div>
-        </div>
+        <div class="feat-info"><div class="feat-name">Listening Practice</div><div class="feat-desc">Section 1–4 audio tasks with answer keys</div></div>
         <span class="feat-arrow">→</span>
       </a>
-<a href="articles/" class="feat">
+      <a href="articles/" class="feat">
         <div class="feat-icon icon-free">📰</div>
-        <div class="feat-info">
-          <div class="feat-name">Articles</div>
-          <div class="feat-desc">Curated reading articles to expand your vocabulary</div>
-        </div>
+        <div class="feat-info"><div class="feat-name">Articles</div><div class="feat-desc">Curated reading articles to expand your vocabulary</div></div>
         <span class="feat-arrow">→</span>
       </a>
-      
     </div>
   </div>
 
-  <!-- RIGHT: PREMIUM FEATURES -->
   <div class="panel">
     <div class="panel-header">
       <div>
@@ -935,96 +224,53 @@
       </div>
     </div>
     <div class="panel-body">
-
-      <div class="upsell-note">
-        ✦ Support the platform to unlock all premium tools
-      </div>
-
-      <div class="feat premium locked" title="Upgrade to access">
-        <div class="feat-icon icon-premium">✍️</div>
-        <div class="feat-info">
-          <div class="feat-name">Writing Checking</div>
-          <div class="feat-desc">AI-powered feedback on Task 1 &amp; Task 2 essays</div>
-        </div>
-        <span class="lock-icon">🔒</span>
-      </div>
-
-      <div class="feat premium locked" title="Upgrade to access">
-        <div class="feat-icon icon-premium">🗣️</div>
-        <div class="feat-info">
-          <div class="feat-name">Speaking Practice</div>
-          <div class="feat-desc">Live simulation with pronunciation feedback</div>
-        </div>
-        <span class="lock-icon">🔒</span>
-      </div>
-
-      <div class="feat premium locked" title="Upgrade to access">
-        <div class="feat-icon icon-premium">📋</div>
-        <div class="feat-info">
-          <div class="feat-name">Full Mock Exam</div>
-          <div class="feat-desc">Timed complete exam across all 4 skills</div>
-        </div>
-        <span class="lock-icon">🔒</span>
-      </div>
-
-      <div class="feat premium locked" title="Upgrade to access">
-        <div class="feat-icon icon-premium">📚</div>
-        <div class="feat-info">
-          <div class="feat-name">Real-Exam Reading Passages</div>
-          <div class="feat-desc">Authentic passages from official exam banks</div>
-        </div>
-        <span class="lock-icon">🔒</span>
-      </div>
-
-      <div class="feat premium locked" title="Upgrade to access">
-        <div class="feat-icon icon-premium">🎙️</div>
-        <div class="feat-info">
-          <div class="feat-name">Real-Exam Listening</div>
-          <div class="feat-desc">Original recordings matching exam difficulty</div>
-        </div>
-        <span class="lock-icon">🔒</span>
-      </div>
-
+      <div class="upsell-note">✦ Support the platform to unlock all premium tools</div>
+      <div class="feat premium locked"><div class="feat-icon icon-premium">✍️</div><div class="feat-info"><div class="feat-name">Writing Checking</div><div class="feat-desc">AI-powered feedback on Task 1 &amp; Task 2 essays</div></div><span class="lock-icon">🔒</span></div>
+      <div class="feat premium locked"><div class="feat-icon icon-premium">🗣️</div><div class="feat-info"><div class="feat-name">Speaking Practice</div><div class="feat-desc">Live simulation with pronunciation feedback</div></div><span class="lock-icon">🔒</span></div>
+      <div class="feat premium locked"><div class="feat-icon icon-premium">📋</div><div class="feat-info"><div class="feat-name">Full Mock Exam</div><div class="feat-desc">Timed complete exam across all 4 skills</div></div><span class="lock-icon">🔒</span></div>
+      <div class="feat premium locked"><div class="feat-icon icon-premium">📚</div><div class="feat-info"><div class="feat-name">Real-Exam Reading Passages</div><div class="feat-desc">Authentic passages from official exam banks</div></div><span class="lock-icon">🔒</span></div>
+      <div class="feat premium locked"><div class="feat-icon icon-premium">🎙️</div><div class="feat-info"><div class="feat-name">Real-Exam Listening</div><div class="feat-desc">Original recordings matching exam difficulty</div></div><span class="lock-icon">🔒</span></div>
     </div>
   </div>
-
 </div>
 
-<!-- SUPPORT CARD SECTION -->
+<!-- SUPPORT CARD — card number hidden behind button -->
 <div class="support-section">
   <div class="support-card">
     <div class="support-left">
-      <h3>Support English Flow</h3>
+      <h3>Support English Flow ☕</h3>
       <p>Your support keeps this platform free for students. Even a small contribution helps us build more features.</p>
     </div>
-    <div class="support-card-number">
-      <div class="card-label">Card number (Uzcard)</div>
-      <div class="card-number">9860 0801 6498 1690</div>
-      <div class="card-name">Z. S.</div>
+    <div>
+      <button class="coffee-btn" onclick="toggleCard()" id="coffee-btn">
+        ☕ Buy Me a Coffee
+      </button>
+      <div class="card-reveal" id="card-reveal">
+        <div class="card-label">Card number (Uzcard)</div>
+        <div class="card-number">9860 0801 6498 1690</div>
+        <div class="card-name">Z. S.</div>
+        <button class="copy-btn" id="copy-btn" onclick="copyCard()">📋 Copy number</button>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- COMMENTS SECTION -->
+<!-- COMMENTS -->
 <div class="comments-section">
   <div class="section-heading">💬 Student Feedback</div>
   <div class="comments-grid">
-
     <div class="comment-submit-card">
-      <div style="font-weight:600; font-size:0.95rem; margin-bottom:0.75rem; color:var(--text);">Share your thoughts</div>
-      <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.75rem;">Bug reports, suggestions, or just a hello — all welcome.</p>
+      <div style="font-weight:600;font-size:.95rem;margin-bottom:.75rem;color:var(--text);">Share your thoughts</div>
+      <p style="font-size:.8rem;color:var(--text-muted);margin-bottom:.75rem;">Bug reports, suggestions, or just a hello — all welcome.</p>
       <textarea id="commentText" placeholder="Write your comment here..."></textarea>
       <button class="btn-send" id="submitComment">Send feedback →</button>
     </div>
-
     <div class="comments-display" id="commentsDisplay">
       <div class="no-comments" id="noComments">No comments yet. Be the first! 👋</div>
     </div>
-
   </div>
 </div>
 
-<!-- FOOTER CONTACT BAR -->
 <div class="contact-bar">
   <div class="contact-links">
     <a href="https://t.me/SAYFULLAEV_ZUFAR" target="_blank" class="contact-link">📱 Telegram</a>
@@ -1033,25 +279,14 @@
   <div class="footer-copy">📖 English Flow — free IELTS preparation for every learner</div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <!-- SIGN IN MODAL -->
 <div class="modal-overlay" id="signinModal">
   <div class="modal">
-    <div class="modal-header">
-      <div class="modal-icon">🔐</div>
-      <div class="modal-title">Welcome back</div>
-      <div class="modal-sub">Sign in to track your progress</div>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Email</label>
-      <input type="email" id="siEmail" class="form-input" placeholder="you@example.com">
-    </div>
-    <div class="form-group">
-      <label class="form-label">Password</label>
-      <input type="password" id="siPass" class="form-input" placeholder="••••••••">
-    </div>
+    <div class="modal-header"><div class="modal-icon">🔐</div><div class="modal-title">Welcome back</div><div class="modal-sub">Sign in to track your progress</div></div>
+    <div class="form-group"><label class="form-label">Email</label><input type="email" id="siEmail" class="form-input" placeholder="you@example.com"></div>
+    <div class="form-group"><label class="form-label">Password</label><input type="password" id="siPass" class="form-input" placeholder="••••••••"></div>
     <div class="form-actions">
       <button class="btn-form btn-form-primary" id="doSignin">Sign in</button>
       <button class="btn-form btn-form-ghost" id="closeSignin">Cancel</button>
@@ -1064,30 +299,14 @@
 <!-- SIGN UP MODAL -->
 <div class="modal-overlay" id="signupModal">
   <div class="modal">
-    <div class="modal-header">
-      <div class="modal-icon">🎓</div>
-      <div class="modal-title">Join English Flow</div>
-      <div class="modal-sub">Free to join — track your IELTS journey</div>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Full name</label>
-      <input type="text" id="suName" class="form-input" placeholder="Your name">
-    </div>
+    <div class="modal-header"><div class="modal-icon">🎓</div><div class="modal-title">Join English Flow</div><div class="modal-sub">Free to join — track your IELTS journey</div></div>
+    <div class="form-group"><label class="form-label">Full name</label><input type="text" id="suName" class="form-input" placeholder="Your name"></div>
     <div class="form-group">
       <label class="form-label">Phone (Uzbekistan)</label>
-      <div class="phone-row">
-        <span class="phone-prefix">🇺🇿 +998</span>
-        <input type="tel" id="suPhone" class="phone-input" placeholder="90 123 45 67">
-      </div>
+      <div class="phone-row"><span class="phone-prefix">🇺🇿 +998</span><input type="tel" id="suPhone" class="phone-input" placeholder="90 123 45 67"></div>
     </div>
-    <div class="form-group">
-      <label class="form-label">Email</label>
-      <input type="email" id="suEmail" class="form-input" placeholder="you@example.com">
-    </div>
-    <div class="form-group">
-      <label class="form-label">Password</label>
-      <input type="password" id="suPass" class="form-input" placeholder="At least 6 characters">
-    </div>
+    <div class="form-group"><label class="form-label">Email</label><input type="email" id="suEmail" class="form-input" placeholder="you@example.com"></div>
+    <div class="form-group"><label class="form-label">Password</label><input type="password" id="suPass" class="form-input" placeholder="At least 6 characters"></div>
     <div class="form-actions">
       <button class="btn-form btn-form-primary" id="doSignup">Create account</button>
       <button class="btn-form btn-form-ghost" id="closeSignup">Maybe later</button>
@@ -1102,10 +321,8 @@
   const SUPABASE_URL = 'https://evhceswvapszaghnvmxl.supabase.co';
   const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGNlc3d2YXBzemFnaG52bXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3OTQwNzMsImV4cCI6MjA5MzM3MDA3M30.yV7tavgR7JKc45uSGtS8Lf6m1ZMuuvQ23hmAb8n6k3A';
   const SHEET_URL = 'https://script.google.com/macros/s/AKfycbyBX_AA-2zXJpxwibag6qzaOJMlDrB3yKRIgNsLYvKEV2IcBz5X6i-NW9B0ZnEo9giM/exec';
-
   const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  // ── Toast ──────────────────────────────────────────────
   function toast(msg, type = 'default') {
     const el = document.getElementById('toast');
     el.textContent = msg;
@@ -1113,10 +330,8 @@
     setTimeout(() => { el.className = 'toast'; }, 3200);
   }
 
-  // ── Modal helpers ──────────────────────────────────────
   function openModal(id) { document.getElementById(id).classList.add('active'); }
   function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-
   function showMsg(id, text, isErr) {
     const el = document.getElementById(id);
     el.textContent = text;
@@ -1124,21 +339,16 @@
     setTimeout(() => { el.className = 'form-msg'; }, 5000);
   }
 
-  // ── Auth buttons ───────────────────────────────────────
   document.getElementById('signinBtn').onclick = () => openModal('signinModal');
   document.getElementById('signupBtn').onclick = () => openModal('signupModal');
   document.getElementById('closeSignin').onclick = () => closeModal('signinModal');
   document.getElementById('closeSignup').onclick = () => closeModal('signupModal');
   document.getElementById('switchToSignup').onclick = () => { closeModal('signinModal'); openModal('signupModal'); };
   document.getElementById('switchToSignin').onclick = () => { closeModal('signupModal'); openModal('signinModal'); };
-
-  ['signinModal', 'signupModal'].forEach(id => {
-    document.getElementById(id).addEventListener('click', function(e) {
-      if (e.target === this) closeModal(id);
-    });
+  ['signinModal','signupModal'].forEach(id => {
+    document.getElementById(id).addEventListener('click', function(e) { if (e.target === this) closeModal(id); });
   });
 
-  // ── Sign in ────────────────────────────────────────────
   let signinBusy = false;
   document.getElementById('doSignin').onclick = async () => {
     if (signinBusy) return;
@@ -1153,62 +363,41 @@
       if (error) throw error;
       showMsg('siMsg', '✓ Signed in!', false);
       setTimeout(() => { closeModal('signinModal'); location.reload(); }, 800);
-    } catch (e) {
-      showMsg('siMsg', e.message || 'Something went wrong.', true);
-    } finally {
-      signinBusy = false; btn.disabled = false; btn.textContent = 'Sign in';
-    }
+    } catch (e) { showMsg('siMsg', e.message || 'Something went wrong.', true); }
+    finally { signinBusy = false; btn.disabled = false; btn.textContent = 'Sign in'; }
   };
 
-  // ── Sign up ────────────────────────────────────────────
-  let signupCooldown = false;
-  let signupBusy = false;
+  let signupCooldown = false, signupBusy = false;
   document.getElementById('doSignup').onclick = async () => {
-    if (signupBusy || signupCooldown) {
-      if (signupCooldown) showMsg('suMsg', 'Please wait 30 seconds before trying again.', true);
-      return;
-    }
+    if (signupBusy || signupCooldown) { if (signupCooldown) showMsg('suMsg', 'Please wait 30 seconds before trying again.', true); return; }
     const name = document.getElementById('suName').value.trim();
     const phone = document.getElementById('suPhone').value.trim();
     const email = document.getElementById('suEmail').value.trim();
     const pass = document.getElementById('suPass').value;
     if (!name || !phone || !email || !pass) { showMsg('suMsg', 'Please fill in all fields.', true); return; }
     if (pass.length < 6) { showMsg('suMsg', 'Password must be at least 6 characters.', true); return; }
-
     signupBusy = true; signupCooldown = true;
     const btn = document.getElementById('doSignup');
     btn.disabled = true; btn.textContent = 'Creating…';
     setTimeout(() => { signupCooldown = false; }, 30000);
-
     try {
       const { error } = await sb.auth.signUp({ email, password: pass, options: { data: { name } } });
       if (error) {
-        if (error.status === 429 || (error.message && error.message.toLowerCase().includes('rate limit'))) {
-          throw new Error('Too many attempts. Please wait a minute then try again.');
-        }
-        if (error.message && error.message.toLowerCase().includes('already registered')) {
-          throw new Error('This email is already registered. Please sign in instead.');
-        }
+        if (error.status === 429 || (error.message && error.message.toLowerCase().includes('rate limit'))) throw new Error('Too many attempts. Please wait a minute then try again.');
+        if (error.message && error.message.toLowerCase().includes('already registered')) throw new Error('This email is already registered. Please sign in instead.');
         throw error;
       }
       try {
-        await fetch(SHEET_URL, {
-          method: 'POST', mode: 'no-cors',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: new URLSearchParams({ name, phone: '+998' + phone.replace(/\D/g,''), email, timestamp: new Date().toISOString() })
-        });
+        await fetch(SHEET_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ name, phone: '+998' + phone.replace(/\D/g,''), email, timestamp: new Date().toISOString() }) });
       } catch (_) {}
       showMsg('suMsg', '✓ Account created! Welcome to English Flow.', false);
       setTimeout(() => { closeModal('signupModal'); location.reload(); }, 1000);
     } catch (e) {
       showMsg('suMsg', e.message || 'Could not create account. Try again.', true);
       if (!e.message || !e.message.includes('Too many')) signupCooldown = false;
-    } finally {
-      signupBusy = false; btn.disabled = false; btn.textContent = 'Create account';
-    }
+    } finally { signupBusy = false; btn.disabled = false; btn.textContent = 'Create account'; }
   };
 
-  // ── Session check ──────────────────────────────────────
   async function checkSession() {
     try {
       const { data: { session } } = await sb.auth.getSession();
@@ -1216,120 +405,88 @@
         const name = session.user.user_metadata?.name || session.user.email;
         const short = name.split(' ')[0];
         const zone = document.getElementById('authZone');
-        zone.innerHTML = `
-          <span class="user-badge" style="display:inline-flex;">👋 ${short}</span>
-          <button class="btn-auth btn-signout" id="signoutBtn">Sign out</button>
-        `;
-        document.getElementById('signoutBtn').onclick = async () => {
-          await sb.auth.signOut();
-          location.reload();
-        };
+        zone.innerHTML = `<span class="user-badge" style="display:inline-flex;">👋 ${short}</span><button class="btn-auth btn-signout" id="signoutBtn">Sign out</button>`;
+        document.getElementById('signoutBtn').onclick = async () => { await sb.auth.signOut(); location.reload(); };
       }
     } catch (e) {}
   }
   checkSession();
 
-  // ── Comments — Supabase-backed ─────────────────────────
-  let allComments = [];
-  let visibleCount = 0;
-  const PER_PAGE = 1; // show one at a time
-
+  let allComments = [], visibleCount = 0;
   function renderComments() {
     const display = document.getElementById('commentsDisplay');
     const noC = document.getElementById('noComments');
-
-    // remove old items and nav
-    display.querySelectorAll('.comment-item, .comment-nav').forEach(el => el.remove());
-
-    if (allComments.length === 0) {
-      noC && (noC.style.display = 'block');
-      return;
-    }
+    display.querySelectorAll('.comment-item,.comment-nav').forEach(el => el.remove());
+    if (allComments.length === 0) { noC && (noC.style.display = 'block'); return; }
     noC && (noC.style.display = 'none');
-
-    // newest first
     const sorted = allComments.slice().reverse();
     const current = sorted[visibleCount] || sorted[0];
-
     const div = document.createElement('div');
     div.className = 'comment-item';
-    const date = new Date(current.created_at).toLocaleString();
-    div.innerHTML = `<div class="comment-meta">${date}</div><div class="comment-text">${current.text}</div>`;
+    div.innerHTML = `<div class="comment-meta">${new Date(current.created_at).toLocaleString()}</div><div class="comment-text">${current.text}</div>`;
     display.appendChild(div);
-
-    // nav row: ← prev | count | next →
     if (allComments.length > 1) {
       const nav = document.createElement('div');
       nav.className = 'comment-nav';
-      nav.style.cssText = 'display:flex;align-items:center;justify-content:space-between;margin-top:0.75rem;gap:0.5rem;';
-      nav.innerHTML = `
-        <button class="comment-nav-btn" id="prevComment" ${visibleCount === 0 ? 'disabled' : ''}>← Prev</button>
-        <span style="font-size:0.75rem;color:var(--text-muted);">${visibleCount + 1} / ${allComments.length}</span>
-        <button class="comment-nav-btn" id="nextComment" ${visibleCount >= allComments.length - 1 ? 'disabled' : ''}>Next →</button>
-      `;
+      nav.style.cssText = 'display:flex;align-items:center;justify-content:space-between;margin-top:.75rem;gap:.5rem;';
+      nav.innerHTML = `<button class="comment-nav-btn" id="prevComment" ${visibleCount===0?'disabled':''}>← Prev</button><span style="font-size:.75rem;color:var(--text-muted);">${visibleCount+1} / ${allComments.length}</span><button class="comment-nav-btn" id="nextComment" ${visibleCount>=allComments.length-1?'disabled':''}>Next →</button>`;
       display.appendChild(nav);
-
-      document.getElementById('prevComment').onclick = () => { visibleCount = Math.max(0, visibleCount - 1); renderComments(); };
-      document.getElementById('nextComment').onclick = () => { visibleCount = Math.min(allComments.length - 1, visibleCount + 1); renderComments(); };
+      document.getElementById('prevComment').onclick = () => { visibleCount = Math.max(0, visibleCount-1); renderComments(); };
+      document.getElementById('nextComment').onclick = () => { visibleCount = Math.min(allComments.length-1, visibleCount+1); renderComments(); };
     }
   }
-
   async function loadComments() {
     try {
       const { data, error } = await sb.from('comments').select('*').order('created_at', { ascending: true });
       if (error) throw error;
       allComments = data || [];
-      visibleCount = Math.max(0, allComments.length - 1); // start at newest
+      visibleCount = Math.max(0, allComments.length - 1);
       renderComments();
-    } catch (e) {
-      console.error('Could not load comments:', e);
-    }
+    } catch (e) {}
   }
-
-  // ── Submit comment ─────────────────────────────────────
   document.getElementById('submitComment').onclick = async () => {
     const ta = document.getElementById('commentText');
     const text = ta.value.trim();
     if (!text) { toast('Please write something first.', 'error'); return; }
-
     const btn = document.getElementById('submitComment');
     btn.disabled = true; btn.textContent = 'Sending…';
     try {
-      // Save to Supabase
       const { error } = await sb.from('comments').insert([{ text }]);
       if (error) throw error;
-
-      // Also send to Google Sheet (keep original behaviour)
-      try {
-        const formData = new URLSearchParams();
-        formData.append('comment', text);
-        formData.append('timestamp', new Date().toISOString());
-        formData.append('page', 'IELTS');
-        await fetch(SHEET_URL, {
-          method: 'POST', mode: 'no-cors',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: formData
-        });
-      } catch (_) {}
-
+      try { const fd = new URLSearchParams(); fd.append('comment',text); fd.append('timestamp',new Date().toISOString()); fd.append('page','IELTS'); await fetch(SHEET_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body: fd }); } catch (_) {}
       ta.value = '';
       toast('Thank you for your feedback! ✨', 'success');
-      await loadComments(); // refresh list
-    } catch (e) {
-      toast('Could not send. Please try again.', 'error');
-    } finally {
-      btn.disabled = false; btn.textContent = 'Send feedback →';
-    }
+      await loadComments();
+    } catch (e) { toast('Could not send. Please try again.', 'error'); }
+    finally { btn.disabled = false; btn.textContent = 'Send feedback →'; }
   };
 
-  // ── Nav button styles ──────────────────────────────────
   const navStyle = document.createElement('style');
-  navStyle.textContent = `.comment-nav-btn{background:var(--cream);border:1px solid var(--border);border-radius:40px;padding:0.3rem 0.8rem;font-size:0.78rem;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--text-muted);transition:all 0.2s;}.comment-nav-btn:hover:not(:disabled){background:var(--sky-light);color:var(--sky);border-color:rgba(46,111,173,0.2);}.comment-nav-btn:disabled{opacity:0.35;cursor:default;}`;
+  navStyle.textContent = `.comment-nav-btn{background:var(--cream);border:1px solid var(--border);border-radius:40px;padding:.3rem .8rem;font-size:.78rem;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--text-muted);transition:all .2s;}.comment-nav-btn:hover:not(:disabled){background:var(--sky-light);color:var(--sky);border-color:rgba(46,111,173,.2);}.comment-nav-btn:disabled{opacity:.35;cursor:default;}`;
   document.head.appendChild(navStyle);
-
   loadComments();
-
 })();
+
+// ── Buy Me a Coffee toggle ──
+function toggleCard() {
+  const reveal = document.getElementById('card-reveal');
+  const btn    = document.getElementById('coffee-btn');
+  const open   = reveal.style.display === 'block';
+  reveal.style.display = open ? 'none' : 'block';
+  btn.textContent = open ? '☕ Buy Me a Coffee' : '✕ Close';
+  btn.style.background = open ? 'var(--gold)' : 'rgba(255,255,255,0.15)';
+}
+
+function copyCard() {
+  navigator.clipboard.writeText('9860080164981690').then(() => {
+    const btn = document.getElementById('copy-btn');
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => { btn.textContent = '📋 Copy number'; }, 2000);
+  }).catch(() => {
+    const btn = document.getElementById('copy-btn');
+    btn.textContent = '9860 0801 6498 1690';
+  });
+}
 </script>
 </body>
 </html>
