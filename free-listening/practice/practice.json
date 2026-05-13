@@ -1,5 +1,53 @@
 [
   {
+    "id": "cambridge-14-test-1-part1",
+    "file": "test1/part1.html",
+    "title": "Cambridge 14 Test 1 – Section 1",
+    "description": "Crime Report Form: complete the form. ONE WORD AND/OR A NUMBER for each answer.",
+    "icon": "🚔",
+    "type": "IELTS Academic",
+    "difficulty": "Hard",
+    "questions": 10,
+    "time": "30 min",
+    "coming_soon": false
+  },
+  {
+    "id": "cambridge-14-test-1-part2",
+    "file": "test1/part2.html",
+    "title": "Cambridge 14 Test 1 – Section 2",
+    "description": "Induction talk: choose TWO letters (Q11–14) + company policy matching A/B/C (Q15–20).",
+    "icon": "🏢",
+    "type": "IELTS Academic",
+    "difficulty": "Hard",
+    "questions": 10,
+    "time": "30 min",
+    "coming_soon": false
+  },
+  {
+    "id": "cambridge-14-test-1-part3",
+    "file": "test1/part3.html",
+    "title": "Cambridge 14 Test 1 – Section 3",
+    "description": "Cities built by the sea: multiple choice (Q21–25) + matching decisions A–G (Q26–30).",
+    "icon": "🌊",
+    "type": "IELTS Academic",
+    "difficulty": "Hard",
+    "questions": 10,
+    "time": "30 min",
+    "coming_soon": false
+  },
+  {
+    "id": "cambridge-14-test-1-part4",
+    "file": "test1/part4.html",
+    "title": "Cambridge 14 Test 1 – Section 4",
+    "description": "Marine renewable energy: complete the notes. ONE WORD ONLY for each answer.",
+    "icon": "⚡",
+    "type": "IELTS Academic",
+    "difficulty": "Hard",
+    "questions": 10,
+    "time": "30 min",
+    "coming_soon": false
+  },
+  {
     "id": "cambridge-14-test-2-part1",
     "file": "test2/part1.html",
     "title": "Cambridge 14 Test 2 – Section 1",
