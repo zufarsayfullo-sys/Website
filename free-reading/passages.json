@@ -48,5 +48,15 @@
     "difficulty": "Hard",
     "questions": 13,
     "time": "20 min"
+  },
+  {
+    "id": "6",
+    "file": "why-companies-welcome-disorder.html",
+    "title": "Why Companies Should Welcome Disorder",
+    "description": "Is our obsession with organisation actually holding us back? New research suggests disorder may be the key to productivity and innovation.",
+    "type": "Academic",
+    "difficulty": "Medium",
+    "questions": 14,
+    "time": "20 min"
   }
 ]
