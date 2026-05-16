@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Concept of Intelligence – English Flow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--navy:#1a2744;--navy-mid:#243358;--sky:#2e6fad;--sky-light:#e8f2fc;--gold:#c9922a;--gold-light:#fdf3e3;--cream:#f9f7f4;--surface:#ffffff;--text:#1a2744;--text-muted:#5a6a8a;--border:rgba(26,39,68,0.1);--green:#1e6e4e;--green-light:#e8f5ee;--radius:16px;--radius-lg:24px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;font-family:'DM Sans',sans-serif;color:var(--text);background:var(--cream);}
+#auth-overlay{position:fixed;inset:0;background:rgba(26,39,68,0.85);z-index:1000;display:flex;align-items:center;justify-content:center;}
+#auth-box{background:var(--surface);border-radius:var(--radius-lg);padding:2.5rem;width:min(420px,92vw);box-shadow:0 24px 60px rgba(26,39,68,0.25);}
+#auth-box h2{font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--navy);margin-bottom:.5rem;}
+#auth-box p{color:var(--text-muted);font-size:.9rem;margin-bottom:1.5rem;}
+.auth-field{display:flex;flex-direction:column;gap:.4rem;margin-bottom:1rem;}
+.auth-field label{font-size:.85rem;font-weight:600;color:var(--navy);}
+.auth-field input{padding:.7rem 1rem;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.95rem;outline:none;transition:border-color .2s;}
+.auth-field input:focus{border-color:var(--sky);}
+#auth-btn{width:100%;padding:.85rem;background:var(--navy);color:#fff;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:600;cursor:pointer;margin-top:.5rem;}
+#auth-btn:hover{background:var(--navy-mid);}
+#auth-error{color:#c0392b;font-size:.85rem;margin-top:.75rem;display:none;}
+#topbar{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 100%);padding:.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;flex-shrink:0;}
+.logo{font-family:'DM Serif Display',serif;font-size:1.35rem;color:#fff;}
+.logo span{color:var(--gold);}
+#timer{font-size:1.2rem;font-weight:700;color:var(--gold);letter-spacing:.05em;}
+#timer.urgent{color:#ff6b6b;animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+.topbar-right{display:flex;align-items:center;gap:.75rem;}
+#user-pill{background:rgba(255,255,255,0.15);color:#fff;padding:.35rem .9rem;border-radius:999px;font-size:.85rem;font-weight:500;}
+#signout-btn{background:transparent;border:1.5px solid rgba(255,255,255,0.35);color:rgba(255,255,255,0.8);padding:.35rem .85rem;border-radius:8px;font-size:.82rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;}
+#signout-btn:hover{background:rgba(255,255,255,0.1);color:#fff;}
+#quicklinks{background:var(--surface);border-bottom:1px solid var(--border);padding:.5rem 1.5rem;display:flex;align-items:center;gap:.75rem;flex-shrink:0;}
+.ql-link{color:var(--sky);font-size:.85rem;text-decoration:none;font-weight:500;}
+.ql-link:hover{color:var(--navy);}
+.ql-sep{color:var(--border);}
+.ql-pill{background:var(--navy);color:#fff;padding:.25rem .85rem;border-radius:999px;font-size:.82rem;font-weight:600;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+#app{display:none;flex-direction:column;height:100vh;}
+#split{display:flex;flex:1;overflow:hidden;}
+#passage-col{width:55%;background:var(--cream);overflow-y:auto;border-right:1px solid var(--border);display:flex;flex-direction:column;}
+#highlight-toolbar{position:sticky;top:0;background:var(--surface);border-bottom:1px solid var(--border);padding:.6rem 1.5rem;display:flex;align-items:center;gap:.75rem;z-index:10;}
+.hl-label{font-size:.8rem;font-weight:600;color:var(--text-muted);}
+.hl-btn{width:26px;height:26px;border-radius:50%;border:2px solid rgba(0,0,0,0.1);cursor:pointer;transition:transform .15s;flex-shrink:0;}
+.hl-btn:hover{transform:scale(1.2);}
+#hl-yellow{background:#fff176;}#hl-green{background:#c8e6c9;}#hl-pink{background:#f8bbd0;}
+#hl-clear{background:none;border:1.5px solid var(--border);color:var(--text-muted);padding:.25rem .75rem;border-radius:8px;font-size:.8rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;}
+#hl-clear:hover{background:var(--cream);color:var(--text);}
+#passage-content{padding:1.5rem 2rem 2rem;}
+.passage-title{font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--navy);margin-bottom:.5rem;}
+.title-row{display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem;flex-wrap:wrap;}
+.difficulty-badge{padding:.25rem .75rem;border-radius:999px;font-size:.78rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase;}
+.difficulty-hard{background:#fdecea;color:#c0392b;}
+.passage-text{font-size:1rem;line-height:1.8;color:var(--text);}
+.passage-text p{margin-bottom:1rem;}
+.section-label{font-weight:700;font-size:.95rem;color:var(--navy);margin-right:.5rem;font-family:'DM Serif Display',serif;}
+#questions-col{width:45%;background:var(--cream);overflow-y:auto;display:flex;flex-direction:column;}
+#progress-wrap{padding:1rem 1.5rem .75rem;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10;}
+.progress-label{font-size:.82rem;color:var(--text-muted);margin-bottom:.4rem;}
+.progress-bar-bg{background:var(--border);border-radius:999px;height:8px;overflow:hidden;}
+.progress-bar-fill{background:var(--sky);height:100%;border-radius:999px;transition:width .4s ease;}
+#questions-list{padding:1rem 1.5rem 1.5rem;display:flex;flex-direction:column;gap:.75rem;}
+.question-card{background:var(--surface);border-radius:var(--radius);padding:1rem 1.25rem;border:2px solid transparent;transition:border-color .2s;}
+.question-card.flagged{border-color:var(--gold);}
+.q-header{display:flex;align-items:flex-start;justify-content:space-between;gap:.5rem;margin-bottom:.6rem;}
+.q-num{font-weight:700;color:var(--sky);font-size:.9rem;flex-shrink:0;margin-top:2px;}
+.q-text{font-size:.93rem;line-height:1.55;color:var(--text);flex:1;}
+.flag-btn{background:none;border:none;cursor:pointer;font-size:1rem;opacity:.4;transition:opacity .2s,transform .2s;flex-shrink:0;}
+.flag-btn:hover{opacity:1;transform:scale(1.15);}
+.flag-btn.active{opacity:1;}
+.q-options{display:flex;flex-direction:column;gap:.45rem;margin-top:.5rem;}
+.q-option{display:flex;align-items:center;gap:.6rem;padding:.5rem .75rem;border-radius:8px;cursor:pointer;transition:background .15s;font-size:.9rem;}
+.q-option:hover{background:var(--sky-light);}
+.q-option input[type=radio]{accent-color:var(--sky);width:15px;height:15px;flex-shrink:0;cursor:pointer;}
+.q-select{width:100%;padding:.55rem .85rem;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.9rem;outline:none;background:var(--surface);cursor:pointer;transition:border-color .2s;margin-top:.5rem;}
+.q-select:focus{border-color:var(--sky);}
+.section-header{background:var(--navy);color:#fff;border-radius:var(--radius);padding:.75rem 1.25rem;font-size:.85rem;font-weight:600;margin-top:.5rem;}
+.section-header p{font-size:.82rem;font-weight:400;opacity:.8;margin-top:.2rem;}
+#submit-btn{margin:0 1.5rem 1.5rem;padding:1rem;background:var(--navy);color:#fff;border:none;border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:background .2s,transform .1s;}
+#submit-btn:hover{background:var(--navy-mid);transform:translateY(-1px);}
+#confirm-overlay{position:fixed;inset:0;background:rgba(26,39,68,0.7);z-index:200;display:none;align-items:center;justify-content:center;}
+#confirm-box{background:var(--surface);border-radius:var(--radius-lg);padding:2rem;width:min(380px,90vw);text-align:center;box-shadow:0 20px 50px rgba(26,39,68,0.2);}
+#confirm-box h3{font-family:'DM Serif Display',serif;font-size:1.3rem;margin-bottom:.75rem;}
+#confirm-box p{color:var(--text-muted);font-size:.9rem;margin-bottom:1.5rem;}
+.confirm-btns{display:flex;gap:.75rem;}
+.confirm-btns button{flex:1;padding:.75rem;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.95rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;}
+#confirm-yes{background:var(--navy);color:#fff;}
+#confirm-no{background:var(--cream);color:var(--text);border:1.5px solid var(--border);}
+#results-screen{display:none;min-height:100vh;background:var(--cream);padding:2rem 1rem 4rem;}
+.results-header{text-align:center;margin-bottom:2.5rem;}
+.band-circle{width:120px;height:120px;border-radius:50%;background:var(--gold);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 1rem;box-shadow:0 8px 30px rgba(201,146,42,0.35);}
+.band-label{font-size:.7rem;color:rgba(255,255,255,0.8);font-weight:700;text-transform:uppercase;letter-spacing:.08em;}
+.band-score-text{font-size:2.5rem;font-weight:700;color:#fff;line-height:1;font-family:'DM Serif Display',serif;}
+.results-header h2{font-family:'DM Serif Display',serif;font-size:2rem;color:var(--navy);margin-bottom:.25rem;}
+.results-header p{color:var(--text-muted);font-size:1rem;}
+.results-list{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:1rem;}
+.result-card{background:var(--surface);border-radius:var(--radius);padding:1.25rem 1.5rem;border-left:4px solid var(--border);}
+.result-card.correct{border-left-color:var(--green);}
+.result-card.incorrect{border-left-color:#e74c3c;}
+.result-q{font-size:.88rem;color:var(--text-muted);margin-bottom:.4rem;}
+.result-answer{font-size:.93rem;margin-bottom:.3rem;}
+.result-answer.correct-ans{color:var(--green);font-weight:600;}
+.result-answer.wrong-ans{color:#e74c3c;font-weight:600;text-decoration:line-through;}
+.result-correct-show{font-size:.88rem;color:var(--green);margin-bottom:.4rem;}
+.result-explanation{font-size:.85rem;color:var(--text-muted);background:var(--cream);padding:.6rem .85rem;border-radius:8px;line-height:1.5;}
+#back-btn{display:block;margin:2rem auto 0;padding:.85rem 2rem;background:var(--navy);color:#fff;border:none;border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:.95rem;font-weight:600;cursor:pointer;text-decoration:none;text-align:center;width:fit-content;transition:background .2s;}
+#back-btn:hover{background:var(--navy-mid);}
+@media(max-width:768px){#split{flex-direction:column;overflow:visible;}#passage-col,#questions-col{width:100%;overflow-y:visible;border-right:none;border-bottom:1px solid var(--border);}#app{height:auto;}#highlight-toolbar{position:relative;}}
+</style>
+</head>
+<body>
+
+<div id="auth-overlay">
+  <div id="auth-box">
+    <h2>Sign in to continue</h2>
+    <p>Sign in to access this reading passage and track your scores.</p>
+    <div class="auth-field"><label>Email</label><input type="email" id="auth-email" placeholder="you@example.com"></div>
+    <div class="auth-field"><label>Password</label><input type="password" id="auth-password" placeholder="••••••••"></div>
+    <button id="auth-btn" onclick="signIn()">Sign In</button>
+    <div id="auth-error"></div>
+  </div>
+</div>
+
+<div id="confirm-overlay">
+  <div id="confirm-box">
+    <h3>Submit Answers?</h3>
+    <p>Are you sure? You cannot change your answers after submitting.</p>
+    <div class="confirm-btns">
+      <button id="confirm-yes" onclick="doSubmit()">Yes, Submit</button>
+      <button id="confirm-no" onclick="document.getElementById('confirm-overlay').style.display='none'">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div id="app">
+  <div id="topbar">
+    <div class="logo">English Fl<span>o</span>w</div>
+    <div id="timer">20:00</div>
+    <div class="topbar-right">
+      <div id="user-pill"></div>
+      <button id="signout-btn" onclick="signOut()">Sign out</button>
+    </div>
+  </div>
+  <div id="quicklinks">
+    <a href="../index.html" class="ql-link">← Home</a>
+    <span class="ql-sep">|</span>
+    <a href="../free-reading/index.html" class="ql-link">← Reading</a>
+    <span class="ql-sep">|</span>
+    <div class="ql-pill">The Concept of Intelligence</div>
+  </div>
+
+  <div id="split">
+    <div id="passage-col">
+      <div id="highlight-toolbar">
+        <span class="hl-label">Highlight:</span>
+        <div class="hl-btn" id="hl-yellow" onclick="setHighlight('#fff176')"></div>
+        <div class="hl-btn" id="hl-green" onclick="setHighlight('#c8e6c9')"></div>
+        <div class="hl-btn" id="hl-pink" onclick="setHighlight('#f8bbd0')"></div>
+        <button id="hl-clear" onclick="clearHighlights()">✕ Clear</button>
+      </div>
+      <div id="passage-content">
+        <div class="title-row">
+          <div class="passage-title">The Concept of Intelligence</div>
+          <span class="difficulty-badge difficulty-hard">Hard</span>
+        </div>
+        <div class="passage-text" id="passage-text">
+          <p><span class="section-label">A</span>Looked at in one way, everyone knows what intelligence is; looked at in another way, no one does. In other words, people all have unconscious notions – known as 'implicit theories' – of intelligence, but no one knows for certain what it actually is. This chapter addresses how people conceptualize intelligence, whatever it may actually be.</p>
+          <p>But why should we even care what people think intelligence is, as opposed only to valuing whatever it actually is? There are at least four reasons people's conceptions of intelligence matter.</p>
+          <p><span class="section-label">B</span>First, implicit theories of intelligence drive the way in which people perceive and evaluate their own intelligence and that of others. To better understand the judgments people make about their own and others' abilities, it is useful to learn about people's implicit theories. For example, parents' implicit theories of their children's language development will determine at what ages they will be willing to make various corrections in their children's speech. More generally, parents' implicit theories of intelligence will determine at what ages they believe their children are ready to perform various cognitive tasks. Job interviewers will make hiring decisions on the basis of their implicit theories of intelligence. People will decide who to be friends with on the basis of such theories. In sum, knowledge about implicit theories of intelligence is important because this knowledge is so often used by people to make judgments in the course of their everyday lives.</p>
+          <p><span class="section-label">C</span>Second, the implicit theories of scientific investigators ultimately give rise to their explicit theories. Thus it is useful to find out what these implicit theories are. Implicit theories provide a framework that is useful in defining the general scope of a phenomenon – especially a not-well-understood phenomenon. These implicit theories can suggest what aspects of the phenomenon have been more or less attended to in previous investigations.</p>
+          <p><span class="section-label">D</span>Third, implicit theories can be useful when an investigator suspects that existing explicit theories are wrong or misleading. If an investigation of implicit theories reveals little correspondence between the extant implicit and explicit theories, the implicit theories may be wrong. But the possibility also needs to be taken into account that the explicit theories are wrong and in need of correction or supplementation. For example, some implicit theories of intelligence suggest the need for expansion of some of our explicit theories of the construct.</p>
+          <p><span class="section-label">E</span>Finally, understanding implicit theories of intelligence can help elucidate developmental and cross-cultural differences. As mentioned earlier, people have expectations for intellectual performances that differ for children of different ages. How these expectations differ is in part a function of culture. For example, expectations for children who participate in Western-style schooling are almost certain to be different from those for children who do not participate in such schooling.</p>
+          <p><span class="section-label">F</span>I have suggested that there are three major implicit theories of how intelligence relates to society as a whole (Sternberg, 1997). These might be called Hamiltonian, Jeffersonian, and Jacksonian. These views are not based strictly, but rather, loosely, on the philosophies of Alexander Hamilton, Thomas Jefferson, and Andrew Jackson, three great statesmen in the history of the United States.</p>
+          <p><span class="section-label">G</span>The Hamiltonian view, which is similar to the Platonic view, is that people are born with different levels of intelligence and that those who are less intelligent need the good offices of the more intelligent to keep them in line, whether they are called government officials or, in Plato's term, philosopher-kings. Herrnstein and Murray (1994) seem to have shared this belief when they wrote about the emergence of a cognitive (high-IQ) elite, which eventually would have to take responsibility for the largely irresponsible masses of non-elite (low-IQ) people who cannot take care of themselves. Left to themselves, the unintelligent would create, as they always have created, a kind of chaos.</p>
+          <p><span class="section-label">H</span>The Jeffersonian view is that people should have equal opportunities, but they do not necessarily avail themselves equally of these opportunities and are not necessarily equally rewarded for their accomplishments. People are rewarded for what they accomplish, if given equal opportunity. Low achievers are not rewarded to the same extent as high achievers. In the Jeffersonian view, the goal of education is not to favor or foster an elite, as in the Hamiltonian tradition, but rather to allow children the opportunities to make full use of the skills they have. My own views are similar to these (Sternberg, 1997).</p>
+          <p><span class="section-label">I</span>The Jacksonian view is that all people are equal, not only as human beings but in terms of their competencies – that one person would serve as well as another in government or on a jury or in almost any position of responsibility. In this view of democracy, people are essentially intersubstitutable except for specialized skills, all of which can be learned. In this view, we do not need or want any institutions that might lead to favoring one group over another.</p>
+          <p><span class="section-label">J</span>Implicit theories of intelligence and of the relationship of intelligence to society perhaps need to be considered more carefully than they have been because they often serve as underlying presuppositions for explicit theories and even experimental designs that are then taken as scientific contributions. Until scholars are able to discuss their implicit theories and thus their assumptions, they are likely to miss the point of what others are saying when discussing their explicit theories and their data.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUESTIONS -->
+    <div id="questions-col">
+      <div id="progress-wrap">
+        <div class="progress-label" id="progress-label">0 / 13 answered</div>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-bar" style="width:0%"></div></div>
+      </div>
+      <div id="questions-list">
+
+        <!-- Q1-3: Matching sections -->
+        <div class="section-header">Questions 1–3
+          <p>Reading Passage 1 has ten sections, A–J. Which section contains the following information? Write the correct letter A–J.</p>
+        </div>
+
+        <div class="question-card" id="qcard-1">
+          <div class="q-header">
+            <span class="q-num">Q1</span>
+            <span class="q-text">Information about how non-scientists' assumptions about intelligence influence their behaviour towards others</span>
+            <button class="flag-btn" onclick="toggleFlag(1)">🚩</button>
+          </div>
+          <select class="q-select" id="q1" onchange="updateProgress()">
+            <option value="">Select section…</option>
+            <option value="A">A</option><option value="B">B</option><option value="C">C</option>
+            <option value="D">D</option><option value="E">E</option><option value="F">F</option>
+            <option value="G">G</option><option value="H">H</option><option value="I">I</option><option value="J">J</option>
+          </select>
+        </div>
+
+        <div class="question-card" id="qcard-2">
+          <div class="q-header">
+            <span class="q-num">Q2</span>
+            <span class="q-text">A reference to lack of clarity over the definition of intelligence</span>
+            <button class="flag-btn" onclick="toggleFlag(2)">🚩</button>
+          </div>
+          <select class="q-select" id="q2" onchange="updateProgress()">
+            <option value="">Select section…</option>
+            <option value="A">A</option><option value="B">B</option><option value="C">C</option>
+            <option value="D">D</option><option value="E">E</option><option value="F">F</option>
+            <option value="G">G</option><option value="H">H</option><option value="I">I</option><option value="J">J</option>
+          </select>
+        </div>
+
+        <div class="question-card" id="qcard-3">
+          <div class="q-header">
+            <span class="q-num">Q3</span>
+            <span class="q-text">The point that a researcher's implicit and explicit theories may be very different</span>
+            <button class="flag-btn" onclick="toggleFlag(3)">🚩</button>
+          </div>
+          <select class="q-select" id="q3" onchange="updateProgress()">
+            <option value="">Select section…</option>
+            <option value="A">A</option><option value="B">B</option><option value="C">C</option>
+            <option value="D">D</option><option value="E">E</option><option value="F">F</option>
+            <option value="G">G</option><option value="H">H</option><option value="I">I</option><option value="J">J</option>
+          </select>
+        </div>
+
+        <!-- Q4-6: Yes/No/Not Given -->
+        <div class="section-header">Questions 4–6
+          <p>Do the following statements agree with the claims of the writer? YES / NO / NOT GIVEN</p>
+        </div>
+
+        <div class="question-card" id="qcard-4">
+          <div class="q-header">
+            <span class="q-num">Q4</span>
+            <span class="q-text">Slow language development in children is likely to prove disappointing to their parents.</span>
+            <button class="flag-btn" onclick="toggleFlag(4)">🚩</button>
+          </div>
+          <div class="q-options">
+            <label class="q-option"><input type="radio" name="q4" value="YES" onchange="updateProgress()"> YES</label>
+            <label class="q-option"><input type="radio" name="q4" value="NO" onchange="updateProgress()"> NO</label>
+            <label class="q-option"><input type="radio" name="q4" value="NOT GIVEN" onchange="updateProgress()"> NOT GIVEN</label>
+          </div>
+        </div>
+
+        <div class="question-card" id="qcard-5">
+          <div class="q-header">
+            <span class="q-num">Q5</span>
+            <span class="q-text">People's expectations of what children should gain from education are universal.</span>
+            <button class="flag-btn" onclick="toggleFlag(5)">🚩</button>
+          </div>
+          <div class="q-options">
+            <label class="q-option"><input type="radio" name="q5" value="YES" onchange="updateProgress()"> YES</label>
+            <label class="q-option"><input type="radio" name="q5" value="NO" onchange="updateProgress()"> NO</label>
+            <label class="q-option"><input type="radio" name="q5" value="NOT GIVEN" onchange="updateProgress()"> NOT GIVEN</label>
+          </div>
+        </div>
+
+        <div class="question-card" id="qcard-6">
+          <div class="q-header">
+            <span class="q-num">Q6</span>
+            <span class="q-text">Scholars may discuss theories without fully understanding each other.</span>
+            <button class="flag-btn" onclick="toggleFlag(6)">🚩</button>
+          </div>
+          <div class="q-options">
+            <label class="q-option"><input type="radio" name="q6" value="YES" onchange="updateProgress()"> YES</label>
+            <label class="q-option"><input type="radio" name="q6" value="NO" onchange="updateProgress()"> NO</label>
+            <label class="q-option"><input type="radio" name="q6" value="NOT GIVEN" onchange="updateProgress()"> NOT GIVEN</label>
+          </div>
+        </div>
+
+        <!-- Q7-13: Match theories -->
+        <div class="section-header">Questions 7–13
+          <p>Match each statement with the correct theory: A = Hamiltonian, B = Jeffersonian, C = Jacksonian. You may use any letter more than once.</p>
+        </div>
+
+        <div class="question-card" id="qcard-7">
+          <div class="q-header">
+            <span class="q-num">Q7</span>
+            <span class="q-text">It is desirable for the same possibilities to be open to everyone.</span>
+            <button class="flag-btn" onclick="toggleFlag(7)">🚩</button>
+          </div>
+          <select class="q-select" id="q7" onchange="updateProgress()">
+            <option value="">Select theory…</option>
+            <option value="A">A – Hamiltonian</option>
+            <option value="B">B – Jeffersonian</option>
+            <option value="C">C – Jacksonian</option>
+          </select>
+        </div>
+
+        <div class="question-card" id="qcard-8">
+          <div class="q-header">
+            <span class="q-num">Q8</span>
+            <span class="q-text">No section of society should have preferential treatment at the expense of another.</span>
+            <button class="flag-btn" onclick="toggleFlag(8)">🚩</button>
+          </div>
+          <select class="q-select" id="q8" onchange="updateProgress()">
+            <option value="">Select theory…</option>
+            <option value="A">A – Hamiltonian</option>
+            <option value="B">B – Jeffersonian</option>
+            <option value="C">C – Jacksonian</option>
+          </select>
+        </div>
+
+        <div class="question-card" id="qcard-9">
+          <div class="q-header">
+            <span class="q-num">Q9</span>
+            <span class="q-text">People should only gain benefits on the basis of what they actually achieve.</span>
+            <button class="flag-btn" onclick="toggleFlag(9)">🚩</button>
+          </div>
+          <select class="q-select" id="q9" onchange="updateProgress()">
+            <option value="">Select theory…</option>
+            <option value="A">A – Hamiltonian</option>
+            <option value="B">B – Jeffersonian</option>
+            <option value="C">C – Jacksonian</option>
+          </select>
+        </div>
+
+        <div class="question-card" id="qcard-10">
+          <div class="q-header">
+            <span class="q-num">Q10</span>
+            <span class="q-text">Variation in intelligence begins at birth.</span>
+            <button class="flag-btn" onclick="toggleFlag(10)">🚩</button>
+          </div>
+          <select class="q-select" id="q10" onchange="updateProgress()">
+            <option value="">Select theory…</option>
+            <option value="A">A – Hamiltonian</option>
+            <option value="B">B – Jeffersonian</option>
+            <option value="C">C – Jacksonian</option>
+          </select>
+        </div>
+
+        <div class="question-card" id="qcard-11">
+          <div class="q-header">
+            <span class="q-num">Q11</span>
+            <span class="q-text">The more intelligent people should be in positions of power.</span>
+            <button class="flag-btn" onclick="toggleFlag(11)">🚩</button>
+          </div>
+          <select class="q-select" id="q11" onchange="updateProgress()">
+            <option value="">Select theory…</option>
+            <option value="A">A – Hamiltonian</option>
+            <option value="B">B – Jeffersonian</option>
+            <option value="C">C – Jacksonian</option>
+          </select>
+        </div>
+
+        <div class="question-card" id="qcard-12">
+          <div class="q-header">
+            <span class="q-num">Q12</span>
+            <span class="q-text">Everyone can develop the same abilities.</span>
+            <button class="flag-btn" onclick="toggleFlag(12)">🚩</button>
+          </div>
+          <select class="q-select" id="q12" onchange="updateProgress()">
+            <option value="">Select theory…</option>
+            <option value="A">A – Hamiltonian</option>
+            <option value="B">B – Jeffersonian</option>
+            <option value="C">C – Jacksonian</option>
+          </select>
+        </div>
+
+        <div class="question-card" id="qcard-13">
+          <div class="q-header">
+            <span class="q-num">Q13</span>
+            <span class="q-text">People of low intelligence are likely to lead uncontrolled lives.</span>
+            <button class="flag-btn" onclick="toggleFlag(13)">🚩</button>
+          </div>
+          <select class="q-select" id="q13" onchange="updateProgress()">
+            <option value="">Select theory…</option>
+            <option value="A">A – Hamiltonian</option>
+            <option value="B">B – Jeffersonian</option>
+            <option value="C">C – Jacksonian</option>
+          </select>
+        </div>
+
+      </div>
+      <button id="submit-btn" onclick="confirmSubmit()">Submit Answers</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div id="results-screen"></div>
+
+<script>
+const SUPABASE_URL = 'https://evhceswvapszaghnvmxl.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGNlc3d2YXBzemFnaG52bXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3OTQwNzMsImV4cCI6MjA5MzM3MDA3M30.yV7tavgR7JKc45uSGtS8Lf6m1ZMuuvQ23hmAb8n6k3A';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const PASSAGE_ID = 'concept-of-intelligence';
+const TOTAL = 13;
+
+const ANSWERS = {
+  q1:'B', q2:'A', q3:'D',
+  q4:'NOT GIVEN', q5:'NO', q6:'YES',
+  q7:'B', q8:'C', q9:'B', q10:'A', q11:'A', q12:'C', q13:'A'
+};
+
+const EXPLANATIONS = {
+  q1:'Section B explains how parents, interviewers and others use implicit theories to make everyday judgments about people.',
+  q2:'Section A states that people have implicit theories of intelligence but "no one knows for certain what it actually is" — showing lack of clarity.',
+  q3:'Section D discusses how implicit and explicit theories may have "little correspondence" — meaning a researcher\'s implicit and explicit views can differ greatly.',
+  q4:'NOT GIVEN — the passage mentions parents\' theories about language development but does not say slow development would disappoint them.',
+  q5:'NO — Section E says expectations differ across cultures, so they are not universal.',
+  q6:'YES — Section J states scholars "are likely to miss the point of what others are saying" when they cannot discuss their implicit theories.',
+  q7:'Jeffersonian (B) — Section H says "people should have equal opportunities", meaning the same possibilities should be open to all.',
+  q8:'Jacksonian (C) — Section I says people are "intersubstitutable" and we should not have institutions that favor one group over another.',
+  q9:'Jeffersonian (B) — Section H states "People are rewarded for what they accomplish, if given equal opportunity."',
+  q10:'Hamiltonian (A) — Section G says people "are born with different levels of intelligence", meaning variation starts at birth.',
+  q11:'Hamiltonian (A) — Section G describes the more intelligent keeping the less intelligent "in line" as government officials or philosopher-kings.',
+  q12:'Jacksonian (C) — Section I says all specialized skills "can be learned", implying everyone can develop the same abilities.',
+  q13:'Hamiltonian (A) — Section G says "Left to themselves, the unintelligent would create… a kind of chaos."'
+};
+
+let currentUser = null;
+let timerInterval = null;
+let secondsLeft = 20 * 60;
+let hlColor = '#fff176';
+
+// AUTH
+async function init() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session?.user) {
+    currentUser = session.user;
+    showApp(session.user);
+  }
+}
+
+function showApp(user) {
+  document.getElementById('auth-overlay').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+  const name = user.user_metadata?.name?.split(' ')[0] || user.email.split('@')[0];
+  document.getElementById('user-pill').textContent = name;
+  startTimer();
+}
+
+async function signIn() {
+  const email = document.getElementById('auth-email').value.trim();
+  const pass = document.getElementById('auth-password').value;
+  const errEl = document.getElementById('auth-error');
+  errEl.style.display = 'none';
+  document.getElementById('auth-btn').textContent = 'Signing in…';
+  const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+  document.getElementById('auth-btn').textContent = 'Sign In';
+  if (error) { errEl.textContent = error.message; errEl.style.display = 'block'; return; }
+  currentUser = data.user;
+  showApp(data.user);
+}
+
+async function signOut() {
+  await sb.auth.signOut();
+  location.reload();
+}
+
+// TIMER
+function startTimer() {
+  timerInterval = setInterval(() => {
+    secondsLeft--;
+    const m = Math.floor(secondsLeft / 60).toString().padStart(2, '0');
+    const s = (secondsLeft % 60).toString().padStart(2, '0');
+    document.getElementById('timer').textContent = m + ':' + s;
+    if (secondsLeft <= 60) document.getElementById('timer').classList.add('urgent');
+    if (secondsLeft <= 0) { clearInterval(timerInterval); doSubmit(); }
+  }, 1000);
+}
+
+// PROGRESS
+function updateProgress() {
+  let answered = 0;
+  for (let i = 1; i <= TOTAL; i++) {
+    const el = document.getElementById('q' + i);
+    if (el) {
+      if (el.tagName === 'SELECT' && el.value) answered++;
+      else if (el.tagName !== 'SELECT') {
+        const checked = document.querySelector('input[name="q' + i + '"]:checked');
+        if (checked) answered++;
+      }
+    }
+  }
+  document.getElementById('progress-label').textContent = answered + ' / ' + TOTAL + ' answered';
+  document.getElementById('progress-bar').style.width = (answered / TOTAL * 100) + '%';
+}
+
+// FLAGS
+function toggleFlag(n) {
+  const card = document.getElementById('qcard-' + n);
+  const btn = card.querySelector('.flag-btn');
+  card.classList.toggle('flagged');
+  btn.classList.toggle('active');
+}
+
+// HIGHLIGHTS
+function setHighlight(color) { hlColor = color; }
+document.addEventListener('mouseup', () => {
+  const sel = window.getSelection();
+  if (!sel || sel.rangeCount === 0 || sel.isCollapsed) return;
+  const range = sel.getRangeAt(0);
+  const passage = document.getElementById('passage-text');
+  if (!passage.contains(range.commonAncestorContainer)) return;
+  const span = document.createElement('span');
+  span.style.backgroundColor = hlColor;
+  span.style.borderRadius = '3px';
+  try { range.surroundContents(span); } catch(e) {}
+  sel.removeAllRanges();
+});
+function clearHighlights() {
+  document.querySelectorAll('#passage-text span[style*="background"]').forEach(s => {
+    const parent = s.parentNode;
+    while (s.firstChild) parent.insertBefore(s.firstChild, s);
+    parent.removeChild(s);
+  });
+}
+
+// SUBMIT
+function confirmSubmit() {
+  document.getElementById('confirm-overlay').style.display = 'flex';
+}
+
+function getAnswer(i) {
+  const el = document.getElementById('q' + i);
+  if (el && el.tagName === 'SELECT') return el.value;
+  const checked = document.querySelector('input[name="q' + i + '"]:checked');
+  return checked ? checked.value : '';
+}
+
+function getBandScore(correct, total) {
+  const ratio = correct / total;
+  const scaled = Math.round(ratio * 40);
+  if (scaled >= 39) return 9.0;
+  if (scaled >= 37) return 8.5;
+  if (scaled >= 35) return 8.0;
+  if (scaled >= 33) return 7.5;
+  if (scaled >= 30) return 7.0;
+  if (scaled >= 27) return 6.5;
+  if (scaled >= 23) return 6.0;
+  if (scaled >= 19) return 5.5;
+  if (scaled >= 15) return 5.0;
+  if (scaled >= 13) return 4.5;
+  if (scaled >= 10) return 4.0;
+  return 3.5;
+}
+
+async function doSubmit() {
+  clearInterval(timerInterval);
+  document.getElementById('confirm-overlay').style.display = 'none';
+
+  let correct = 0;
+  const results = [];
+  for (let i = 1; i <= TOTAL; i++) {
+    const key = 'q' + i;
+    const userAns = getAnswer(i);
+    const correctAns = ANSWERS[key];
+    const isCorrect = userAns.toUpperCase() === correctAns.toUpperCase();
+    if (isCorrect) correct++;
+    results.push({ num: i, userAns, correctAns, isCorrect, explanation: EXPLANATIONS[key] });
+  }
+
+  const band = getBandScore(correct, TOTAL);
+
+  // Save to Supabase
+  if (currentUser) {
+    await sb.from('reading_scores').upsert({
+      user_id: currentUser.id,
+      passage_id: PASSAGE_ID,
+      band_score: band,
+      score_raw: correct,
+      total: TOTAL,
+      completed_at: new Date().toISOString()
+    }, { onConflict: 'user_id,passage_id' });
+  }
+
+  // Show results
+  document.getElementById('app').style.display = 'none';
+  const rs = document.getElementById('results-screen');
+  rs.style.display = 'block';
+
+  const qTexts = {
+    1:'Information about how non-scientists\' assumptions about intelligence influence their behaviour towards others',
+    2:'A reference to lack of clarity over the definition of intelligence',
+    3:'The point that a researcher\'s implicit and explicit theories may be very different',
+    4:'Slow language development in children is likely to prove disappointing to their parents.',
+    5:"People's expectations of what children should gain from education are universal.",
+    6:'Scholars may discuss theories without fully understanding each other.',
+    7:'It is desirable for the same possibilities to be open to everyone.',
+    8:'No section of society should have preferential treatment at the expense of another.',
+    9:'People should only gain benefits on the basis of what they actually achieve.',
+    10:'Variation in intelligence begins at birth.',
+    11:'The more intelligent people should be in positions of power.',
+    12:'Everyone can develop the same abilities.',
+    13:'People of low intelligence are likely to lead uncontrolled lives.'
+  };
+
+  rs.innerHTML = `
+    <div class="results-header">
+      <div class="band-circle">
+        <div class="band-label">Band</div>
+        <div class="band-score-text">${band}</div>
+      </div>
+      <h2>${correct} / ${TOTAL} Correct</h2>
+      <p>IELTS Academic Reading Band Score: ${band}</p>
+    </div>
+    <div class="results-list">
+      ${results.map(r => `
+        <div class="result-card ${r.isCorrect ? 'correct' : 'incorrect'}">
+          <div class="result-q"><strong>Q${r.num}:</strong> ${qTexts[r.num]}</div>
+          <div class="result-answer ${r.isCorrect ? 'correct-ans' : 'wrong-ans'}">Your answer: ${r.userAns || '(no answer)'}</div>
+          ${!r.isCorrect ? `<div class="result-correct-show">✓ Correct answer: ${r.correctAns}</div>` : ''}
+          <div class="result-explanation">${r.explanation}</div>
+        </div>
+      `).join('')}
+    </div>
+    <button id="back-btn" onclick="window.location.href='../free-reading/index.html'">← Back to Reading</button>
+  `;
+}
+
+init();
+</script>
+</body>
+</html>
