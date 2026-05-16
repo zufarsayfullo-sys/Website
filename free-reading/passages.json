@@ -58,5 +58,15 @@
     "difficulty": "Medium",
     "questions": 14,
     "time": "20 min"
-  }
+  },
+  {
+  "id": "concept-of-intelligence",
+  "file": "concept-of-intelligence.html",
+  "title": "The Concept of Intelligence",
+  "description": "Everyone has unconscious notions of intelligence — but does anyone truly understand what it is? Explore three major theories of how intelligence relates to society.",
+  "type": "Academic",
+  "difficulty": "Hard",
+  "questions": 13,
+  "time": "20 min"
+}
 ]
