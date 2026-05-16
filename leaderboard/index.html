@@ -16,7 +16,6 @@
   --sky-light: #e8f2fc;
   --gold: #c9922a;
   --gold-light: #fdf3e3;
-  --gold-bright: #f0b429;
   --cream: #f9f7f4;
   --surface: #ffffff;
   --text: #1a2744;
@@ -26,37 +25,22 @@
   --green-light: #e8f5ee;
   --radius: 16px;
   --radius-lg: 24px;
-  --silver: #94a3b8;
-  --bronze: #b87333;
-  --tier-bronze: #cd7f32;
-  --tier-silver: #94a3b8;
-  --tier-gold: #f0b429;
-  --tier-platinum: #6ee7f7;
-  --tier-diamond: #a78bfa;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  font-family: 'DM Sans', sans-serif;
-  background: var(--cream);
-  color: var(--text);
-  min-height: 100vh;
-}
+body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--text); min-height: 100vh; }
 
-/* ─── TOP BAR ─── */
+/* TOP BAR */
 .topbar {
   background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
-  padding: .85rem 2rem;
-  display: flex; align-items: center; justify-content: space-between;
-  position: sticky; top: 0; z-index: 100;
-  box-shadow: 0 2px 24px rgba(26,39,68,0.3);
+  padding: .85rem 2rem; display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 24px rgba(26,39,68,0.3);
 }
 .logo { font-family: 'DM Serif Display', serif; font-size: 1.4rem; color: #fff; text-decoration: none; }
 .logo span { color: var(--gold); }
 .topbar-right { display: flex; align-items: center; gap: .75rem; }
 #user-pill {
   background: rgba(255,255,255,0.13); color: rgba(255,255,255,0.9);
-  padding: .35rem 1rem; border-radius: 999px; font-size: .84rem; font-weight: 500;
-  display: none;
+  padding: .35rem 1rem; border-radius: 999px; font-size: .84rem; font-weight: 500; display: none;
 }
 #signout-btn {
   background: transparent; border: 1.5px solid rgba(255,255,255,0.3);
@@ -66,7 +50,7 @@ body {
 }
 #signout-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
 
-/* ─── QUICK LINKS ─── */
+/* QUICK LINKS */
 .quicklinks {
   background: var(--surface); border-bottom: 1px solid var(--border);
   padding: .55rem 2rem; display: flex; align-items: center; gap: .75rem;
@@ -79,58 +63,46 @@ body {
   border-radius: 999px; font-size: .8rem; font-weight: 600;
 }
 
-/* ─── HERO ─── */
+/* HERO */
 .hero {
   background: linear-gradient(135deg, var(--navy) 0%, #1f3a6e 100%);
   padding: 3rem 2rem 2.5rem; text-align: center; position: relative; overflow: hidden;
 }
 .hero::before {
-  content: ''; position: absolute; top: -60px; right: -60px;
-  width: 300px; height: 300px; border-radius: 50%;
-  background: radial-gradient(circle, rgba(201,146,42,.15) 0%, transparent 70%);
+  content: ''; position: absolute; top: -60px; right: -60px; width: 300px; height: 300px;
+  border-radius: 50%; background: radial-gradient(circle, rgba(201,146,42,.15) 0%, transparent 70%);
 }
 .hero::after {
-  content: ''; position: absolute; bottom: -40px; left: -40px;
-  width: 220px; height: 220px; border-radius: 50%;
-  background: radial-gradient(circle, rgba(46,111,173,.12) 0%, transparent 70%);
+  content: ''; position: absolute; bottom: -40px; left: -40px; width: 220px; height: 220px;
+  border-radius: 50%; background: radial-gradient(circle, rgba(46,111,173,.12) 0%, transparent 70%);
 }
 .hero-icon { font-size: 3rem; margin-bottom: .75rem; display: block; }
 .hero h1 { font-family: 'DM Serif Display', serif; font-size: 2.4rem; color: #fff; margin-bottom: .4rem; }
 .hero p { color: rgba(255,255,255,0.65); font-size: 1rem; max-width: 480px; margin: 0 auto; }
 
-/* ─── MY RANK CARD ─── */
-#my-rank-section {
-  max-width: 760px; margin: -1.5rem auto 0; padding: 0 1.5rem; position: relative; z-index: 10;
-  display: none;
-}
+/* MY RANK */
+#my-rank-section { max-width: 760px; margin: -1.5rem auto 0; padding: 0 1.5rem; position: relative; z-index: 10; display: none; }
 .my-rank-card {
   background: var(--surface); border-radius: var(--radius-lg); padding: 1.25rem 1.5rem;
   box-shadow: 0 8px 30px rgba(26,39,68,0.12); border: 2px solid var(--gold);
   display: flex; align-items: center; gap: 1rem;
 }
-.my-rank-badge {
-  background: var(--gold); color: #fff; font-size: .75rem; font-weight: 700;
-  padding: .2rem .6rem; border-radius: 999px; white-space: nowrap; flex-shrink: 0;
-}
+.my-rank-badge { background: var(--gold); color: #fff; font-size: .72rem; font-weight: 700; padding: .2rem .6rem; border-radius: 999px; white-space: nowrap; flex-shrink: 0; }
 .my-rank-avatar {
-  width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--sky) 0%, var(--navy) 100%);
+  width: 44px; height: 44px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--sky) 0%, var(--navy) 100%);
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.1rem; font-weight: 700; color: #fff; flex-shrink: 0; overflow: hidden;
+  font-size: 1rem; font-weight: 700; color: #fff; flex-shrink: 0;
 }
-.my-rank-avatar img { width: 100%; height: 100%; object-fit: cover; }
 .my-rank-info { flex: 1; }
 .my-rank-name { font-weight: 700; font-size: .95rem; }
-.my-rank-tier { font-size: .8rem; color: var(--text-muted); margin-top: 1px; }
+.my-rank-sub { font-size: .8rem; color: var(--text-muted); margin-top: 1px; }
 .my-rank-coins { font-family: 'DM Serif Display', serif; font-size: 1.2rem; color: var(--gold); font-weight: 700; }
-.my-rank-coins span { font-family: 'DM Sans', sans-serif; font-size: .75rem; color: var(--text-muted); font-weight: 400; margin-left: 2px; }
-.my-streak { display: flex; align-items: center; gap: .3rem; font-size: .85rem; color: var(--text-muted); }
+.my-rank-coins span { font-family: 'DM Sans', sans-serif; font-size: .72rem; color: var(--text-muted); font-weight: 400; margin-left: 2px; }
 
-/* ─── TABS ─── */
+/* TABS */
 .tabs-wrap { max-width: 760px; margin: 1.5rem auto 0; padding: 0 1.5rem; }
-.tabs {
-  background: var(--surface); border-radius: var(--radius); padding: .35rem;
-  display: inline-flex; gap: .25rem; box-shadow: 0 2px 8px rgba(26,39,68,0.08);
-}
+.tabs { background: var(--surface); border-radius: var(--radius); padding: .35rem; display: inline-flex; gap: .25rem; box-shadow: 0 2px 8px rgba(26,39,68,0.08); }
 .tab-btn {
   padding: .55rem 1.4rem; border: none; border-radius: 10px; cursor: pointer;
   font-family: 'DM Sans', sans-serif; font-size: .88rem; font-weight: 600;
@@ -138,22 +110,26 @@ body {
 }
 .tab-btn.active { background: var(--navy); color: #fff; box-shadow: 0 2px 8px rgba(26,39,68,0.25); }
 
-/* ─── TIER LEGEND ─── */
-.tier-legend {
-  max-width: 760px; margin: 1rem auto 0; padding: 0 1.5rem;
-  display: flex; gap: .5rem; flex-wrap: wrap;
-}
+/* TIER LEGEND */
+.tier-legend { max-width: 760px; margin: 1rem auto 0; padding: 0 1.5rem; display: flex; gap: .5rem; flex-wrap: wrap; }
 .tier-chip {
   display: flex; align-items: center; gap: .4rem; padding: .3rem .75rem;
-  border-radius: 999px; font-size: .78rem; font-weight: 600; background: var(--surface);
-  box-shadow: 0 1px 4px rgba(26,39,68,0.08);
+  border-radius: 999px; font-size: .78rem; font-weight: 600;
+  background: var(--surface); box-shadow: 0 1px 4px rgba(26,39,68,0.08);
 }
 .tier-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
 
-/* ─── LEADERBOARD LIST ─── */
-.lb-wrap { max-width: 760px; margin: 1.25rem auto 3rem; padding: 0 1.5rem; }
+/* COIN BREAKDOWN */
+.breakdown-wrap { max-width: 760px; margin: 1rem auto 0; padding: 0 1.5rem; }
+.breakdown {
+  background: var(--surface); border-radius: var(--radius); padding: .85rem 1.25rem;
+  display: flex; gap: 1.5rem; flex-wrap: wrap; box-shadow: 0 1px 4px rgba(26,39,68,0.06);
+}
+.breakdown-item { display: flex; align-items: center; gap: .4rem; font-size: .8rem; color: var(--text-muted); }
+.breakdown-item strong { color: var(--text); font-weight: 700; }
 
-/* TOP 3 PODIUM */
+/* PODIUM */
+.lb-wrap { max-width: 760px; margin: 1.25rem auto 3rem; padding: 0 1.5rem; }
 .podium { display: flex; align-items: flex-end; justify-content: center; gap: 1rem; margin-bottom: 2rem; }
 .podium-item { flex: 1; max-width: 200px; text-align: center; }
 .podium-item.first { order: 2; }
@@ -168,22 +144,20 @@ body {
 .podium-item.third .podium-platform { background: linear-gradient(180deg, #fdf0ea 0%, #f5d9c8 100%); min-height: 90px; }
 .podium-crown { font-size: 1.5rem; position: absolute; top: -20px; left: 50%; transform: translateX(-50%); }
 .podium-avatar {
-  width: 52px; height: 52px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.2rem; font-weight: 700; color: #fff; overflow: hidden;
-  border: 3px solid #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  width: 52px; height: 52px; border-radius: 50%; border: 3px solid #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12); display: flex; align-items: center;
+  justify-content: center; font-size: 1.2rem; font-weight: 700; color: #fff; overflow: hidden;
 }
 .podium-item.first .podium-avatar { background: linear-gradient(135deg, #f0b429, #c9922a); width: 60px; height: 60px; font-size: 1.4rem; }
 .podium-item.second .podium-avatar { background: linear-gradient(135deg, #94a3b8, #64748b); }
 .podium-item.third .podium-avatar { background: linear-gradient(135deg, #b87333, #8b5e2a); }
-.podium-avatar img { width: 100%; height: 100%; object-fit: cover; }
 .podium-name { font-size: .82rem; font-weight: 700; color: var(--navy); }
 .podium-coins { font-size: .88rem; font-weight: 700; color: var(--gold); }
 .podium-coins::before { content: '🪙 '; }
-.podium-tier-badge { font-size: .68rem; font-weight: 700; padding: .15rem .5rem; border-radius: 999px; }
-.podium-streak { font-size: .72rem; color: var(--text-muted); }
+.podium-tasks { font-size: .72rem; color: var(--text-muted); }
+.podium-tier { font-size: .68rem; font-weight: 700; padding: .15rem .5rem; border-radius: 999px; }
 
-/* ROW LIST */
+/* LIST */
 .lb-list { display: flex; flex-direction: column; gap: .5rem; }
 .lb-row {
   background: var(--surface); border-radius: var(--radius); padding: .9rem 1.25rem;
@@ -193,89 +167,50 @@ body {
 }
 .lb-row:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(26,39,68,0.1); }
 .lb-row.is-me { border-color: var(--gold); background: var(--gold-light); }
-.lb-rank-num {
-  font-family: 'DM Serif Display', serif; font-size: 1.1rem; font-weight: 700;
-  color: var(--text-muted); width: 32px; text-align: center; flex-shrink: 0;
-}
+.lb-rank { font-family: 'DM Serif Display', serif; font-size: 1.1rem; color: var(--text-muted); width: 32px; text-align: center; flex-shrink: 0; }
 .lb-avatar {
   width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
   font-size: 1rem; font-weight: 700; color: #fff; overflow: hidden;
   background: linear-gradient(135deg, var(--sky) 0%, var(--navy) 100%);
 }
-.lb-avatar img { width: 100%; height: 100%; object-fit: cover; }
 .lb-info { flex: 1; min-width: 0; }
 .lb-name { font-weight: 700; font-size: .92rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .lb-meta { display: flex; align-items: center; gap: .6rem; margin-top: 2px; }
 .lb-tier { font-size: .72rem; font-weight: 700; padding: .12rem .5rem; border-radius: 999px; }
-.lb-streak { font-size: .75rem; color: var(--text-muted); }
+.lb-tasks { font-size: .75rem; color: var(--text-muted); }
 .lb-coins { font-family: 'DM Serif Display', serif; font-size: 1.15rem; color: var(--gold); font-weight: 700; white-space: nowrap; }
 .lb-coins-label { font-family: 'DM Sans', sans-serif; font-size: .7rem; color: var(--text-muted); font-weight: 400; }
-.me-tag {
-  background: var(--gold); color: #fff; font-size: .68rem; font-weight: 700;
-  padding: .15rem .5rem; border-radius: 999px; flex-shrink: 0;
-}
+.me-tag { background: var(--gold); color: #fff; font-size: .68rem; font-weight: 700; padding: .15rem .5rem; border-radius: 999px; flex-shrink: 0; }
 
-/* EMPTY / LOADING */
+/* LOADING */
 .lb-loading { text-align: center; padding: 3rem 1rem; color: var(--text-muted); }
-.lb-loading .spin {
-  width: 36px; height: 36px; border: 3px solid var(--border);
-  border-top-color: var(--sky); border-radius: 50%; animation: spin 0.7s linear infinite;
-  margin: 0 auto 1rem;
-}
+.spin { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--sky); border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto 1rem; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* AUTH MODAL */
-#auth-overlay {
-  position: fixed; inset: 0; background: rgba(26,39,68,0.8); z-index: 200;
-  display: none; align-items: center; justify-content: center;
-}
+#auth-overlay { position: fixed; inset: 0; background: rgba(26,39,68,0.8); z-index: 200; display: none; align-items: center; justify-content: center; }
 #auth-overlay.show { display: flex; }
-#auth-box {
-  background: var(--surface); border-radius: var(--radius-lg); padding: 2.5rem;
-  width: min(400px, 92vw); box-shadow: 0 24px 60px rgba(26,39,68,0.25);
-}
+#auth-box { background: var(--surface); border-radius: var(--radius-lg); padding: 2.5rem; width: min(400px, 92vw); box-shadow: 0 24px 60px rgba(26,39,68,0.25); }
 #auth-box h2 { font-family: 'DM Serif Display', serif; font-size: 1.55rem; margin-bottom: .4rem; }
 #auth-box p { color: var(--text-muted); font-size: .88rem; margin-bottom: 1.5rem; }
 .auth-field { display: flex; flex-direction: column; gap: .35rem; margin-bottom: .9rem; }
 .auth-field label { font-size: .82rem; font-weight: 600; color: var(--navy); }
-.auth-field input {
-  padding: .7rem 1rem; border: 1.5px solid var(--border); border-radius: 10px;
-  font-family: 'DM Sans', sans-serif; font-size: .95rem; outline: none; transition: border-color .2s;
-}
+.auth-field input { padding: .7rem 1rem; border: 1.5px solid var(--border); border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: .95rem; outline: none; transition: border-color .2s; }
 .auth-field input:focus { border-color: var(--sky); }
-#auth-btn {
-  width: 100%; padding: .85rem; background: var(--navy); color: #fff; border: none;
-  border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: .95rem; font-weight: 700;
-  cursor: pointer; margin-top: .25rem; transition: background .2s;
-}
+#auth-btn { width: 100%; padding: .85rem; background: var(--navy); color: #fff; border: none; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: .95rem; font-weight: 700; cursor: pointer; margin-top: .25rem; transition: background .2s; }
 #auth-btn:hover { background: var(--navy-mid); }
-#auth-skip {
-  display: block; text-align: center; margin-top: .85rem;
-  color: var(--text-muted); font-size: .82rem; cursor: pointer; text-decoration: underline;
-}
+#auth-skip { display: block; text-align: center; margin-top: .85rem; color: var(--text-muted); font-size: .82rem; cursor: pointer; text-decoration: underline; }
 #auth-error { color: #c0392b; font-size: .82rem; margin-top: .6rem; display: none; }
-
-/* SQL BLOCK */
-.sql-section {
-  max-width: 760px; margin: 0 auto 3rem; padding: 0 1.5rem;
-  display: none;
-}
-.sql-section.show { display: block; }
-.sql-card {
-  background: #0d1117; border-radius: var(--radius); padding: 1.5rem;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-}
-.sql-card h3 { color: #7ee787; font-size: .9rem; margin-bottom: 1rem; font-family: 'DM Sans', monospace; }
-.sql-card pre { color: #e6edf3; font-size: .78rem; line-height: 1.7; overflow-x: auto; white-space: pre-wrap; }
 
 @media (max-width: 600px) {
   .hero h1 { font-size: 1.7rem; }
-  .podium { gap: .5rem; }
   .topbar { padding: .75rem 1rem; }
-  .lb-wrap, .tabs-wrap, #my-rank-section { padding: 0 1rem; }
+  .lb-wrap, .tabs-wrap, #my-rank-section, .tier-legend, .breakdown-wrap { padding: 0 1rem; }
   .tabs { width: 100%; }
-  .tab-btn { flex: 1; padding: .5rem .5rem; font-size: .82rem; }
+  .tab-btn { flex: 1; font-size: .82rem; }
+  .podium { gap: .5rem; }
+  .breakdown { gap: .75rem; }
 }
 </style>
 </head>
@@ -285,15 +220,9 @@ body {
 <div id="auth-overlay">
   <div id="auth-box">
     <h2>Sign in to English Flow</h2>
-    <p>Sign in to see your rank and coins on the leaderboard.</p>
-    <div class="auth-field">
-      <label>Email</label>
-      <input type="email" id="auth-email" placeholder="you@example.com">
-    </div>
-    <div class="auth-field">
-      <label>Password</label>
-      <input type="password" id="auth-password" placeholder="••••••••">
-    </div>
+    <p>Sign in to see your rank on the leaderboard.</p>
+    <div class="auth-field"><label>Email</label><input type="email" id="auth-email" placeholder="you@example.com"></div>
+    <div class="auth-field"><label>Password</label><input type="password" id="auth-password" placeholder="••••••••"></div>
     <button id="auth-btn" onclick="signIn()">Sign In</button>
     <span id="auth-skip" onclick="closeAuth()">Browse leaderboard without signing in →</span>
     <div id="auth-error"></div>
@@ -332,17 +261,16 @@ body {
     <div class="my-rank-avatar" id="my-avatar"></div>
     <div class="my-rank-info">
       <div class="my-rank-name" id="my-name">—</div>
-      <div class="my-rank-tier" id="my-tier-label">—</div>
+      <div class="my-rank-sub" id="my-sub">—</div>
     </div>
     <div style="text-align:right">
       <div class="my-rank-coins" id="my-coins">0 <span>coins</span></div>
-      <div class="my-streak" id="my-streak"></div>
     </div>
   </div>
 </div>
 
 <!-- TABS -->
-<div class="tabs-wrap" style="margin-top:1.5rem">
+<div class="tabs-wrap">
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('alltime', this)">🏆 All-time</button>
     <button class="tab-btn" onclick="switchTab('weekly', this)">⚡ This Week</button>
@@ -351,21 +279,26 @@ body {
 
 <!-- TIER LEGEND -->
 <div class="tier-legend">
-  <div class="tier-chip"><div class="tier-dot" style="background:#cd7f32"></div> Bronze <span style="color:var(--text-muted);font-weight:400">0–499</span></div>
-  <div class="tier-chip"><div class="tier-dot" style="background:#94a3b8"></div> Silver <span style="color:var(--text-muted);font-weight:400">500–1499</span></div>
-  <div class="tier-chip"><div class="tier-dot" style="background:#f0b429"></div> Gold <span style="color:var(--text-muted);font-weight:400">1500–3999</span></div>
-  <div class="tier-chip"><div class="tier-dot" style="background:#6ee7f7"></div> Platinum <span style="color:var(--text-muted);font-weight:400">4000–9999</span></div>
-  <div class="tier-chip"><div class="tier-dot" style="background:#a78bfa"></div> Diamond <span style="color:var(--text-muted);font-weight:400">10000+</span></div>
+  <div class="tier-chip"><div class="tier-dot" style="background:#cd7f32"></div> Bronze <span style="color:var(--text-muted);font-weight:400;margin-left:.25rem">0–499</span></div>
+  <div class="tier-chip"><div class="tier-dot" style="background:#94a3b8"></div> Silver <span style="color:var(--text-muted);font-weight:400;margin-left:.25rem">500–1499</span></div>
+  <div class="tier-chip"><div class="tier-dot" style="background:#f0b429"></div> Gold <span style="color:var(--text-muted);font-weight:400;margin-left:.25rem">1500–3999</span></div>
+  <div class="tier-chip"><div class="tier-dot" style="background:#6ee7f7"></div> Platinum <span style="color:var(--text-muted);font-weight:400;margin-left:.25rem">4000–9999</span></div>
+  <div class="tier-chip"><div class="tier-dot" style="background:#a78bfa"></div> Diamond <span style="color:var(--text-muted);font-weight:400;margin-left:.25rem">10000+</span></div>
+</div>
+
+<!-- COIN BREAKDOWN -->
+<div class="breakdown-wrap">
+  <div class="breakdown">
+    <div class="breakdown-item">📖 <strong>Reading</strong> band × 10</div>
+    <div class="breakdown-item">🎧 <strong>Listening</strong> band × 10</div>
+    <div class="breakdown-item">📰 <strong>Article</strong> 30 coins</div>
+    <div class="breakdown-item">🎙️ <strong>Podcast</strong> 20 coins</div>
+  </div>
 </div>
 
 <!-- LEADERBOARD -->
 <div class="lb-wrap">
-  <!-- PODIUM (top 3) -->
-  <div class="podium" id="podium">
-    <!-- filled by JS -->
-  </div>
-
-  <!-- REST OF LIST -->
+  <div class="podium" id="podium"></div>
   <div class="lb-list" id="lb-list">
     <div class="lb-loading"><div class="spin"></div>Loading leaderboard…</div>
   </div>
@@ -376,45 +309,21 @@ const SUPABASE_URL = 'https://evhceswvapszaghnvmxl.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGNlc3d2YXBzemFnaG52bXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3OTQwNzMsImV4cCI6MjA5MzM3MDA3M30.yV7tavgR7JKc45uSGtS8Lf6m1ZMuuvQ23hmAb8n6k3A';
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// ── COIN CONFIG ──────────────────────────────────────────
-const COIN_RULES = {
-  reading:   { type: 'dynamic', multiplier: 10 },  // band × 10
-  listening: { type: 'dynamic', multiplier: 10 },  // band × 10
-  podcast:   { type: 'flat',    amount: 20 },
-  article:   { type: 'flat',    amount: 30 },
-  streak:    { type: 'flat',    amount: 15 },       // per day
-};
-
-// ── TIER CONFIG ──────────────────────────────────────────
 const TIERS = [
-  { name: 'Diamond',  min: 10000, color: '#a78bfa', bg: '#f3f0ff' },
+  { name: 'Diamond',  min: 10000, color: '#7c3aed', bg: '#f3f0ff' },
   { name: 'Platinum', min: 4000,  color: '#0891b2', bg: '#ecfeff' },
   { name: 'Gold',     min: 1500,  color: '#d97706', bg: '#fffbeb' },
   { name: 'Silver',   min: 500,   color: '#64748b', bg: '#f1f5f9' },
   { name: 'Bronze',   min: 0,     color: '#b87333', bg: '#fdf0ea' },
 ];
+function getTier(coins) { return TIERS.find(t => coins >= t.min) || TIERS[TIERS.length - 1]; }
+function getInitials(name) { if (!name) return '?'; return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase(); }
+function formatCoins(n) { if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'k'; return String(n); }
 
-function getTier(coins) {
-  return TIERS.find(t => coins >= t.min) || TIERS[TIERS.length - 1];
-}
-
-function getInitials(name) {
-  if (!name) return '?';
-  return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
-}
-
-function formatCoins(n) {
-  if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
-  return n.toString();
-}
-
-// ── STATE ────────────────────────────────────────────────
 let currentUser = null;
+let allData = [];
 let currentTab = 'alltime';
-let allTimeData = [];
-let weeklyData = [];
 
-// ── INIT ─────────────────────────────────────────────────
 async function init() {
   const { data: { session } } = await sb.auth.getSession();
   if (session?.user) {
@@ -425,9 +334,7 @@ async function init() {
 }
 
 function showUserUI(user) {
-  const firstName = user.user_metadata?.full_name?.split(' ')[0]
-    || user.user_metadata?.name?.split(' ')[0]
-    || user.email?.split('@')[0] || 'You';
+  const firstName = user.user_metadata?.name?.split(' ')[0] || user.email?.split('@')[0] || 'You';
   document.getElementById('user-pill').textContent = firstName;
   document.getElementById('user-pill').style.display = 'block';
   document.getElementById('signout-btn').style.display = 'block';
@@ -448,9 +355,7 @@ async function signIn() {
   await loadLeaderboard();
 }
 
-function closeAuth() {
-  document.getElementById('auth-overlay').classList.remove('show');
-}
+function closeAuth() { document.getElementById('auth-overlay').classList.remove('show'); }
 
 async function signOut() {
   await sb.auth.signOut();
@@ -461,129 +366,113 @@ async function signOut() {
   await loadLeaderboard();
 }
 
-// ── LOAD LEADERBOARD ─────────────────────────────────────
 async function loadLeaderboard() {
   document.getElementById('lb-list').innerHTML = '<div class="lb-loading"><div class="spin"></div>Loading leaderboard…</div>';
   document.getElementById('podium').innerHTML = '';
 
-  // Fetch all-time coins
-  const { data: atData } = await sb
-    .from('user_coins')
-    .select('user_id, total_coins, weekly_coins, streak_days, display_name, avatar_url')
+  const { data, error } = await sb
+    .from('leaderboard_view')
+    .select('*')
     .order('total_coins', { ascending: false })
     .limit(100);
 
-  allTimeData = atData || [];
+  if (error || !data) {
+    document.getElementById('lb-list').innerHTML = '<div class="lb-loading">Could not load leaderboard. Please try again.</div>';
+    return;
+  }
 
-  // Weekly
-  weeklyData = [...allTimeData].sort((a, b) => (b.weekly_coins || 0) - (a.weekly_coins || 0));
-
-  renderList(currentTab === 'alltime' ? allTimeData : weeklyData, currentTab);
-  renderMyRank(currentTab === 'alltime' ? allTimeData : weeklyData, currentTab);
+  allData = data;
+  renderAll(data);
 }
 
 function switchTab(tab, btn) {
   currentTab = tab;
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  renderList(tab === 'alltime' ? allTimeData : weeklyData, tab);
-  renderMyRank(tab === 'alltime' ? allTimeData : weeklyData, tab);
+
+  // For weekly: sort by tasks_completed as a proxy (no weekly_coins in view)
+  // Could extend view later — for now both tabs show all-time
+  renderAll(allData);
 }
 
-// ── MY RANK ───────────────────────────────────────────────
-function renderMyRank(data, tab) {
+function renderAll(data) {
+  renderMyRank(data);
+  renderPodium(data.slice(0, 3));
+  renderList(data.slice(3));
+}
+
+function renderMyRank(data) {
   if (!currentUser) { document.getElementById('my-rank-section').style.display = 'none'; return; }
   const idx = data.findIndex(r => r.user_id === currentUser.id);
   if (idx === -1) { document.getElementById('my-rank-section').style.display = 'none'; return; }
 
   const me = data[idx];
-  const coins = tab === 'alltime' ? (me.total_coins || 0) : (me.weekly_coins || 0);
   const tier = getTier(me.total_coins || 0);
-  const rank = idx + 1;
-  const initials = getInitials(me.display_name || currentUser.email);
+  const initials = getInitials(me.display_name);
 
-  const avatarEl = document.getElementById('my-avatar');
-  if (me.avatar_url) avatarEl.innerHTML = `<img src="${me.avatar_url}" alt="">`;
-  else avatarEl.textContent = initials;
-
-  document.getElementById('my-name').textContent = (me.display_name || currentUser.email.split('@')[0]) + ` — #${rank}`;
-  document.getElementById('my-tier-label').textContent = tier.name + ' Tier';
-  document.getElementById('my-tier-label').style.color = tier.color;
-  document.getElementById('my-coins').innerHTML = `${formatCoins(coins)} <span>coins${tab === 'weekly' ? ' this week' : ''}</span>`;
-  document.getElementById('my-streak').innerHTML = me.streak_days ? `🔥 ${me.streak_days}-day streak` : '';
+  document.getElementById('my-avatar').textContent = initials;
+  document.getElementById('my-name').textContent = (me.display_name || 'You') + ' — #' + (idx + 1);
+  document.getElementById('my-sub').textContent = tier.name + ' Tier · ' + (me.tasks_completed || 0) + ' tasks completed';
+  document.getElementById('my-sub').style.color = tier.color;
+  document.getElementById('my-coins').innerHTML = formatCoins(me.total_coins || 0) + ' <span>coins</span>';
   document.getElementById('my-rank-section').style.display = 'block';
 }
 
-// ── RENDER LIST ───────────────────────────────────────────
-function renderList(data, tab) {
-  const podiumEl = document.getElementById('podium');
-  const listEl = document.getElementById('lb-list');
+function renderPodium(top3) {
+  const el = document.getElementById('podium');
+  if (!top3.length) { el.innerHTML = ''; return; }
 
-  if (!data || data.length === 0) {
-    podiumEl.innerHTML = '';
-    listEl.innerHTML = '<div class="lb-loading" style="padding:4rem 1rem">No data yet. Complete tasks to earn coins! 🪙</div>';
-    return;
-  }
-
-  const top3 = data.slice(0, 3);
-  const rest = data.slice(3);
-
-  // PODIUM
   const crowns = ['👑', '🥈', '🥉'];
-  const podiumOrder = [top3[1], top3[0], top3[2]].filter(Boolean);
-  const posClasses = top3[1] ? ['second', 'first', 'third'] : ['first', 'third'];
+  const order = [top3[1], top3[0], top3[2]].filter(Boolean);
+  const classes = top3[1] ? ['second', 'first', 'third'] : ['first', 'third'];
 
-  podiumEl.innerHTML = podiumOrder.map((u, i) => {
-    if (!u) return '';
-    const actualRank = top3.indexOf(u);
-    const coins = tab === 'alltime' ? (u.total_coins || 0) : (u.weekly_coins || 0);
+  el.innerHTML = order.map((u, i) => {
+    const rank = top3.indexOf(u);
     const tier = getTier(u.total_coins || 0);
-    const name = u.display_name || 'User';
-    const initials = getInitials(name);
+    const name = (u.display_name || 'User').split(' ')[0];
+    const initials = getInitials(u.display_name);
     const isMe = currentUser && u.user_id === currentUser.id;
     return `
-      <div class="podium-item ${posClasses[i]}${isMe ? ' is-me' : ''}">
+      <div class="podium-item ${classes[i]}">
         <div class="podium-platform">
-          <div class="podium-crown">${crowns[actualRank]}</div>
-          <div class="podium-avatar${actualRank === 0 ? '' : ''}">
-            ${u.avatar_url ? `<img src="${u.avatar_url}" alt="">` : initials}
-          </div>
-          <div class="podium-name">${isMe ? '⭐ ' : ''}${name.split(' ')[0]}</div>
-          <div class="podium-coins">${formatCoins(coins)}</div>
-          <div class="podium-tier-badge" style="background:${tier.bg};color:${tier.color}">${tier.name}</div>
-          ${u.streak_days ? `<div class="podium-streak">🔥 ${u.streak_days}d</div>` : ''}
+          <div class="podium-crown">${crowns[rank]}</div>
+          <div class="podium-avatar">${initials}</div>
+          <div class="podium-name">${isMe ? '⭐ ' : ''}${name}</div>
+          <div class="podium-coins">${formatCoins(u.total_coins || 0)}</div>
+          <div class="podium-tier" style="background:${tier.bg};color:${tier.color}">${tier.name}</div>
+          <div class="podium-tasks">${u.tasks_completed || 0} tasks</div>
         </div>
       </div>`;
   }).join('');
+}
 
-  // REST
-  listEl.innerHTML = rest.map((u, i) => {
+function renderList(rest) {
+  const el = document.getElementById('lb-list');
+  if (!rest.length) { el.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-muted)">Only top 3 so far!</div>'; return; }
+
+  el.innerHTML = rest.map((u, i) => {
     const rank = i + 4;
-    const coins = tab === 'alltime' ? (u.total_coins || 0) : (u.weekly_coins || 0);
     const tier = getTier(u.total_coins || 0);
-    const name = u.display_name || 'User';
-    const initials = getInitials(name);
+    const initials = getInitials(u.display_name);
     const isMe = currentUser && u.user_id === currentUser.id;
     return `
       <div class="lb-row${isMe ? ' is-me' : ''}">
-        <div class="lb-rank-num">${rank}</div>
-        <div class="lb-avatar">
-          ${u.avatar_url ? `<img src="${u.avatar_url}" alt="">` : initials}
-        </div>
+        <div class="lb-rank">${rank}</div>
+        <div class="lb-avatar">${initials}</div>
         <div class="lb-info">
-          <div class="lb-name">${name}</div>
+          <div class="lb-name">${u.display_name || 'User'}</div>
           <div class="lb-meta">
             <span class="lb-tier" style="background:${tier.bg};color:${tier.color}">${tier.name}</span>
-            ${u.streak_days ? `<span class="lb-streak">🔥 ${u.streak_days}d streak</span>` : ''}
+            <span class="lb-tasks">${u.tasks_completed || 0} tasks</span>
           </div>
         </div>
         <div style="text-align:right">
-          <div class="lb-coins">${formatCoins(coins)}</div>
-          <div class="lb-coins-label">coins${tab === 'weekly' ? ' this week' : ''}</div>
+          <div class="lb-coins">${formatCoins(u.total_coins || 0)}</div>
+          <div class="lb-coins-label">coins</div>
         </div>
         ${isMe ? '<span class="me-tag">YOU</span>' : ''}
       </div>`;
-  }).join('') || '<div style="text-align:center;padding:2rem;color:var(--text-muted)">Only showing top 3 — more users coming!</div>';
+  }).join('');
 }
 
 init();
