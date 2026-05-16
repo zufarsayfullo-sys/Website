@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saving Bugs to Find New Drugs – English Flow</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--navy:#1a2744;--navy-mid:#243358;--sky:#2e6fad;--sky-light:#e8f2fc;--gold:#c9922a;--gold-light:#fdf3e3;--cream:#f9f7f4;--surface:#fff;--text:#1a2744;--text-muted:#5a6a8a;--border:rgba(26,39,68,0.1);--green:#1e6e4e;--green-light:#e8f5ee;--radius:16px;--radius-lg:24px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;font-family:'DM Sans',sans-serif;color:var(--text);background:var(--cream);}
+#auth-overlay{position:fixed;inset:0;background:rgba(26,39,68,0.85);z-index:1000;display:flex;align-items:center;justify-content:center;}
+#auth-box{background:var(--surface);border-radius:var(--radius-lg);padding:2.5rem;width:min(420px,92vw);box-shadow:0 24px 60px rgba(26,39,68,0.25);}
+#auth-box h2{font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--navy);margin-bottom:.5rem;}
+#auth-box p{color:var(--text-muted);font-size:.9rem;margin-bottom:1.5rem;}
+.auth-field{display:flex;flex-direction:column;gap:.4rem;margin-bottom:1rem;}
+.auth-field label{font-size:.85rem;font-weight:600;color:var(--navy);}
+.auth-field input{padding:.7rem 1rem;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.95rem;outline:none;transition:border-color .2s;}
+.auth-field input:focus{border-color:var(--sky);}
+#auth-btn{width:100%;padding:.85rem;background:var(--navy);color:#fff;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:600;cursor:pointer;margin-top:.5rem;}
+#auth-error{color:#c0392b;font-size:.85rem;margin-top:.75rem;display:none;}
+#topbar{background:linear-gradient(135deg,var(--navy),var(--navy-mid));padding:.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;flex-shrink:0;}
+.logo{font-family:'DM Serif Display',serif;font-size:1.35rem;color:#fff;}
+.logo span{color:var(--gold);}
+#timer{font-size:1.2rem;font-weight:700;color:var(--gold);letter-spacing:.05em;}
+#timer.urgent{color:#ff6b6b;animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+.topbar-right{display:flex;align-items:center;gap:.75rem;}
+#user-pill{background:rgba(255,255,255,0.15);color:#fff;padding:.35rem .9rem;border-radius:999px;font-size:.85rem;font-weight:500;}
+#signout-btn{background:transparent;border:1.5px solid rgba(255,255,255,0.35);color:rgba(255,255,255,0.8);padding:.35rem .85rem;border-radius:8px;font-size:.82rem;cursor:pointer;font-family:'DM Sans',sans-serif;}
+#quicklinks{background:var(--surface);border-bottom:1px solid var(--border);padding:.5rem 1.5rem;display:flex;align-items:center;gap:.75rem;flex-shrink:0;}
+.ql-link{color:var(--sky);font-size:.85rem;text-decoration:none;font-weight:500;}
+.ql-sep{color:var(--border);}
+.ql-pill{background:var(--navy);color:#fff;padding:.25rem .85rem;border-radius:999px;font-size:.82rem;font-weight:600;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+#app{display:none;flex-direction:column;height:100vh;}
+#split{display:flex;flex:1;overflow:hidden;}
+#passage-col{width:55%;background:var(--cream);overflow-y:auto;border-right:1px solid var(--border);display:flex;flex-direction:column;}
+#hl-toolbar{position:sticky;top:0;background:var(--surface);border-bottom:1px solid var(--border);padding:.6rem 1.5rem;display:flex;align-items:center;gap:.75rem;z-index:10;}
+.hl-label{font-size:.8rem;font-weight:600;color:var(--text-muted);}
+.hl-btn{width:26px;height:26px;border-radius:50%;border:2px solid rgba(0,0,0,0.1);cursor:pointer;}
+#hl-y{background:#fff176;}#hl-g{background:#c8e6c9;}#hl-p{background:#f8bbd0;}
+#hl-clr{background:none;border:1.5px solid var(--border);color:var(--text-muted);padding:.25rem .75rem;border-radius:8px;font-size:.8rem;cursor:pointer;font-family:'DM Sans',sans-serif;}
+#passage-content{padding:1.5rem 2rem 2rem;}
+.passage-title{font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--navy);margin-bottom:.3rem;}
+.passage-sub{font-style:italic;color:var(--text-muted);font-size:.9rem;margin-bottom:.75rem;}
+.dbadge{display:inline-block;padding:.25rem .75rem;border-radius:999px;font-size:.78rem;font-weight:700;text-transform:uppercase;background:var(--gold-light);color:var(--gold);margin-bottom:1rem;}
+.passage-text{font-size:1rem;line-height:1.8;color:var(--text);}
+.passage-text p{margin-bottom:1rem;}
+.sl{font-weight:700;font-size:.95rem;color:var(--navy);margin-right:.5rem;font-family:'DM Serif Display',serif;}
+#questions-col{width:45%;background:var(--cream);overflow-y:auto;display:flex;flex-direction:column;}
+#progress-wrap{padding:1rem 1.5rem .75rem;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10;}
+.progress-label{font-size:.82rem;color:var(--text-muted);margin-bottom:.4rem;}
+.progress-bar-bg{background:var(--border);border-radius:999px;height:8px;overflow:hidden;}
+.progress-bar-fill{background:var(--sky);height:100%;border-radius:999px;transition:width .4s;}
+#q-list{padding:1rem 1.5rem 1.5rem;display:flex;flex-direction:column;gap:.75rem;}
+.qcard{background:var(--surface);border-radius:var(--radius);padding:1rem 1.25rem;border:2px solid transparent;transition:border-color .2s;}
+.qcard.flagged{border-color:var(--gold);}
+.qh{display:flex;align-items:flex-start;justify-content:space-between;gap:.5rem;margin-bottom:.6rem;}
+.qn{font-weight:700;color:var(--sky);font-size:.9rem;flex-shrink:0;margin-top:2px;}
+.qt{font-size:.93rem;line-height:1.55;color:var(--text);flex:1;}
+.flag-btn{background:none;border:none;cursor:pointer;font-size:1rem;opacity:.4;flex-shrink:0;}
+.flag-btn.active{opacity:1;}
+.q-opts{display:flex;flex-direction:column;gap:.45rem;margin-top:.5rem;}
+.q-opt{display:flex;align-items:center;gap:.6rem;padding:.5rem .75rem;border-radius:8px;cursor:pointer;font-size:.9rem;}
+.q-opt:hover{background:var(--sky-light);}
+.q-opt input{accent-color:var(--sky);width:15px;height:15px;flex-shrink:0;cursor:pointer;}
+.q-input{width:100%;padding:.55rem .85rem;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.9rem;outline:none;margin-top:.5rem;}
+.q-input:focus{border-color:var(--sky);}
+.q-sel{width:100%;padding:.55rem .85rem;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.9rem;outline:none;background:var(--surface);cursor:pointer;margin-top:.5rem;}
+.sec-hdr{background:var(--navy);color:#fff;border-radius:var(--radius);padding:.75rem 1.25rem;font-size:.85rem;font-weight:600;margin-top:.5rem;}
+.sec-hdr p{font-size:.82rem;font-weight:400;opacity:.8;margin-top:.2rem;}
+#submit-btn{margin:0 1.5rem 1.5rem;padding:1rem;background:var(--navy);color:#fff;border:none;border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;}
+#confirm-overlay{position:fixed;inset:0;background:rgba(26,39,68,0.7);z-index:200;display:none;align-items:center;justify-content:center;}
+#confirm-box{background:var(--surface);border-radius:var(--radius-lg);padding:2rem;width:min(380px,90vw);text-align:center;}
+#confirm-box h3{font-family:'DM Serif Display',serif;font-size:1.3rem;margin-bottom:.75rem;}
+#confirm-box p{color:var(--text-muted);font-size:.9rem;margin-bottom:1.5rem;}
+.conf-btns{display:flex;gap:.75rem;}
+.conf-btns button{flex:1;padding:.75rem;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.95rem;font-weight:600;cursor:pointer;border:none;}
+#conf-yes{background:var(--navy);color:#fff;}
+#conf-no{background:var(--cream);color:var(--text);border:1.5px solid var(--border);}
+#results-screen{display:none;min-height:100vh;background:var(--cream);padding:2rem 1rem 4rem;}
+.rh{text-align:center;margin-bottom:2.5rem;}
+.band-circle{width:120px;height:120px;border-radius:50%;background:var(--gold);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 1rem;box-shadow:0 8px 30px rgba(201,146,42,0.35);}
+.band-lbl{font-size:.7rem;color:rgba(255,255,255,0.8);font-weight:700;text-transform:uppercase;letter-spacing:.08em;}
+.band-val{font-size:2.5rem;font-weight:700;color:#fff;line-height:1;font-family:'DM Serif Display',serif;}
+.rh h2{font-family:'DM Serif Display',serif;font-size:2rem;color:var(--navy);margin-bottom:.25rem;}
+.rh p{color:var(--text-muted);}
+.r-list{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:1rem;}
+.r-card{background:var(--surface);border-radius:var(--radius);padding:1.25rem 1.5rem;border-left:4px solid var(--border);}
+.r-card.correct{border-left-color:var(--green);}
+.r-card.incorrect{border-left-color:#e74c3c;}
+.r-q{font-size:.88rem;color:var(--text-muted);margin-bottom:.4rem;}
+.r-a{font-size:.93rem;margin-bottom:.3rem;}
+.r-a.ok{color:var(--green);font-weight:600;}
+.r-a.bad{color:#e74c3c;font-weight:600;text-decoration:line-through;}
+.r-c{font-size:.88rem;color:var(--green);margin-bottom:.4rem;}
+.r-e{font-size:.85rem;color:var(--text-muted);background:var(--cream);padding:.6rem .85rem;border-radius:8px;line-height:1.5;}
+#back-btn{display:block;margin:2rem auto 0;padding:.85rem 2rem;background:var(--navy);color:#fff;border:none;border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:.95rem;font-weight:600;cursor:pointer;width:fit-content;}
+@media(max-width:768px){#split{flex-direction:column;overflow:visible;}#passage-col,#questions-col{width:100%;overflow-y:visible;border-right:none;border-bottom:1px solid var(--border);}#app{height:auto;}#hl-toolbar{position:relative;}}
+</style>
+</head>
+<body>
+
+<div id="auth-overlay">
+  <div id="auth-box">
+    <h2>Sign in to continue</h2>
+    <p>Sign in to access this reading passage and track your scores.</p>
+    <div class="auth-field"><label>Email</label><input type="email" id="auth-email" placeholder="you@example.com"></div>
+    <div class="auth-field"><label>Password</label><input type="password" id="auth-pass" placeholder="••••••••"></div>
+    <button id="auth-btn" onclick="signIn()">Sign In</button>
+    <div id="auth-error"></div>
+  </div>
+</div>
+
+<div id="confirm-overlay">
+  <div id="confirm-box">
+    <h3>Submit Answers?</h3>
+    <p>Are you sure? You cannot change your answers after submitting.</p>
+    <div class="conf-btns">
+      <button id="conf-yes" onclick="doSubmit()">Yes, Submit</button>
+      <button id="conf-no" onclick="document.getElementById('confirm-overlay').style.display='none'">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div id="app">
+  <div id="topbar">
+    <div class="logo">English Fl<span>o</span>w</div>
+    <div id="timer">20:00</div>
+    <div class="topbar-right">
+      <div id="user-pill"></div>
+      <button id="signout-btn" onclick="signOut()">Sign out</button>
+    </div>
+  </div>
+  <div id="quicklinks">
+    <a href="../index.html" class="ql-link">← Home</a><span class="ql-sep">|</span>
+    <a href="../free-reading/index.html" class="ql-link">← Reading</a><span class="ql-sep">|</span>
+    <div class="ql-pill">Saving Bugs to Find New Drugs</div>
+  </div>
+  <div id="split">
+    <div id="passage-col">
+      <div id="hl-toolbar">
+        <span class="hl-label">Highlight:</span>
+        <div class="hl-btn" id="hl-y" onclick="setHL('#fff176')"></div>
+        <div class="hl-btn" id="hl-g" onclick="setHL('#c8e6c9')"></div>
+        <div class="hl-btn" id="hl-p" onclick="setHL('#f8bbd0')"></div>
+        <button id="hl-clr" onclick="clearHL()">Clear</button>
+      </div>
+      <div id="passage-content">
+        <div class="passage-title">Saving bugs to find new drugs</div>
+        <div class="passage-sub">Zoologist Ross Piper looks at the potential of insects in pharmaceutical research</div>
+        <div class="dbadge">Medium</div>
+        <div class="passage-text" id="passage-text">
+          <p><span class="sl">A</span>More drugs than you might think are derived from, or inspired by, compounds found in living things. Looking to nature for the soothing and curing of our ailments is nothing new. You only have to look at other primates such as the capuchin monkeys who rub themselves with toxin-oozing millipedes to deter mosquitoes, or the chimpanzees who use noxious forest plants to rid themselves of intestinal parasites, to realise that our ancient ancestors too probably had a basic grasp of medicine.</p>
+          <p><span class="sl">B</span>Pharmaceutical science and chemistry built on these ancient foundations and perfected the extraction, characterisation, modification and testing of these natural products. Then, for a while, modern pharmaceutical science moved its focus away from nature and into the laboratory, designing chemical compounds from scratch. The main cause of this shift is that although there are plenty of promising chemical compounds in nature, finding them is far from easy. Securing sufficient numbers of the organism in question, isolating and characterising the compounds of interest, and producing large quantities of these compounds are all significant hurdles.</p>
+          <p><span class="sl">C</span>Laboratory-based drug discovery has achieved varying levels of success, which has now prompted the development of new approaches focusing once again on natural products. With the ability to mine genomes for useful compounds, it is now evident that we have barely scratched the surface of nature's molecular diversity. This realisation, together with several looming health crises such as antibiotic resistance, has put bioprospecting firmly back on the map.</p>
+          <p><span class="sl">D</span>Insects are the most species-rich group of animals on the planet. They have been around for hundreds of millions of years, during which time they have evolved a remarkable number of interesting and unusual compounds. Critically, many of these compounds are used for defence. Some insects defend themselves chemically: they spray or ooze toxic or noxious secretions, or they have venom that they can inject. Many of these defence chemicals have anti-cancer, antimicrobial, or other properties that could be hugely valuable in medicine.</p>
+          <p><span class="sl">E</span>From the tiny proportion of insects that have been investigated, several promising compounds have been identified. For example, alloferon, an antimicrobial compound produced by blow fly larvae, is used as an antiviral and antitumor agent in South Korea and Russia. The larvae of a few other insect species are being investigated for the potent antimicrobial compounds they produce. Meanwhile, a compound from the venom of the wasp Polybia paulista has potential in cancer treatment.</p>
+          <p><span class="sl">F</span>Why is it that insects have received relatively little attention in bioprospecting? Firstly, there are so many insects that, without some manner of targeted approach, investigating this huge variety of species is a daunting task. Secondly, insects are generally very small, and the glands inside them that secrete potentially useful compounds are smaller still. This can make it difficult to obtain sufficient quantities of the compound for subsequent testing. Thirdly, although we consider insects to be everywhere, the reality of this ubiquity is vast numbers of a few extremely common species. Many insect species are infrequently encountered and very difficult to rear in captivity, which, again, can leave us with insufficient material to work with.</p>
+          <p><span class="sl">G</span>My colleagues and I at Aberystwyth University in the UK have developed an approach in which we use our knowledge of ecology as a guide to target our efforts. The creatures that particularly interest us are the many insects that secrete powerful poison for subduing prey and keeping it fresh for future consumption. There are even more insects that are masters of exploiting filthy habitats, such as faeces and carcasses, where they are regularly challenged by thousands of micro-organisms. These insects have many antimicrobial compounds for dealing with pathogenic bacteria and fungi, suggesting that there is certainly potential to find many compounds that can serve as or inspire new antibiotics.</p>
+          <p><span class="sl">H</span>Although natural history knowledge points us in the right direction, it does not solve the problems associated with obtaining useful compounds from insects. Fortunately, it is now possible to snip out the stretches of the insect's DNA that carry the codes for the interesting compounds and insert them into cell lines that allow larger quantities to be produced. And although the road from isolating and characterising compounds with desirable qualities to developing a commercial product is very long and full of pitfalls, the variety of successful animal-derived pharmaceuticals on the market demonstrates there is a precedent here that is worth exploring.</p>
+          <p><span class="sl">I</span>With every bit of wilderness that disappears, we deprive ourselves of potential medicines. As much as I would love to help develop a groundbreaking insect-derived medicine, my main motivation for looking at insects in this way is conservation. I sincerely believe that all species, however small and seemingly insignificant, have a right to exist for their own sake. If we can shine a light on the darker recesses of nature's medicine cabinet, exploring the useful chemistry of the most diverse animals on the planet, I believe we can make people think differently about the value of nature.</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="questions-col">
+      <div id="progress-wrap">
+        <div class="progress-label" id="prog-lbl">0 / 13 answered</div>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="prog-bar" style="width:0%"></div></div>
+      </div>
+      <div id="q-list">
+
+        <div class="sec-hdr">Questions 14–20
+          <p>Reading Passage 2 has nine paragraphs, A–I. Which paragraph contains the following information? Write the correct letter A–I.</p>
+        </div>
+
+        <div class="qcard" id="qc14">
+          <div class="qh"><span class="qn">Q14</span><span class="qt">A reference to the likelihood of insects yielding more medical compounds than have been found so far</span><button class="flag-btn" onclick="toggleFlag(14)">🚩</button></div>
+          <select class="q-sel" id="q14" onchange="updateProg()">
+            <option value="">Select paragraph…</option>
+            <option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option><option>I</option>
+          </select>
+        </div>
+
+        <div class="qcard" id="qc15">
+          <div class="qh"><span class="qn">Q15</span><span class="qt">A description of a method used to increase the available quantity of a useful compound</span><button class="flag-btn" onclick="toggleFlag(15)">🚩</button></div>
+          <select class="q-sel" id="q15" onchange="updateProg()">
+            <option value="">Select paragraph…</option>
+            <option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option><option>I</option>
+          </select>
+        </div>
+
+        <div class="qcard" id="qc16">
+          <div class="qh"><span class="qn">Q16</span><span class="qt">Examples of non-human creatures that have learned to use natural medicines</span><button class="flag-btn" onclick="toggleFlag(16)">🚩</button></div>
+          <select class="q-sel" id="q16" onchange="updateProg()">
+            <option value="">Select paragraph…</option>
+            <option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option><option>I</option>
+          </select>
+        </div>
+
+        <div class="qcard" id="qc17">
+          <div class="qh"><span class="qn">Q17</span><span class="qt">Reasons why it is difficult to use insects as a source of potentially useful compounds</span><button class="flag-btn" onclick="toggleFlag(17)">🚩</button></div>
+          <select class="q-sel" id="q17" onchange="updateProg()">
+            <option value="">Select paragraph…</option>
+            <option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option><option>I</option>
+          </select>
+        </div>
+
+        <div class="qcard" id="qc18">
+          <div class="qh"><span class="qn">Q18</span><span class="qt">A reference to a personal reason for carrying out research into insect-derived medicines</span><button class="flag-btn" onclick="toggleFlag(18)">🚩</button></div>
+          <select class="q-sel" id="q18" onchange="updateProg()">
+            <option value="">Select paragraph…</option>
+            <option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option><option>I</option>
+          </select>
+        </div>
+
+        <div class="qcard" id="qc19">
+          <div class="qh"><span class="qn">Q19</span><span class="qt">An explanation of why natural compounds were largely ignored by pharmaceutical researchers</span><button class="flag-btn" onclick="toggleFlag(19)">🚩</button></div>
+          <select class="q-sel" id="q19" onchange="updateProg()">
+            <option value="">Select paragraph…</option>
+            <option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option><option>I</option>
+          </select>
+        </div>
+
+        <div class="qcard" id="qc20">
+          <div class="qh"><span class="qn">Q20</span><span class="qt">Details of specific insects which have provided compounds that could be used in medicine</span><button class="flag-btn" onclick="toggleFlag(20)">🚩</button></div>
+          <select class="q-sel" id="q20" onchange="updateProg()">
+            <option value="">Select paragraph…</option>
+            <option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option><option>I</option>
+          </select>
+        </div>
+
+        <div class="sec-hdr">Questions 21–22
+          <p>Choose TWO letters, A–E. Which TWO features of the Aberystwyth research are mentioned?</p>
+        </div>
+
+        <div class="qcard" id="qc21">
+          <div class="qh"><span class="qn">Q21 &amp; 22</span><span class="qt">Choose TWO correct features (tick exactly 2):</span><button class="flag-btn" onclick="toggleFlag(21)">🚩</button></div>
+          <div class="q-opts">
+            <label class="q-opt"><input type="checkbox" name="q2122" value="A" onchange="updateProg()"> A — It focuses on insects that are under threat of extinction.</label>
+            <label class="q-opt"><input type="checkbox" name="q2122" value="B" onchange="updateProg()"> B — It uses ecological knowledge to select target insects.</label>
+            <label class="q-opt"><input type="checkbox" name="q2122" value="C" onchange="updateProg()"> C — It investigates insects that have natural ways of killing bacteria.</label>
+            <label class="q-opt"><input type="checkbox" name="q2122" value="D" onchange="updateProg()"> D — It has already resulted in a new antibiotic being produced.</label>
+            <label class="q-opt"><input type="checkbox" name="q2122" value="E" onchange="updateProg()"> E — It involves testing compounds found in common insect species.</label>
+          </div>
+        </div>
+
+        <div class="sec-hdr">Questions 23–26
+          <p>Complete the summary. Choose ONE WORD ONLY from the passage for each answer.</p>
+          <p style="margin-top:.5rem;font-style:italic;">Research at Aberystwyth University</p>
+        </div>
+
+        <div class="qcard" id="qc23">
+          <div class="qh"><span class="qn">Q23</span><span class="qt">Ross Piper and colleagues use their expertise in <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u> when undertaking bioprospecting with insects.</span><button class="flag-btn" onclick="toggleFlag(23)">🚩</button></div>
+          <input class="q-input" type="text" id="q23" placeholder="One word only…" oninput="updateProg()">
+        </div>
+
+        <div class="qcard" id="qc24">
+          <div class="qh"><span class="qn">Q24</span><span class="qt">They are especially interested in compounds that insects produce to overpower and preserve their <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>.</span><button class="flag-btn" onclick="toggleFlag(24)">🚩</button></div>
+          <input class="q-input" type="text" id="q24" placeholder="One word only…" oninput="updateProg()">
+        </div>
+
+        <div class="qcard" id="qc25">
+          <div class="qh"><span class="qn">Q25</span><span class="qt">They are also interested in compounds which insects use to protect themselves from pathogenic bacteria and fungi found in their <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>.</span><button class="flag-btn" onclick="toggleFlag(25)">🚩</button></div>
+          <input class="q-input" type="text" id="q25" placeholder="One word only…" oninput="updateProg()">
+        </div>
+
+        <div class="qcard" id="qc26">
+          <div class="qh"><span class="qn">Q26</span><span class="qt">Piper hopes that these substances will be useful in the development of drugs such as <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>.</span><button class="flag-btn" onclick="toggleFlag(26)">🚩</button></div>
+          <input class="q-input" type="text" id="q26" placeholder="One word only…" oninput="updateProg()">
+        </div>
+
+      </div>
+      <button id="submit-btn" onclick="confirmSubmit()">Submit Answers</button>
+    </div>
+  </div>
+</div>
+
+<div id="results-screen"></div>
+
+<script>
+const SUPABASE_URL = 'https://evhceswvapszaghnvmxl.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGNlc3d2YXBzemFnaG52bXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3OTQwNzMsImV4cCI6MjA5MzM3MDA3M30.yV7tavgR7JKc45uSGtS8Lf6m1ZMuuvQ23hmAb8n6k3A';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const PASSAGE_ID = 'saving-bugs-new-drugs';
+const TOTAL = 13;
+
+const ANSWERS = {
+  q14:'C', q15:'H', q16:'A', q17:'F', q18:'I', q19:'B', q20:'E',
+  q2122:['B','C'],
+  q23:'ecology', q24:'prey', q25:'habitats', q26:'antibiotics'
+};
+
+const EXPLANATIONS = {
+  q14:'Paragraph C states we have "barely scratched the surface of nature\'s molecular diversity", implying many more compounds remain to be found.',
+  q15:'Paragraph H describes snipping out stretches of insect DNA and inserting them into cell lines to produce larger quantities of compounds.',
+  q16:'Paragraph A describes capuchin monkeys using millipedes and chimpanzees using forest plants as medicines.',
+  q17:'Paragraph F lists three reasons: the vast number of species, the small size of insects and their glands, and the difficulty of rearing rare species in captivity.',
+  q18:'Paragraph I states that the author\'s "main motivation for looking at insects in this way is conservation."',
+  q19:'Paragraph B explains that pharmaceutical science moved away from nature because finding and producing natural compounds involves "significant hurdles."',
+  q20:'Paragraph E gives specific examples: alloferon from blow fly larvae and a compound from the wasp Polybia paulista.',
+  q2122:'The Aberystwyth team uses knowledge of ecology (B) to target insects — specifically those that kill bacteria in filthy habitats (C). There is no mention of threatened species, a completed antibiotic, or common species.',
+  q23:'Paragraph G: "we use our knowledge of ecology as a guide to target our efforts."',
+  q24:'Paragraph G: insects that secrete "powerful poison for subduing prey and keeping it fresh."',
+  q25:'Paragraph G: insects in "filthy habitats, such as faeces and carcasses" — the answer is habitats.',
+  q26:'Paragraph G: "potential to find many compounds that can serve as or inspire new antibiotics."'
+};
+
+const Q_TEXTS = {
+  14:'A reference to the likelihood of insects yielding more medical compounds than have been found so far',
+  15:'A description of a method used to increase the available quantity of a useful compound',
+  16:'Examples of non-human creatures that have learned to use natural medicines',
+  17:'Reasons why it is difficult to use insects as a source of potentially useful compounds',
+  18:'A reference to a personal reason for carrying out research into insect-derived medicines',
+  19:'An explanation of why natural compounds were largely ignored by pharmaceutical researchers',
+  20:'Details of specific insects which have provided compounds that could be used in medicine',
+  '2122':'Q21 & 22 — Which TWO features of the Aberystwyth research are mentioned?',
+  23:'Ross Piper and colleagues use their expertise in ___ when undertaking bioprospecting.',
+  24:'They are especially interested in compounds that insects produce to overpower and preserve their ___.',
+  25:'They are also interested in compounds which insects use to protect themselves from pathogenic bacteria and fungi found in their ___.',
+  26:'Piper hopes that these substances will be useful in the development of drugs such as ___.'
+};
+
+let currentUser = null;
+let timerInterval = null;
+let secondsLeft = 1200;
+let hlColor = '#fff176';
+
+async function init() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session?.user) { currentUser = session.user; showApp(session.user); }
+}
+
+function showApp(user) {
+  document.getElementById('auth-overlay').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+  const name = user.user_metadata?.name?.split(' ')[0] || user.email.split('@')[0];
+  document.getElementById('user-pill').textContent = name;
+  startTimer();
+}
+
+async function signIn() {
+  const email = document.getElementById('auth-email').value.trim();
+  const pass = document.getElementById('auth-pass').value;
+  const errEl = document.getElementById('auth-error');
+  errEl.style.display = 'none';
+  document.getElementById('auth-btn').textContent = 'Signing in…';
+  const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+  document.getElementById('auth-btn').textContent = 'Sign In';
+  if (error) { errEl.textContent = error.message; errEl.style.display = 'block'; return; }
+  currentUser = data.user;
+  showApp(data.user);
+}
+
+async function signOut() { await sb.auth.signOut(); location.reload(); }
+
+function startTimer() {
+  timerInterval = setInterval(() => {
+    secondsLeft--;
+    const m = String(Math.floor(secondsLeft/60)).padStart(2,'0');
+    const s = String(secondsLeft%60).padStart(2,'0');
+    document.getElementById('timer').textContent = m+':'+s;
+    if (secondsLeft <= 60) document.getElementById('timer').classList.add('urgent');
+    if (secondsLeft <= 0) { clearInterval(timerInterval); doSubmit(); }
+  }, 1000);
+}
+
+function updateProg() {
+  let ans = 0;
+  for (let i=14;i<=20;i++) { if (document.getElementById('q'+i)?.value) ans++; }
+  const checked = document.querySelectorAll('input[name="q2122"]:checked');
+  if (checked.length > 0) ans++;
+  for (let i=23;i<=26;i++) { if (document.getElementById('q'+i)?.value.trim()) ans++; }
+  document.getElementById('prog-lbl').textContent = ans+' / '+TOTAL+' answered';
+  document.getElementById('prog-bar').style.width = (ans/TOTAL*100)+'%';
+}
+
+function toggleFlag(n) {
+  const card = document.getElementById('qc'+n);
+  const btn = card.querySelector('.flag-btn');
+  card.classList.toggle('flagged');
+  btn.classList.toggle('active');
+}
+
+function setHL(c) { hlColor = c; }
+document.addEventListener('mouseup', () => {
+  const sel = window.getSelection();
+  if (!sel || sel.isCollapsed) return;
+  const range = sel.getRangeAt(0);
+  const passage = document.getElementById('passage-text');
+  if (!passage || !passage.contains(range.commonAncestorContainer)) return;
+  const span = document.createElement('span');
+  span.style.backgroundColor = hlColor;
+  span.style.borderRadius = '3px';
+  try { range.surroundContents(span); } catch(e) {}
+  sel.removeAllRanges();
+});
+function clearHL() {
+  document.querySelectorAll('#passage-text span[style*="background"]').forEach(s => {
+    const p = s.parentNode;
+    while (s.firstChild) p.insertBefore(s.firstChild, s);
+    p.removeChild(s);
+  });
+}
+
+function confirmSubmit() { document.getElementById('confirm-overlay').style.display = 'flex'; }
+
+function getBand(correct, total) {
+  const scaled = Math.round(correct/total*40);
+  if (scaled>=39) return 9.0; if (scaled>=37) return 8.5; if (scaled>=35) return 8.0;
+  if (scaled>=33) return 7.5; if (scaled>=30) return 7.0; if (scaled>=27) return 6.5;
+  if (scaled>=23) return 6.0; if (scaled>=19) return 5.5; if (scaled>=15) return 5.0;
+  if (scaled>=13) return 4.5; if (scaled>=10) return 4.0; return 3.5;
+}
+
+async function doSubmit() {
+  clearInterval(timerInterval);
+  document.getElementById('confirm-overlay').style.display = 'none';
+
+  const results = [];
+  let correct = 0;
+
+  // Q14-20 paragraph matching
+  for (let i=14;i<=20;i++) {
+    const key = 'q'+i;
+    const userAns = document.getElementById(key)?.value || '';
+    const correctAns = ANSWERS[key];
+    const ok = userAns.toUpperCase() === correctAns.toUpperCase();
+    if (ok) correct++;
+    results.push({ num:i, userAns, correctAns, ok, exp: EXPLANATIONS[key], qtext: Q_TEXTS[i] });
+  }
+
+  // Q21-22 two-answer
+  const checked = Array.from(document.querySelectorAll('input[name="q2122"]:checked')).map(el=>el.value).sort();
+  const correct2122 = [...ANSWERS.q2122].sort();
+  const ok2122 = JSON.stringify(checked) === JSON.stringify(correct2122);
+  if (ok2122) correct++;
+  results.push({ num:'21&22', userAns: checked.join(', ') || '(none)', correctAns: correct2122.join(', '), ok: ok2122, exp: EXPLANATIONS.q2122, qtext: Q_TEXTS['2122'] });
+
+  // Q23-26 fill in blank
+  for (let i=23;i<=26;i++) {
+    const key = 'q'+i;
+    const userAns = (document.getElementById(key)?.value || '').trim().toLowerCase();
+    const correctAns = ANSWERS[key];
+    const ok = userAns === correctAns.toLowerCase();
+    if (ok) correct++;
+    results.push({ num:i, userAns: userAns || '(blank)', correctAns, ok, exp: EXPLANATIONS[key], qtext: Q_TEXTS[i] });
+  }
+
+  const band = getBand(correct, TOTAL);
+
+  if (currentUser) {
+    await sb.from('reading_scores').upsert({
+      user_id: currentUser.id, passage_id: PASSAGE_ID,
+      band_score: band, score_raw: correct, total: TOTAL,
+      completed_at: new Date().toISOString()
+    }, { onConflict: 'user_id,passage_id' });
+  }
+
+  document.getElementById('app').style.display = 'none';
+  const rs = document.getElementById('results-screen');
+  rs.style.display = 'block';
+  rs.innerHTML = `
+    <div class="rh">
+      <div class="band-circle"><div class="band-lbl">Band</div><div class="band-val">${band}</div></div>
+      <h2>${correct} / ${TOTAL} Correct</h2>
+      <p>IELTS Academic Reading Band Score: ${band}</p>
+    </div>
+    <div class="r-list">
+      ${results.map(r => `
+        <div class="r-card ${r.ok?'correct':'incorrect'}">
+          <div class="r-q"><strong>Q${r.num}:</strong> ${r.qtext}</div>
+          <div class="r-a ${r.ok?'ok':'bad'}">Your answer: ${r.userAns}</div>
+          ${!r.ok ? `<div class="r-c">Correct answer: ${r.correctAns}</div>` : ''}
+          <div class="r-e">${r.exp}</div>
+        </div>`).join('')}
+    </div>
+    <button id="back-btn" onclick="window.location.href='../free-reading/index.html'">Back to Reading</button>`;
+}
+
+init();
+</script>
+</body>
+</html>
