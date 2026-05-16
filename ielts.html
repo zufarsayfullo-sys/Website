@@ -54,6 +54,8 @@
   .quick-link { display: flex; align-items: center; gap: 0.35rem; padding: 0.35rem 0.85rem; border-radius: 40px; font-size: 0.82rem; font-weight: 500; cursor: pointer; text-decoration: none; transition: all 0.2s; color: var(--text-muted); border: 1px solid var(--border); background: var(--cream); }
   .quick-link:hover { background: var(--sky-light); color: var(--sky); border-color: rgba(46,111,173,0.2); }
   .quick-link.active { background: var(--navy); color: white; border-color: var(--navy); }
+  .quick-link.gold { background: var(--gold-light); color: var(--gold); border-color: rgba(201,146,42,0.3); }
+  .quick-link.gold:hover { background: var(--gold); color: white; border-color: var(--gold); }
   .main { max-width: 1280px; margin: 0 auto; padding: 2rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
   @media (max-width: 768px) { .main { grid-template-columns: 1fr; padding: 1rem; } .hero-content { padding: 1.5rem 1rem 1.5rem; } .top-bar { padding: 0.5rem 1rem; } }
   .panel { background: var(--surface); border-radius: var(--radius-lg); border: 1px solid var(--border); overflow: hidden; }
@@ -111,7 +113,6 @@
   .support-card { background: linear-gradient(135deg, #1a2744, #243358); border-radius: var(--radius-lg); padding: 1.5rem 2rem; color: white; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.25rem; }
   .support-left h3 { font-family: 'DM Serif Display', serif; font-size: 1.2rem; margin-bottom: 0.3rem; }
   .support-left p { color: rgba(255,255,255,0.65); font-size: 0.85rem; }
-  /* coffee button */
   .coffee-btn { background: var(--gold); color: #fff; border: none; border-radius: 50px; padding: .65rem 1.4rem; font-family: 'DM Sans', sans-serif; font-size: .9rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: .5rem; transition: .2s; white-space: nowrap; }
   .coffee-btn:hover { background: #b8821e; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(201,146,42,.35); }
   .card-reveal { display: none; margin-top: .85rem; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2); border-radius: 12px; padding: .75rem 1.25rem; text-align: center; animation: popIn .2s ease; }
@@ -175,6 +176,7 @@
 <div class="quick-links">
   <a href="index.html" class="quick-link">← Home</a>
   <span class="quick-link active">All Features</span>
+  <a href="leaderboard/index.html" class="quick-link gold">🏆 Leaderboard</a>
 </div>
 
 <div class="main">
@@ -212,11 +214,6 @@
         <div class="feat-info"><div class="feat-name">Articles</div><div class="feat-desc">Curated reading articles to expand your vocabulary</div></div>
         <span class="feat-arrow">→</span>
       </a>
-   <a href="leaderboard/index.html" class="feat">
-        <div class="feat-icon icon-free">🏆</div>
-        <div class="feat-info"><div class="feat-name">Leaderboard</div><div class="feat-desc">See top learners ranked by coins earned</div></div>
-        <span class="feat-arrow">→</span>
-      </a>
     </div>
   </div>
 
@@ -239,7 +236,7 @@
   </div>
 </div>
 
-<!-- SUPPORT CARD — card number hidden behind button -->
+<!-- SUPPORT CARD -->
 <div class="support-section">
   <div class="support-card">
     <div class="support-left">
@@ -472,7 +469,6 @@
   loadComments();
 })();
 
-// ── Buy Me a Coffee toggle ──
 function toggleCard() {
   const reveal = document.getElementById('card-reveal');
   const btn    = document.getElementById('coffee-btn');
