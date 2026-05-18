@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Power of Play – English Flow</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--navy:#1a2744;--navy-mid:#243358;--sky:#2e6fad;--sky-light:#e8f2fc;--gold:#c9922a;--gold-light:#fdf3e3;--cream:#f9f7f4;--surface:#fff;--text:#1a2744;--text-muted:#5a6a8a;--border:rgba(26,39,68,0.1);--green:#1e6e4e;--green-light:#e8f5ee;--radius:16px;--radius-lg:24px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;font-family:'DM Sans',sans-serif;color:var(--text);background:var(--cream);}
+#auth-overlay{position:fixed;inset:0;background:rgba(26,39,68,0.85);z-index:1000;display:flex;align-items:center;justify-content:center;}
+#auth-box{background:var(--surface);border-radius:var(--radius-lg);padding:2.5rem;width:min(420px,92vw);box-shadow:0 24px 60px rgba(26,39,68,0.25);}
+#auth-box h2{font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--navy);margin-bottom:.5rem;}
+#auth-box p{color:var(--text-muted);font-size:.9rem;margin-bottom:1.5rem;}
+.af{display:flex;flex-direction:column;gap:.4rem;margin-bottom:1rem;}
+.af label{font-size:.85rem;font-weight:600;color:var(--navy);}
+.af input{padding:.7rem 1rem;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.95rem;outline:none;transition:border-color .2s;}
+.af input:focus{border-color:var(--sky);}
+#auth-btn{width:100%;padding:.85rem;background:var(--navy);color:#fff;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:600;cursor:pointer;margin-top:.5rem;}
+#auth-error{color:#c0392b;font-size:.85rem;margin-top:.75rem;display:none;}
+#topbar{background:linear-gradient(135deg,var(--navy),var(--navy-mid));padding:.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;flex-shrink:0;}
+.logo{font-family:'DM Serif Display',serif;font-size:1.35rem;color:#fff;}
+.logo span{color:var(--gold);}
+#timer{font-size:1.2rem;font-weight:700;color:var(--gold);letter-spacing:.05em;}
+#timer.urgent{color:#ff6b6b;animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+.tbr{display:flex;align-items:center;gap:.75rem;}
+#user-pill{background:rgba(255,255,255,0.15);color:#fff;padding:.35rem .9rem;border-radius:999px;font-size:.85rem;font-weight:500;}
+#signout-btn{background:transparent;border:1.5px solid rgba(255,255,255,0.35);color:rgba(255,255,255,0.8);padding:.35rem .85rem;border-radius:8px;font-size:.82rem;cursor:pointer;font-family:'DM Sans',sans-serif;}
+#ql{background:var(--surface);border-bottom:1px solid var(--border);padding:.5rem 1.5rem;display:flex;align-items:center;gap:.75rem;flex-shrink:0;}
+.ql-a{color:var(--sky);font-size:.85rem;text-decoration:none;font-weight:500;}
+.ql-s{color:var(--border);}
+.ql-p{background:var(--navy);color:#fff;padding:.25rem .85rem;border-radius:999px;font-size:.82rem;font-weight:600;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+#app{display:none;flex-direction:column;height:100vh;}
+#split{display:flex;flex:1;overflow:hidden;}
+#pc{width:55%;background:var(--cream);overflow-y:auto;border-right:1px solid var(--border);display:flex;flex-direction:column;}
+#hlt{position:sticky;top:0;background:var(--surface);border-bottom:1px solid var(--border);padding:.6rem 1.5rem;display:flex;align-items:center;gap:.75rem;z-index:10;}
+.hll{font-size:.8rem;font-weight:600;color:var(--text-muted);}
+.hlb{width:26px;height:26px;border-radius:50%;border:2px solid rgba(0,0,0,0.1);cursor:pointer;}
+#hly{background:#fff176;}#hlg{background:#c8e6c9;}#hlp{background:#f8bbd0;}
+#hlc{background:none;border:1.5px solid var(--border);color:var(--text-muted);padding:.25rem .75rem;border-radius:8px;font-size:.8rem;cursor:pointer;font-family:'DM Sans',sans-serif;}
+#pcon{padding:1.5rem 2rem 2rem;}
+.ptit{font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--navy);margin-bottom:.75rem;}
+.dbd{display:inline-block;padding:.25rem .75rem;border-radius:999px;font-size:.78rem;font-weight:700;text-transform:uppercase;background:var(--gold-light);color:var(--gold);margin-bottom:1rem;}
+.ptxt{font-size:1rem;line-height:1.8;color:var(--text);}
+.ptxt p{margin-bottom:1rem;}
+#qc{width:45%;background:var(--cream);overflow-y:auto;display:flex;flex-direction:column;}
+#prw{padding:1rem 1.5rem .75rem;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10;}
+.prl{font-size:.82rem;color:var(--text-muted);margin-bottom:.4rem;}
+.prb{background:var(--border);border-radius:999px;height:8px;overflow:hidden;}
+.prf{background:var(--sky);height:100%;border-radius:999px;transition:width .4s;}
+#ql2{padding:1rem 1.5rem 1.5rem;display:flex;flex-direction:column;gap:.75rem;}
+.qcard{background:var(--surface);border-radius:var(--radius);padding:1rem 1.25rem;border:2px solid transparent;transition:border-color .2s;}
+.qcard.flagged{border-color:var(--gold);}
+.qh{display:flex;align-items:flex-start;justify-content:space-between;gap:.5rem;margin-bottom:.6rem;}
+.qn{font-weight:700;color:var(--sky);font-size:.9rem;flex-shrink:0;margin-top:2px;}
+.qt{font-size:.93rem;line-height:1.55;color:var(--text);flex:1;}
+.fb{background:none;border:none;cursor:pointer;font-size:1rem;opacity:.4;flex-shrink:0;}
+.fb.active{opacity:1;}
+.qopts{display:flex;flex-direction:column;gap:.45rem;margin-top:.5rem;}
+.qopt{display:flex;align-items:center;gap:.6rem;padding:.5rem .75rem;border-radius:8px;cursor:pointer;font-size:.9rem;}
+.qopt:hover{background:var(--sky-light);}
+.qopt input{accent-color:var(--sky);width:15px;height:15px;flex-shrink:0;cursor:pointer;}
+.qinp{width:100%;padding:.55rem .85rem;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.9rem;outline:none;margin-top:.5rem;}
+.qinp:focus{border-color:var(--sky);}
+.qsel{width:100%;padding:.55rem .85rem;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.9rem;outline:none;background:var(--surface);cursor:pointer;margin-top:.5rem;}
+.sh{background:var(--navy);color:#fff;border-radius:var(--radius);padding:.75rem 1.25rem;font-size:.85rem;font-weight:600;margin-top:.5rem;}
+.sh p{font-size:.82rem;font-weight:400;opacity:.8;margin-top:.2rem;}
+#subbtn{margin:0 1.5rem 1.5rem;padding:1rem;background:var(--navy);color:#fff;border:none;border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;}
+#conf{position:fixed;inset:0;background:rgba(26,39,68,0.7);z-index:200;display:none;align-items:center;justify-content:center;}
+#confb{background:var(--surface);border-radius:var(--radius-lg);padding:2rem;width:min(380px,90vw);text-align:center;}
+#confb h3{font-family:'DM Serif Display',serif;font-size:1.3rem;margin-bottom:.75rem;}
+#confb p{color:var(--text-muted);font-size:.9rem;margin-bottom:1.5rem;}
+.cbtns{display:flex;gap:.75rem;}
+.cbtns button{flex:1;padding:.75rem;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.95rem;font-weight:600;cursor:pointer;border:none;}
+#cy{background:var(--navy);color:#fff;}
+#cn{background:var(--cream);color:var(--text);border:1.5px solid var(--border);}
+#rs{display:none;min-height:100vh;background:var(--cream);padding:2rem 1rem 4rem;}
+.rh{text-align:center;margin-bottom:2.5rem;}
+.bc{width:120px;height:120px;border-radius:50%;background:var(--gold);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 1rem;box-shadow:0 8px 30px rgba(201,146,42,0.35);}
+.bl{font-size:.7rem;color:rgba(255,255,255,0.8);font-weight:700;text-transform:uppercase;letter-spacing:.08em;}
+.bv{font-size:2.5rem;font-weight:700;color:#fff;line-height:1;font-family:'DM Serif Display',serif;}
+.rh h2{font-family:'DM Serif Display',serif;font-size:2rem;color:var(--navy);margin-bottom:.25rem;}
+.rh p{color:var(--text-muted);}
+.rl{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:1rem;}
+.rc{background:var(--surface);border-radius:var(--radius);padding:1.25rem 1.5rem;border-left:4px solid var(--border);}
+.rc.correct{border-left-color:var(--green);}
+.rc.incorrect{border-left-color:#e74c3c;}
+.rq{font-size:.88rem;color:var(--text-muted);margin-bottom:.4rem;}
+.ra{font-size:.93rem;margin-bottom:.3rem;}
+.ra.ok{color:var(--green);font-weight:600;}
+.ra.bad{color:#e74c3c;font-weight:600;text-decoration:line-through;}
+.rcc{font-size:.88rem;color:var(--green);margin-bottom:.4rem;}
+.re{font-size:.85rem;color:var(--text-muted);background:var(--cream);padding:.6rem .85rem;border-radius:8px;line-height:1.5;}
+#backbtn{display:block;margin:2rem auto 0;padding:.85rem 2rem;background:var(--navy);color:#fff;border:none;border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:.95rem;font-weight:600;cursor:pointer;width:fit-content;}
+@media(max-width:768px){#split{flex-direction:column;overflow:visible;}#pc,#qc{width:100%;overflow-y:visible;border-right:none;border-bottom:1px solid var(--border);}#app{height:auto;}#hlt{position:relative;}}
+</style>
+</head>
+<body>
+<div id="auth-overlay">
+  <div id="auth-box">
+    <h2>Sign in to continue</h2>
+    <p>Sign in to access this reading passage and track your scores.</p>
+    <div class="af"><label>Email</label><input type="email" id="aem" placeholder="you@example.com"></div>
+    <div class="af"><label>Password</label><input type="password" id="apw" placeholder="••••••••"></div>
+    <button id="auth-btn" onclick="signIn()">Sign In</button>
+    <div id="auth-error"></div>
+  </div>
+</div>
+<div id="conf">
+  <div id="confb">
+    <h3>Submit Answers?</h3>
+    <p>Are you sure? You cannot change your answers after submitting.</p>
+    <div class="cbtns"><button id="cy" onclick="doSubmit()">Yes, Submit</button><button id="cn" onclick="document.getElementById('conf').style.display='none'">Cancel</button></div>
+  </div>
+</div>
+<div id="app">
+  <div id="topbar">
+    <div class="logo">English Fl<span>o</span>w</div>
+    <div id="timer">20:00</div>
+    <div class="tbr"><div id="user-pill"></div><button id="signout-btn" onclick="signOut()">Sign out</button></div>
+  </div>
+  <div id="ql">
+    <a href="../index.html" class="ql-a">Home</a><span class="ql-s">|</span>
+    <a href="../free-reading/index.html" class="ql-a">Reading</a><span class="ql-s">|</span>
+    <div class="ql-p">The Power of Play</div>
+  </div>
+  <div id="split">
+    <div id="pc">
+      <div id="hlt">
+        <span class="hll">Highlight:</span>
+        <div class="hlb" id="hly" onclick="setHL('#fff176')"></div>
+        <div class="hlb" id="hlg" onclick="setHL('#c8e6c9')"></div>
+        <div class="hlb" id="hlp" onclick="setHL('#f8bbd0')"></div>
+        <button id="hlc" onclick="clearHL()">Clear</button>
+      </div>
+      <div id="pcon">
+        <div class="ptit">The Power of Play</div>
+        <div class="dbd">Medium</div>
+        <div class="ptxt" id="ptxt">
+          <p>Virtually every child, the world over, plays. The drive to play is so intense that children will do so in any circumstances, for instance when they have no real toys, or when parents do not actively encourage the behavior. In the eyes of a young child, running, pretending, and building are fun. Researchers and educators know that these playful activities benefit the development of the whole child across social, cognitive, physical, and emotional domains. Indeed, play is such an instrumental component to healthy child development that the United Nations High Commission on Human Rights (1989) recognized play as a fundamental right of every child.</p>
+          <p>Yet, while experts continue to expound a powerful argument for the importance of play in children's lives, the actual time children spend playing continues to decrease. Today, children play eight hours less each week than their counterparts did two decades ago (Elkind 2008). Under pressure of rising academic standards, play is being replaced by test preparation in kindergartens and grade schools, and parents who aim to give their preschoolers a leg up are led to believe that flashcards and educational 'toys' are the path to success. Our society has created a false dichotomy between play and learning.</p>
+          <p>Through play, children learn to regulate their behavior, lay the foundations for later learning in science and mathematics, figure out the complex negotiations of social relationships, build a repertoire of creative problem-solving skills, and so much more. There is also an important role for adults in guiding children through playful learning opportunities.</p>
+          <p>Full consensus on a formal definition of play continues to elude the researchers and theorists who study it. Definitions range from discrete descriptions of various types of play such as physical, construction, language, or symbolic play (Miller &amp; Almon 2009), to lists of broad criteria, based on observations and attitudes, that are meant to capture the essence of all play behaviors (e.g. Rubin et al. 1983).</p>
+          <p>A majority of the contemporary definitions of play focus on several key criteria. The founder of the National Institute for Play, Stuart Brown, has described play as 'anything that spontaneously is done for its own sake'. More specifically, he says it 'appears purposeless, produces pleasure and joy, [and] leads one to the next stage of mastery' (as quoted in Tippett 2008). Similarly, Miller and Almon (2009) say that play includes 'activities that are freely chosen and directed by children and arise from intrinsic motivation'. Often, play is defined along a continuum as more or less playful using the following set of behavioral and dispositional criteria (e.g. Rubin et al. 1983):</p>
+          <p>Play is pleasurable: Children must enjoy the activity or it is not play. It is intrinsically motivated: Children engage in play simply for the satisfaction the behavior itself brings. It has no extrinsically motivated function or goal. Play is process oriented: When children play, the means are more important than the ends. It is freely chosen, spontaneous and voluntary. If a child is pressured, they will likely not think of the activity as play. Play is actively engaged: Players must be physically and/or mentally involved in the activity. Play is non-literal. It involves make-believe.</p>
+          <p>According to this view, children's playful behaviors can range in degree from 0% to 100% playful. Rubin and colleagues did not assign greater weight to any one dimension in determining playfulness; however, other researchers have suggested that process orientation and a lack of obvious functional purpose may be the most important aspects of play (e.g. Pellegrini 2009).</p>
+          <p>From the perspective of a continuum, play can thus blend with other motives and attitudes that are less playful, such as work. Unlike play, work is typically not viewed as enjoyable and it is extrinsically motivated (i.e. it is goal oriented). Researcher Joan Goodman (1994) suggested that hybrid forms of work and play are not a detriment to learning; rather, they can provide optimal contexts for learning. For example, a child may be engaged in a difficult, goal-directed activity set up by their teacher, but they may still be actively engaged and intrinsically motivated. At this mid-point between play and work, the child's motivation, coupled with guidance from an adult, can create robust opportunities for playful learning.</p>
+          <p>Critically, recent research supports the idea that adults can facilitate children's learning while maintaining a playful approach in interactions known as 'guided play' (Fisher et al. 2011). The adult's role in play varies as a function of their educational goals and the child's developmental level (Hirsch-Pasek et al. 2009).</p>
+          <p>Guided play takes two forms. At a very basic level, adults can enrich the child's environment by providing objects or experiences that promote aspects of a curriculum. In the more direct form of guided play, parents or other adults can support children's play by joining in the fun as a co-player, raising thoughtful questions, commenting on children's discoveries, or encouraging further exploration or new facets to the child's activity. Although playful learning can be somewhat structured, it must also be child-centered (Nicolopolou et al. 2006). Play should stem from the child's own desire.</p>
+          <p>Both free and guided play are essential elements in a child-centered approach to playful learning. Intrinsically motivated free play provides the child with true autonomy, while guided play is an avenue through which parents and educators can provide more targeted learning experiences. In either case, play should be actively engaged, it should be predominantly child-directed, and it must be fun.</p>
+        </div>
+      </div>
+    </div>
+    <div id="qc">
+      <div id="prw">
+        <div class="prl" id="prlbl">0 / 14 answered</div>
+        <div class="prb"><div class="prf" id="prbar" style="width:0%"></div></div>
+      </div>
+      <div id="ql2">
+
+        <div class="sh">Questions 27–31
+          <p>Match each statement with the correct researcher, A–G.</p>
+          <p>A=Elkind B=Miller&amp;Almon C=Rubin et al. D=Stuart Brown E=Pellegrini F=Joan Goodman G=Hirsch-Pasek et al.</p>
+        </div>
+
+        <div class="qcard" id="qc27"><div class="qh"><span class="qn">Q27</span><span class="qt">Play can be divided into a number of separate categories.</span><button class="fb" onclick="tFlag(27)">🚩</button></div>
+        <select class="qsel" id="q27" onchange="updP()"><option value="">Select…</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select></div>
+
+        <div class="qcard" id="qc28"><div class="qh"><span class="qn">Q28</span><span class="qt">Adults' intended goals affect how they play with children.</span><button class="fb" onclick="tFlag(28)">🚩</button></div>
+        <select class="qsel" id="q28" onchange="updP()"><option value="">Select…</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select></div>
+
+        <div class="qcard" id="qc29"><div class="qh"><span class="qn">Q29</span><span class="qt">Combining work with play may be the best way for children to learn.</span><button class="fb" onclick="tFlag(29)">🚩</button></div>
+        <select class="qsel" id="q29" onchange="updP()"><option value="">Select…</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select></div>
+
+        <div class="qcard" id="qc30"><div class="qh"><span class="qn">Q30</span><span class="qt">Certain elements of play are more significant than others.</span><button class="fb" onclick="tFlag(30)">🚩</button></div>
+        <select class="qsel" id="q30" onchange="updP()"><option value="">Select…</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select></div>
+
+        <div class="qcard" id="qc31"><div class="qh"><span class="qn">Q31</span><span class="qt">Activities can be classified on a scale of playfulness.</span><button class="fb" onclick="tFlag(31)">🚩</button></div>
+        <select class="qsel" id="q31" onchange="updP()"><option value="">Select…</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select></div>
+
+        <div class="sh">Questions 32–36
+          <p>Do the following statements agree with the claims of the writer? YES / NO / NOT GIVEN</p>
+        </div>
+
+        <div class="qcard" id="qc32"><div class="qh"><span class="qn">Q32</span><span class="qt">Children need toys in order to play.</span><button class="fb" onclick="tFlag(32)">🚩</button></div>
+        <div class="qopts"><label class="qopt"><input type="radio" name="q32" value="YES" onchange="updP()"> YES</label><label class="qopt"><input type="radio" name="q32" value="NO" onchange="updP()"> NO</label><label class="qopt"><input type="radio" name="q32" value="NOT GIVEN" onchange="updP()"> NOT GIVEN</label></div></div>
+
+        <div class="qcard" id="qc33"><div class="qh"><span class="qn">Q33</span><span class="qt">It is a mistake to treat play and learning as separate types of activities.</span><button class="fb" onclick="tFlag(33)">🚩</button></div>
+        <div class="qopts"><label class="qopt"><input type="radio" name="q33" value="YES" onchange="updP()"> YES</label><label class="qopt"><input type="radio" name="q33" value="NO" onchange="updP()"> NO</label><label class="qopt"><input type="radio" name="q33" value="NOT GIVEN" onchange="updP()"> NOT GIVEN</label></div></div>
+
+        <div class="qcard" id="qc34"><div class="qh"><span class="qn">Q34</span><span class="qt">Play helps children to develop their artistic talents.</span><button class="fb" onclick="tFlag(34)">🚩</button></div>
+        <div class="qopts"><label class="qopt"><input type="radio" name="q34" value="YES" onchange="updP()"> YES</label><label class="qopt"><input type="radio" name="q34" value="NO" onchange="updP()"> NO</label><label class="qopt"><input type="radio" name="q34" value="NOT GIVEN" onchange="updP()"> NOT GIVEN</label></div></div>
+
+        <div class="qcard" id="qc35"><div class="qh"><span class="qn">Q35</span><span class="qt">Researchers have agreed on a definition of play.</span><button class="fb" onclick="tFlag(35)">🚩</button></div>
+        <div class="qopts"><label class="qopt"><input type="radio" name="q35" value="YES" onchange="updP()"> YES</label><label class="qopt"><input type="radio" name="q35" value="NO" onchange="updP()"> NO</label><label class="qopt"><input type="radio" name="q35" value="NOT GIVEN" onchange="updP()"> NOT GIVEN</label></div></div>
+
+        <div class="qcard" id="qc36"><div class="qh"><span class="qn">Q36</span><span class="qt">Work and play differ in terms of whether or not they have a target.</span><button class="fb" onclick="tFlag(36)">🚩</button></div>
+        <div class="qopts"><label class="qopt"><input type="radio" name="q36" value="YES" onchange="updP()"> YES</label><label class="qopt"><input type="radio" name="q36" value="NO" onchange="updP()"> NO</label><label class="qopt"><input type="radio" name="q36" value="NOT GIVEN" onchange="updP()"> NOT GIVEN</label></div></div>
+
+        <div class="sh">Questions 37–40
+          <p>Complete the summary. Choose ONE WORD ONLY from the passage. Topic: Guided Play</p>
+        </div>
+
+        <div class="qcard" id="qc37"><div class="qh"><span class="qn">Q37</span><span class="qt">An adult can develop play by <u>___</u> the child to investigate different aspects of their game.</span><button class="fb" onclick="tFlag(37)">🚩</button></div>
+        <input class="qinp" type="text" id="q37" placeholder="One word only…" oninput="updP()"></div>
+
+        <div class="qcard" id="qc38"><div class="qh"><span class="qn">Q38</span><span class="qt">The activity should still be based on the child's own <u>___</u> to play.</span><button class="fb" onclick="tFlag(38)">🚩</button></div>
+        <input class="qinp" type="text" id="q38" placeholder="One word only…" oninput="updP()"></div>
+
+        <div class="qcard" id="qc39"><div class="qh"><span class="qn">Q39</span><span class="qt">Play without adult intervention gives children real <u>___</u>.</span><button class="fb" onclick="tFlag(39)">🚩</button></div>
+        <input class="qinp" type="text" id="q39" placeholder="One word only…" oninput="updP()"></div>
+
+        <div class="qcard" id="qc40"><div class="qh"><span class="qn">Q40</span><span class="qt">With adults, play can be <u>___</u> at particular goals.</span><button class="fb" onclick="tFlag(40)">🚩</button></div>
+        <input class="qinp" type="text" id="q40" placeholder="One word only…" oninput="updP()"></div>
+
+      </div>
+      <button id="subbtn" onclick="confirmSub()">Submit Answers</button>
+    </div>
+  </div>
+</div>
+<div id="rs"></div>
+
+<script>
+const SUPABASE_URL='https://evhceswvapszaghnvmxl.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGNlc3d2YXBzemFnaG52bXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3OTQwNzMsImV4cCI6MjA5MzM3MDA3M30.yV7tavgR7JKc45uSGtS8Lf6m1ZMuuvQ23hmAb8n6k3A';
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const PASSAGE_ID='power-of-play';
+const TOTAL=14;
+
+const ANS={q27:'B',q28:'G',q29:'F',q30:'E',q31:'C',q32:'NO',q33:'YES',q34:'NOT GIVEN',q35:'NO',q36:'YES',q37:'encouraging',q38:'desire',q39:'autonomy',q40:'targeted'};
+const EXP={
+  q27:'Miller & Almon (2009) list discrete types of play such as physical, construction, language, or symbolic play.',
+  q28:'Hirsch-Pasek et al. (2009) state that the adult role varies as a function of their educational goals and the child\'s developmental level.',
+  q29:'Joan Goodman (1994) suggested that hybrid forms of work and play can provide optimal contexts for learning.',
+  q30:'Pellegrini (2009) suggested that process orientation and lack of obvious functional purpose may be the most important aspects of play.',
+  q31:'Rubin et al. (1983) define play along a continuum from 0% to 100% playful.',
+  q32:'NO — The passage states children play even when they have no real toys.',
+  q33:'YES — The passage says "Our society has created a false dichotomy between play and learning."',
+  q34:'NOT GIVEN — The passage mentions social, cognitive, physical and emotional development, but not artistic talents.',
+  q35:'NO — The passage says "Full consensus on a formal definition of play continues to elude the researchers."',
+  q36:'YES — Work is extrinsically motivated and goal-oriented, while play has no extrinsically motivated function or goal.',
+  q37:'The passage says adults can support play by "encouraging further exploration or new facets to the child\'s activity."',
+  q38:'The passage states "Play should stem from the child\'s own desire."',
+  q39:'The passage says "Intrinsically motivated free play provides the child with true autonomy."',
+  q40:'The passage says guided play is "an avenue through which parents and educators can provide more targeted learning experiences."'
+};
+const QT={27:'Play can be divided into a number of separate categories.',28:"Adults' intended goals affect how they play with children.",29:'Combining work with play may be the best way for children to learn.',30:'Certain elements of play are more significant than others.',31:'Activities can be classified on a scale of playfulness.',32:'Children need toys in order to play.',33:'It is a mistake to treat play and learning as separate types of activities.',34:'Play helps children to develop their artistic talents.',35:'Researchers have agreed on a definition of play.',36:'Work and play differ in terms of whether or not they have a target.',37:'An adult can develop play by ___ the child to investigate different aspects.',38:"The activity should still be based on the child's own ___ to play.",39:'Play without adult intervention gives children real ___.',40:'With adults, play can be ___ at particular goals.'};
+
+let user=null,secs=1200,timerInt=null,hlc='#fff176';
+
+async function init(){
+  const {data:{session}}=await sb.auth.getSession();
+  if(session?.user){user=session.user;showApp(session.user);}
+}
+function showApp(u){
+  document.getElementById('auth-overlay').style.display='none';
+  document.getElementById('app').style.display='flex';
+  const n=u.user_metadata?.name?.split(' ')[0]||u.email.split('@')[0];
+  document.getElementById('user-pill').textContent=n;
+  startTimer();
+}
+async function signIn(){
+  const em=document.getElementById('aem').value.trim();
+  const pw=document.getElementById('apw').value;
+  const er=document.getElementById('auth-error');
+  er.style.display='none';
+  document.getElementById('auth-btn').textContent='Signing in…';
+  const {data,error}=await sb.auth.signInWithPassword({email:em,password:pw});
+  document.getElementById('auth-btn').textContent='Sign In';
+  if(error){er.textContent=error.message;er.style.display='block';return;}
+  user=data.user;showApp(data.user);
+}
+async function signOut(){await sb.auth.signOut();location.reload();}
+function startTimer(){
+  timerInt=setInterval(()=>{
+    secs--;
+    const m=String(Math.floor(secs/60)).padStart(2,'0');
+    const s=String(secs%60).padStart(2,'0');
+    document.getElementById('timer').textContent=m+':'+s;
+    if(secs<=60)document.getElementById('timer').classList.add('urgent');
+    if(secs<=0){clearInterval(timerInt);doSubmit();}
+  },1000);
+}
+function updP(){
+  let a=0;
+  for(let i=27;i<=31;i++){if(document.getElementById('q'+i)?.value)a++;}
+  for(let i=32;i<=36;i++){if(document.querySelector('input[name="q'+i+'"]:checked'))a++;}
+  for(let i=37;i<=40;i++){if(document.getElementById('q'+i)?.value.trim())a++;}
+  document.getElementById('prlbl').textContent=a+' / '+TOTAL+' answered';
+  document.getElementById('prbar').style.width=(a/TOTAL*100)+'%';
+}
+function tFlag(n){
+  const c=document.getElementById('qc'+n);
+  const b=c.querySelector('.fb');
+  c.classList.toggle('flagged');b.classList.toggle('active');
+}
+function setHL(c){hlc=c;}
+document.addEventListener('mouseup',()=>{
+  const sel=window.getSelection();
+  if(!sel||sel.isCollapsed)return;
+  const range=sel.getRangeAt(0);
+  const pt=document.getElementById('ptxt');
+  if(!pt||!pt.contains(range.commonAncestorContainer))return;
+  const sp=document.createElement('span');
+  sp.style.backgroundColor=hlc;sp.style.borderRadius='3px';
+  try{range.surroundContents(sp);}catch(e){}
+  sel.removeAllRanges();
+});
+function clearHL(){
+  document.querySelectorAll('#ptxt span[style*="background"]').forEach(s=>{
+    const p=s.parentNode;while(s.firstChild)p.insertBefore(s.firstChild,s);p.removeChild(s);
+  });
+}
+function confirmSub(){document.getElementById('conf').style.display='flex';}
+function getAns(i){
+  const el=document.getElementById('q'+i);
+  if(el&&el.tagName==='SELECT')return el.value;
+  if(el&&el.tagName==='INPUT')return el.value.trim();
+  const ch=document.querySelector('input[name="q'+i+'"]:checked');
+  return ch?ch.value:'';
+}
+function getBand(c,t){
+  const sc=Math.round(c/t*40);
+  if(sc>=39)return 9.0;if(sc>=37)return 8.5;if(sc>=35)return 8.0;
+  if(sc>=33)return 7.5;if(sc>=30)return 7.0;if(sc>=27)return 6.5;
+  if(sc>=23)return 6.0;if(sc>=19)return 5.5;if(sc>=15)return 5.0;
+  if(sc>=13)return 4.5;if(sc>=10)return 4.0;return 3.5;
+}
+async function doSubmit(){
+  clearInterval(timerInt);
+  document.getElementById('conf').style.display='none';
+  let correct=0;const results=[];
+  for(let i=27;i<=40;i++){
+    const key='q'+i;
+    const ua=getAns(i);
+    const ca=ANS[key];
+    const ok=ua.toLowerCase()===ca.toLowerCase();
+    if(ok)correct++;
+    results.push({num:i,ua:ua||'(blank)',ca,ok,exp:EXP[key],qt:QT[i]});
+  }
+  const band=getBand(correct,TOTAL);
+  if(user){
+    await sb.from('reading_scores').upsert({
+      user_id:user.id,passage_id:PASSAGE_ID,
+      band_score:band,score_raw:correct,total:TOTAL,
+      completed_at:new Date().toISOString()
+    },{onConflict:'user_id,passage_id'});
+  }
+  document.getElementById('app').style.display='none';
+  const rs=document.getElementById('rs');rs.style.display='block';
+  rs.innerHTML=`<div class="rh"><div class="bc"><div class="bl">Band</div><div class="bv">${band}</div></div><h2>${correct} / ${TOTAL} Correct</h2><p>IELTS Band Score: ${band}</p></div><div class="rl">${results.map(r=>`<div class="rc ${r.ok?'correct':'incorrect'}"><div class="rq"><strong>Q${r.num}:</strong> ${r.qt}</div><div class="ra ${r.ok?'ok':'bad'}">Your answer: ${r.ua}</div>${!r.ok?`<div class="rcc">Correct: ${r.ca}</div>`:''}<div class="re">${r.exp}</div></div>`).join('')}</div><button id="backbtn" onclick="window.location.href='../free-reading/index.html'">Back to Reading</button>`;
+}
+init();
+</script>
+</body>
+</html>
