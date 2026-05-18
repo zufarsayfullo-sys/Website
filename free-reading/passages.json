@@ -79,4 +79,14 @@
   "questions": 13,
   "time": "20 min"
 }
+  {
+  "id": "power-of-play",
+  "file": "power-of-play.html",
+  "title": "The Power of Play",
+  "description": "Virtually every child plays — but why does it matter so much? Explore the science behind play and its role in child development.",
+  "type": "Academic",
+  "difficulty": "Medium",
+  "questions": 14,
+  "time": "20 min"
+}
 ]
