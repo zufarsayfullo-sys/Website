@@ -88,15 +88,15 @@
     "difficulty": "Medium",
     "questions": 14,
     "time": "20 min"
-  }
+  },
   {
-  "id": "secret-of-staying-young",
-  "file": "secret-of-staying-young.html",
-  "title": "The Secret of Staying Young",
-  "description": "A native ant of the south-eastern U.S. shows no signs of aging — scientists are trying to understand why.",
-  "type": "Academic",
-  "difficulty": "Medium",
-  "questions": 13,
-  "time": "20 min"
-}
+    "id": "secret-of-staying-young",
+    "file": "secret-of-staying-young.html",
+    "title": "The Secret of Staying Young",
+    "description": "A native ant of the south-eastern U.S. shows no signs of aging — scientists are trying to understand why.",
+    "type": "Academic",
+    "difficulty": "Medium",
+    "questions": 13,
+    "time": "20 min"
+  }
 ]
