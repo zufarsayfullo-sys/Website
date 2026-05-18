@@ -60,33 +60,33 @@
     "time": "20 min"
   },
   {
-  "id": "concept-of-intelligence",
-  "file": "concept-of-intelligence.html",
-  "title": "The Concept of Intelligence",
-  "description": "Everyone has unconscious notions of intelligence — but does anyone truly understand what it is? Explore three major theories of how intelligence relates to society.",
-  "type": "Academic",
-  "difficulty": "Hard",
-  "questions": 13,
-  "time": "20 min"
-},
-{
-  "id": "saving-bugs-new-drugs",
-  "file": "saving-bugs.html",
-  "title": "Saving Bugs to Find New Drugs",
-  "description": "Zoologist Ross Piper looks at the potential of insects in pharmaceutical research and why bioprospecting is back on the map.",
-  "type": "Academic",
-  "difficulty": "Medium",
-  "questions": 13,
-  "time": "20 min"
-}
+    "id": "concept-of-intelligence",
+    "file": "concept-of-intelligence.html",
+    "title": "The Concept of Intelligence",
+    "description": "Everyone has unconscious notions of intelligence — but does anyone truly understand what it is? Explore three major theories of how intelligence relates to society.",
+    "type": "Academic",
+    "difficulty": "Hard",
+    "questions": 13,
+    "time": "20 min"
+  },
   {
-  "id": "power-of-play",
-  "file": "power-of-play.html",
-  "title": "The Power of Play",
-  "description": "Virtually every child plays — but why does it matter so much? Explore the science behind play and its role in child development.",
-  "type": "Academic",
-  "difficulty": "Medium",
-  "questions": 14,
-  "time": "20 min"
-}
+    "id": "saving-bugs-new-drugs",
+    "file": "saving-bugs.html",
+    "title": "Saving Bugs to Find New Drugs",
+    "description": "Zoologist Ross Piper looks at the potential of insects in pharmaceutical research and why bioprospecting is back on the map.",
+    "type": "Academic",
+    "difficulty": "Medium",
+    "questions": 13,
+    "time": "20 min"
+  },
+  {
+    "id": "power-of-play",
+    "file": "power-of-play.html",
+    "title": "The Power of Play",
+    "description": "Virtually every child plays — but why does it matter so much? Explore the science behind play and its role in child development.",
+    "type": "Academic",
+    "difficulty": "Medium",
+    "questions": 14,
+    "time": "20 min"
+  }
 ]
