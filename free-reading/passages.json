@@ -98,5 +98,15 @@
   "difficulty": "Medium",
   "questions": 13,
   "time": "20 min"
+},
+{
+  "id": "why-zoos-are-good",
+  "file": "why-zoos-are-good.html",
+  "title": "Why Zoos Are Good",
+  "description": "Scientist David Hone makes the case for zoos — exploring conservation, education and research roles they play in protecting wildlife.",
+  "type": "Academic",
+  "difficulty": "Medium",
+  "questions": 13,
+  "time": "20 min"
 }
 ]
