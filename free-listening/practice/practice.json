@@ -94,5 +94,53 @@
     "questions": 10,
     "time": "30 min",
     "coming_soon": false
+  },
+  {
+    "id": "cambridge-14-test3-part1",
+    "file": "test3/part1.html",
+    "title": "Cambridge 14 Test 3 – Section 1",
+    "description": "Flanders Conference Hotel: complete notes about conference facilities, accommodation and location.",
+    "icon": "🏨",
+    "type": "IELTS Academic",
+    "difficulty": "Medium",
+    "questions": 10,
+    "time": "30 min",
+    "coming_soon": false
+  },
+  {
+    "id": "cambridge-14-test3-part2",
+    "file": "test3/part2.html",
+    "title": "Cambridge 14 Test 3 – Section 2",
+    "description": "Volunteering: choose TWO activities and benefits, then match volunteers to what they helped people achieve.",
+    "icon": "🤝",
+    "type": "IELTS Academic",
+    "difficulty": "Medium",
+    "questions": 10,
+    "time": "30 min",
+    "coming_soon": false
+  },
+  {
+    "id": "cambridge-14-test3-part3",
+    "file": "test3/part3.html",
+    "title": "Cambridge 14 Test 3 – Section 3",
+    "description": "School marching band: complete notes and match band members to the problems Joe mentions.",
+    "icon": "🎺",
+    "type": "IELTS Academic",
+    "difficulty": "Hard",
+    "questions": 10,
+    "time": "30 min",
+    "coming_soon": false
+  },
+  {
+    "id": "cambridge-14-test3-part4",
+    "file": "test3/part4.html",
+    "title": "Cambridge 14 Test 3 – Section 4",
+    "description": "Concerts in a university arts festival: complete detailed notes about three Australian composers.",
+    "icon": "🎼",
+    "type": "IELTS Academic",
+    "difficulty": "Hard",
+    "questions": 10,
+    "time": "30 min",
+    "coming_soon": false
   }
 ]
