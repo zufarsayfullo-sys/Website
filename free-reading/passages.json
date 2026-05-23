@@ -108,5 +108,15 @@
   "difficulty": "Medium",
   "questions": 13,
   "time": "20 min"
+},
+{
+  "id": "marine-debris",
+  "file": "marine-debris.html",
+  "title": "Assessing the Threat of Marine Debris",
+  "description": "Is ocean trash as dangerous as we think? Ecologist Chelsea Rochman reviews the science to find out how many perceived threats are actually real.",
+  "type": "Academic",
+  "difficulty": "Medium",
+  "questions": 14,
+  "time": "20 min"
 }
 ]
