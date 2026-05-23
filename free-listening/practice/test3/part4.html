@@ -13,9 +13,9 @@
 html,body{height:100%;font-family:'DM Sans',sans-serif;color:var(--text);background:var(--cream);}
 #auth-overlay{position:fixed;inset:0;background:rgba(26,39,68,0.92);z-index:2000;display:flex;align-items:center;justify-content:center;}
 #auth-box{background:var(--surface);border-radius:var(--radius-lg);padding:2.5rem;width:min(420px,92vw);box-shadow:0 24px 60px rgba(26,39,68,0.3);text-align:center;}
-#auth-box .icon{font-size:2.5rem;margin-bottom:.75rem;}
+.auth-icon{font-size:2.5rem;margin-bottom:.75rem;}
 #auth-box h2{font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--navy);margin-bottom:.3rem;}
-#auth-box .sub{color:var(--text-muted);font-size:.88rem;margin-bottom:1.5rem;}
+.auth-sub{color:var(--text-muted);font-size:.88rem;margin-bottom:1.5rem;}
 .af{display:flex;flex-direction:column;gap:.35rem;margin-bottom:.9rem;text-align:left;}
 .af label{font-size:.82rem;font-weight:600;color:var(--navy);}
 .af input{padding:.7rem 1rem;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.95rem;outline:none;}
@@ -31,125 +31,128 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;color:var(--text);backgro
 .tbr{display:flex;align-items:center;gap:.75rem;}
 #user-pill{background:rgba(255,255,255,0.15);color:#fff;padding:.3rem .9rem;border-radius:999px;font-size:.82rem;font-weight:500;}
 #signout-btn{background:transparent;border:1.5px solid rgba(255,255,255,0.3);color:rgba(255,255,255,0.8);padding:.3rem .8rem;border-radius:8px;font-size:.8rem;cursor:pointer;font-family:'DM Sans',sans-serif;}
-#breadcrumb{background:var(--surface);border-bottom:1px solid var(--border);padding:.5rem 1.5rem;display:flex;align-items:center;gap:.6rem;position:sticky;top:52px;z-index:99;}
+#breadcrumb{background:var(--surface);border-bottom:1px solid var(--border);padding:.5rem 1.5rem;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;position:sticky;top:52px;z-index:99;}
 .bc-link{color:var(--sky);font-size:.83rem;text-decoration:none;font-weight:500;}
+.bc-link:hover{color:var(--navy);}
 .bc-sep{color:var(--border);}
 .bc-active{background:var(--navy);color:#fff;padding:.2rem .8rem;border-radius:999px;font-size:.8rem;font-weight:600;}
 #player-zone{background:var(--surface);box-shadow:0 2px 12px rgba(26,39,68,0.1);padding:1rem 1.5rem;position:sticky;top:88px;z-index:98;}
 .player-header{display:flex;align-items:center;gap:.75rem;margin-bottom:.75rem;flex-wrap:wrap;}
 .player-title{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--navy);}
-.badge-part{background:var(--sky-light);color:var(--sky);padding:.2rem .7rem;border-radius:999px;font-size:.75rem;font-weight:700;}
-.badge-diff{background:var(--gold-light);color:var(--gold);padding:.2rem .7rem;border-radius:999px;font-size:.75rem;font-weight:700;}
+.badge{padding:.2rem .7rem;border-radius:999px;font-size:.75rem;font-weight:700;}
+.badge-part{background:var(--sky-light);color:var(--sky);}
+.badge-diff{background:var(--gold-light);color:var(--gold);}
 .player-label{font-size:.83rem;color:var(--text-muted);margin-bottom:.6rem;}
 .audio-shell{background:#0f1923;border-radius:12px;padding:.75rem 1rem;display:flex;align-items:center;gap:1rem;}
 #play-btn{width:42px;height:42px;border-radius:50%;background:var(--sky);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 #play-btn svg{fill:#fff;width:18px;height:18px;}
 .track-info{flex:1;min-width:0;}
 .track-name{color:#e2e8f0;font-size:.85rem;font-weight:600;margin-bottom:.4rem;}
-.progress-wrap{background:#1e3a4a;border-radius:999px;height:4px;margin-bottom:.4rem;overflow:hidden;}
-#progress-fill{background:var(--sky);height:100%;width:0%;transition:width .5s linear;}
+.prog-wrap{background:#1e3a4a;border-radius:999px;height:4px;margin-bottom:.4rem;overflow:hidden;}
+#prog-fill{background:var(--sky);height:100%;width:0%;transition:width .5s linear;}
 .time-row{display:flex;justify-content:space-between;font-size:.75rem;color:#94a3b8;}
-#prog-zone{padding:.75rem 1.5rem;background:var(--surface);border-top:1px solid var(--border);}
-.prog-label{font-size:.82rem;color:var(--text-muted);margin-bottom:.35rem;}
-.prog-bar-bg{background:var(--border);border-radius:999px;height:7px;overflow:hidden;}
-#prog-bar{background:var(--sky);height:100%;width:0%;transition:width .3s;}
-#part-tabs{padding:.6rem 1.5rem;background:var(--surface);border-top:1px solid var(--border);display:flex;gap:.4rem;}
+#ans-zone{padding:.75rem 1.5rem;background:var(--surface);border-top:1px solid var(--border);}
+.ans-label{font-size:.82rem;color:var(--text-muted);margin-bottom:.35rem;}
+.ans-bar-bg{background:var(--border);border-radius:999px;height:7px;overflow:hidden;}
+#ans-bar{background:var(--sky);height:100%;width:0%;transition:width .3s;}
+#part-tabs{padding:.6rem 1.5rem;background:var(--surface);border-top:1px solid var(--border);display:flex;gap:.4rem;flex-wrap:wrap;}
 .pt{padding:.3rem .85rem;border-radius:999px;font-size:.8rem;font-weight:600;text-decoration:none;background:var(--cream);color:var(--text-muted);border:1px solid var(--border);}
 .pt.active{background:var(--navy);color:#fff;border-color:var(--navy);}
 .pt:hover:not(.active){background:var(--sky-light);color:var(--sky);}
 #questions{max-width:840px;margin:0 auto;padding:2rem 1.5rem 4rem;}
-.section-card{background:var(--surface);border-radius:var(--radius);overflow:hidden;margin-bottom:1.5rem;border:1px solid var(--border);}
-.section-head{background:var(--navy);color:#fff;padding:.85rem 1.25rem;}
-.section-head h3{font-family:'DM Serif Display',serif;font-size:1rem;margin-bottom:.15rem;}
-.section-head p{font-size:.8rem;opacity:.75;}
-.section-body{padding:1.25rem;}
-.instruction{border-left:3px solid var(--sky);padding:.6rem 1rem;background:var(--sky-light);border-radius:0 8px 8px 0;margin-bottom:1.25rem;font-size:.88rem;color:var(--text-muted);}
-.instruction strong{color:var(--text);}
+.sec-card{background:var(--surface);border-radius:var(--radius);overflow:hidden;margin-bottom:1.5rem;border:1px solid var(--border);}
+.sec-head{background:var(--navy);color:#fff;padding:.85rem 1.25rem;}
+.sec-head h3{font-family:'DM Serif Display',serif;font-size:1rem;margin-bottom:.15rem;}
+.sec-head p{font-size:.8rem;opacity:.75;}
+.sec-body{padding:1.25rem;}
+.instr{border-left:3px solid var(--sky);padding:.6rem 1rem;background:var(--sky-light);border-radius:0 8px 8px 0;margin-bottom:1.25rem;font-size:.88rem;color:var(--text-muted);}
+.instr strong{color:var(--text);}
 .notes-box{border:2px solid var(--navy);border-radius:12px;overflow:hidden;margin-bottom:1rem;}
 .notes-title{background:var(--navy);color:#fff;text-align:center;padding:.6rem;font-family:'DM Serif Display',serif;font-size:1rem;}
 .notes-body{padding:1rem 1.25rem;}
-.notes-section-lbl{font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin:.9rem 0 .4rem;border-top:1px solid var(--border);padding-top:.6rem;}
-.notes-section-lbl:first-child{border-top:none;margin-top:0;}
-.notes-row{display:flex;align-items:center;gap:.5rem;padding:.3rem 0;font-size:.92rem;flex-wrap:wrap;}
-.notes-row .lbl{color:var(--text-muted);flex-shrink:0;}
-.fill-wrap{display:inline-flex;align-items:center;gap:.3rem;}
-.q-badge{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;background:var(--sky);color:#fff;border-radius:50%;font-size:.65rem;font-weight:700;flex-shrink:0;}
-.fill-inp{border:none;border-bottom:2px solid var(--border);background:transparent;font-family:'DM Sans',sans-serif;font-size:.92rem;color:var(--text);outline:none;width:130px;padding:.1rem .2rem;transition:border-color .2s;}
-.fill-inp:focus{border-color:var(--sky);}
-.fill-inp.has-val{border-color:var(--green);}
-#submit-btn{width:100%;max-width:840px;margin:0 auto;display:block;padding:1rem;background:var(--navy);color:#fff;border:none;border-radius:999px;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;}
-#conf-overlay{position:fixed;inset:0;background:rgba(26,39,68,0.7);z-index:500;display:none;align-items:center;justify-content:center;}
+.nsec{font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin:.9rem 0 .4rem;border-top:1px solid var(--border);padding-top:.6rem;}
+.nsec:first-child{border-top:none;margin-top:0;}
+.nrow{display:flex;align-items:center;gap:.5rem;padding:.3rem 0;font-size:.92rem;flex-wrap:wrap;}
+.lbl{color:var(--text-muted);flex-shrink:0;}
+.fw{display:inline-flex;align-items:center;gap:.3rem;}
+.qb{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;background:var(--sky);color:#fff;border-radius:50%;font-size:.65rem;font-weight:700;flex-shrink:0;}
+.fi{border:none;border-bottom:2px solid var(--border);background:transparent;font-family:'DM Sans',sans-serif;font-size:.92rem;color:var(--text);outline:none;width:130px;padding:.1rem .2rem;transition:border-color .2s;}
+.fi:focus{border-color:var(--sky);}
+.fi.has-val{border-color:var(--green);}
+#sub-btn{width:100%;max-width:840px;margin:0 auto;display:block;padding:1rem;background:var(--navy);color:#fff;border:none;border-radius:999px;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;}
+#conf-ov{position:fixed;inset:0;background:rgba(26,39,68,0.7);z-index:500;display:none;align-items:center;justify-content:center;}
 #conf-box{background:var(--surface);border-radius:var(--radius-lg);padding:2rem;width:min(360px,90vw);text-align:center;}
 #conf-box h3{font-family:'DM Serif Display',serif;font-size:1.3rem;margin-bottom:.6rem;}
 #conf-box p{color:var(--text-muted);font-size:.88rem;margin-bottom:1.5rem;}
-.conf-btns{display:flex;gap:.75rem;}
-.conf-btns button{flex:1;padding:.75rem;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.92rem;font-weight:600;cursor:pointer;border:none;}
-#conf-yes{background:var(--navy);color:#fff;}
-#conf-no{background:var(--cream);color:var(--text);border:1.5px solid var(--border);}
-#results-screen{display:none;position:fixed;inset:0;background:var(--cream);z-index:1000;overflow-y:auto;padding:2rem 1rem 4rem;}
-.res-inner{max-width:720px;margin:0 auto;}
-.res-header{text-align:center;margin-bottom:2rem;}
-.res-header h2{font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--navy);margin-bottom:.25rem;}
-.res-header p{color:var(--text-muted);}
-.band-ring-wrap{display:flex;justify-content:center;margin-bottom:1rem;}
-.band-ring{width:120px;height:120px;border-radius:50%;background:conic-gradient(var(--gold) 0%,var(--gold-light) 0%);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 8px 30px rgba(201,146,42,0.3);}
-.band-num{font-family:'DM Serif Display',serif;font-size:2.2rem;color:var(--navy);line-height:1;}
-.band-lbl{font-size:.7rem;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:.06em;}
-.score-line{text-align:center;font-size:1.1rem;font-weight:600;color:var(--navy);margin-bottom:.5rem;}
+.cbtns{display:flex;gap:.75rem;}
+.cbtns button{flex:1;padding:.75rem;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.92rem;font-weight:600;cursor:pointer;border:none;}
+#cy{background:var(--navy);color:#fff;}
+#cn{background:var(--cream);color:var(--text);border:1.5px solid var(--border);}
+#res-screen{display:none;position:fixed;inset:0;background:var(--cream);z-index:1000;overflow-y:auto;padding:2rem 1rem 4rem;}
+.res-in{max-width:720px;margin:0 auto;}
+.res-hdr{text-align:center;margin-bottom:2rem;}
+.res-hdr h2{font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--navy);margin-bottom:.25rem;}
+.res-hdr p{color:var(--text-muted);}
+.ring-wrap{display:flex;justify-content:center;margin-bottom:1rem;}
+.ring{width:120px;height:120px;border-radius:50%;background:var(--gold);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 8px 30px rgba(201,146,42,0.3);}
+.ring-num{font-family:'DM Serif Display',serif;font-size:2.2rem;color:#fff;line-height:1;}
+.ring-lbl{font-size:.7rem;color:rgba(255,255,255,0.8);font-weight:600;text-transform:uppercase;letter-spacing:.06em;}
+.score-ln{text-align:center;font-size:1.1rem;font-weight:600;color:var(--navy);margin-bottom:.5rem;}
 .res-nav{display:flex;gap:.4rem;justify-content:center;flex-wrap:wrap;margin:1rem 0;}
-.res-pt{padding:.3rem .85rem;border-radius:999px;font-size:.8rem;font-weight:600;text-decoration:none;background:var(--cream);color:var(--text-muted);border:1px solid var(--border);}
-.res-pt.active{background:var(--navy);color:#fff;}
-.q-review{background:var(--surface);border-radius:var(--radius);padding:1rem 1.25rem;margin-bottom:.75rem;border-left:4px solid var(--border);}
-.q-review.ok{border-left-color:var(--green);}
-.q-review.wrong{border-left-color:var(--red);}
-.q-review-top{display:flex;align-items:flex-start;gap:.6rem;margin-bottom:.4rem;}
-.q-badge2{padding:.15rem .5rem;border-radius:999px;font-size:.72rem;font-weight:700;}
-.q-badge2.ok{background:var(--green-light);color:var(--green);}
-.q-badge2.wrong{background:var(--red-light);color:var(--red);}
-.q-text{font-size:.9rem;font-weight:600;color:var(--text);}
-.q-ans{font-size:.88rem;margin-bottom:.25rem;}
-.q-ans.ok{color:var(--green);}
-.q-ans.wrong{color:var(--red);text-decoration:line-through;}
-.q-correct{font-size:.85rem;color:var(--green);margin-bottom:.3rem;}
-.q-exp{font-size:.83rem;color:var(--text-muted);background:var(--cream);padding:.5rem .8rem;border-radius:8px;line-height:1.5;}
-#back-listen{display:block;margin:1.5rem auto 0;padding:.85rem 2rem;background:var(--navy);color:#fff;border:none;border-radius:999px;font-family:'DM Sans',sans-serif;font-size:.92rem;font-weight:600;cursor:pointer;width:fit-content;}
+.rpt{padding:.3rem .85rem;border-radius:999px;font-size:.8rem;font-weight:600;text-decoration:none;background:var(--cream);color:var(--text-muted);border:1px solid var(--border);}
+.rpt.active{background:var(--navy);color:#fff;}
+.rpt:hover:not(.active){background:var(--sky-light);color:var(--sky);}
+.qrev{background:var(--surface);border-radius:var(--radius);padding:1rem 1.25rem;margin-bottom:.75rem;border-left:4px solid var(--border);}
+.qrev.ok{border-left-color:var(--green);}
+.qrev.bad{border-left-color:var(--red);}
+.qrev-top{display:flex;align-items:flex-start;gap:.6rem;margin-bottom:.4rem;}
+.qb2{padding:.15rem .5rem;border-radius:999px;font-size:.72rem;font-weight:700;}
+.qb2.ok{background:var(--green-light);color:var(--green);}
+.qb2.bad{background:var(--red-light);color:var(--red);}
+.qtxt{font-size:.9rem;font-weight:600;color:var(--text);}
+.qans{font-size:.88rem;margin-bottom:.25rem;}
+.qans.ok{color:var(--green);}
+.qans.bad{color:var(--red);text-decoration:line-through;}
+.qcor{font-size:.85rem;color:var(--green);margin-bottom:.3rem;}
+.qexp{font-size:.83rem;color:var(--text-muted);background:var(--cream);padding:.5rem .8rem;border-radius:8px;line-height:1.5;}
+#back-btn{display:block;margin:1.5rem auto 0;padding:.85rem 2rem;background:var(--navy);color:#fff;border:none;border-radius:999px;font-family:'DM Sans',sans-serif;font-size:.92rem;font-weight:600;cursor:pointer;width:fit-content;}
 @media(max-width:768px){#player-zone,#breadcrumb{position:relative;top:auto;}#topbar{position:relative;}}
 </style>
 </head>
 <body>
 <div id="auth-overlay">
   <div id="auth-box">
-    <div class="icon">🎧</div>
+    <div class="auth-icon">🎧</div>
     <h2>Sign in to practise</h2>
-    <p class="sub">You need an English Flow account to access listening tests.</p>
+    <p class="auth-sub">You need an English Flow account to access listening tests.</p>
     <div class="af"><label>Email</label><input type="email" id="aem" placeholder="you@example.com"></div>
     <div class="af"><label>Password</label><input type="password" id="apw" placeholder="••••••••"></div>
     <button id="auth-btn" onclick="signIn()">Sign In</button>
     <div id="auth-err"></div>
-    <div class="auth-link">No account? <a href="../../ielts.html">Sign up on the IELTS page</a></div>
+    <div class="auth-link">No account? <a href="../../../ielts.html">Sign up on the IELTS page</a></div>
   </div>
 </div>
-<div id="conf-overlay">
+<div id="conf-ov">
   <div id="conf-box">
     <h3>Submit Answers?</h3>
     <p>Are you sure? You cannot change your answers after submitting.</p>
-    <div class="conf-btns"><button id="conf-yes" onclick="doSubmit()">Yes, Submit</button><button id="conf-no" onclick="document.getElementById('conf-overlay').style.display='none'">Go Back</button></div>
+    <div class="cbtns"><button id="cy" onclick="doSubmit()">Yes, Submit</button><button id="cn" onclick="document.getElementById('conf-ov').style.display='none'">Go Back</button></div>
   </div>
 </div>
-<div id="results-screen">
-  <div class="res-inner">
-    <div class="res-header"><h2>Section Results</h2><p>Cambridge 14 – Listening Test 3, Part 4</p></div>
-    <div class="band-ring-wrap"><div class="band-ring"><div class="band-num" id="res-band">-</div><div class="band-lbl">Band</div></div></div>
-    <div class="score-line" id="res-score">0 / 10 correct</div>
+<div id="res-screen">
+  <div class="res-in">
+    <div class="res-hdr"><h2>Section Results</h2><p>Cambridge 14 – Listening Test 3, Part 4</p></div>
+    <div class="ring-wrap"><div class="ring"><div class="ring-num" id="res-band">-</div><div class="ring-lbl">Band</div></div></div>
+    <div class="score-ln" id="res-score">0 / 10 correct</div>
     <p style="text-align:center;color:var(--text-muted);font-size:.88rem;margin-bottom:.5rem;">Review your answers below.</p>
     <div class="res-nav">
-      <a href="cambridge-14-test3-part1.html" class="res-pt">Part 1</a>
-      <a href="cambridge-14-test3-part2.html" class="res-pt">Part 2</a>
-      <a href="cambridge-14-test3-part3.html" class="res-pt">Part 3</a>
-      <a href="cambridge-14-test3-part4.html" class="res-pt active">Part 4</a>
+      <a href="part1.html" class="rpt">Part 1</a>
+      <a href="part2.html" class="rpt">Part 2</a>
+      <a href="part3.html" class="rpt">Part 3</a>
+      <a href="part4.html" class="rpt active">Part 4</a>
     </div>
     <div id="res-list"></div>
-    <button id="back-listen" onclick="window.location.href='../index.html'">← Back to Listening</button>
+    <button id="back-btn" onclick="window.location.href='../../index.html'">← Back to Listening</button>
   </div>
 </div>
 <div id="topbar">
@@ -158,103 +161,85 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;color:var(--text);backgro
   <div class="tbr"><div id="user-pill"></div><button id="signout-btn" onclick="signOut()">Sign out</button></div>
 </div>
 <div id="breadcrumb">
-  <a href="../../index.html" class="bc-link">← Home</a>
+  <a href="../../../index.html" class="bc-link">← Home</a>
   <span class="bc-sep">|</span>
-  <a href="../index.html" class="bc-link">← Listening</a>
+  <a href="../../index.html" class="bc-link">← Listening</a>
   <span class="bc-sep">|</span>
   <span class="bc-active">Part 4</span>
 </div>
 <div id="player-zone">
   <div class="player-header">
     <div class="player-title">Cambridge 14 – Listening Test 3</div>
-    <span class="badge-part">Part 4</span>
-    <span class="badge-diff">Hard</span>
+    <span class="badge badge-part">Part 4</span>
+    <span class="badge badge-diff">Hard</span>
   </div>
   <div class="player-label">🎧 Listen carefully — you can replay as many times as needed</div>
   <div class="audio-shell">
-    <button id="play-btn" onclick="togglePlay()">
-      <svg id="play-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-    </button>
+    <button id="play-btn" onclick="togglePlay()"><svg id="play-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
     <div class="track-info">
       <div class="track-name">🎧 Part 4: Concerts in University Arts Festival</div>
-      <div class="progress-wrap"><div id="progress-fill"></div></div>
+      <div class="prog-wrap"><div id="prog-fill"></div></div>
       <div class="time-row"><span id="elapsed">00:00</span><span id="play-hint">▶ Press play to begin</span></div>
     </div>
     <span style="color:#94a3b8;font-size:1.1rem;">🔊</span>
   </div>
   <audio id="audio-el" src="./Cambridge%20IELTS%2014.3.4%20%5B%40cambridgematerials%5D.mp3" preload="auto"></audio>
 </div>
-<div id="prog-zone">
-  <div class="prog-label" id="prog-label">0 / 10 answered</div>
-  <div class="prog-bar-bg"><div id="prog-bar"></div></div>
+<div id="ans-zone">
+  <div class="ans-label" id="ans-label">0 / 10 answered</div>
+  <div class="ans-bar-bg"><div id="ans-bar"></div></div>
 </div>
 <div id="part-tabs">
-  <a href="cambridge-14-test3-part1.html" class="pt">Part 1</a>
-  <a href="cambridge-14-test3-part2.html" class="pt">Part 2</a>
-  <a href="cambridge-14-test3-part3.html" class="pt">Part 3</a>
-  <a href="cambridge-14-test3-part4.html" class="pt active">Part 4</a>
+  <a href="part1.html" class="pt">Part 1</a>
+  <a href="part2.html" class="pt">Part 2</a>
+  <a href="part3.html" class="pt">Part 3</a>
+  <a href="part4.html" class="pt active">Part 4</a>
 </div>
 <div id="questions">
-  <div class="section-card">
-    <div class="section-head"><h3>Section 4 — Questions 31–40</h3><p>Concerts in university arts festival</p></div>
-    <div class="section-body">
-      <div class="instruction">Complete the notes. Write <strong>ONE WORD AND/OR A NUMBER</strong> for each answer.</div>
+  <div class="sec-card">
+    <div class="sec-head"><h3>Section 4 — Questions 31–40</h3><p>Concerts in university arts festival</p></div>
+    <div class="sec-body">
+      <div class="instr">Complete the notes. Write <strong>ONE WORD AND/OR A NUMBER</strong> for each answer.</div>
       <div class="notes-box">
         <div class="notes-title">Concerts in university arts festival</div>
         <div class="notes-body">
-          <div class="notes-section-lbl">Concert 1 — Australian composer: Liza Lim</div>
-          <div class="notes-row"><span class="lbl">studied piano and</span><span class="fill-wrap"><span class="q-badge">31</span><input class="fill-inp" id="q31" placeholder="……" oninput="updAns(31,this.value)"></span><span class="lbl">before turning to composition</span></div>
-          <div class="notes-row"><span class="lbl">compositions show a great deal of</span><span class="fill-wrap"><span class="q-badge">32</span><input class="fill-inp" id="q32" placeholder="……" oninput="updAns(32,this.value)"></span><span class="lbl">and are drawn from various cultural sources</span></div>
-          <div class="notes-row"><span class="lbl">her music is very expressive and also</span><span class="fill-wrap"><span class="q-badge">33</span><input class="fill-inp" id="q33" placeholder="……" oninput="updAns(33,this.value)"></span></div>
-          <div class="notes-row"><span class="lbl">festival will include her</span><span class="fill-wrap"><span class="q-badge">34</span><input class="fill-inp" id="q34" placeholder="……" oninput="updAns(34,this.value)"></span><span class="lbl">called <em>The Oresteia</em></span></div>
-          <div class="notes-row"><span class="lbl">Lim described the sounds in <em>The Oresteia</em> as</span><span class="fill-wrap"><span class="q-badge">35</span><input class="fill-inp" id="q35" placeholder="……" oninput="updAns(35,this.value)"></span></div>
-          <div class="notes-section-lbl">Concert 2 — Australian composer: Ross Edwards</div>
-          <div class="notes-row"><span class="lbl"><em>The Tower of Remoteness</em> is performed by piano and</span><span class="fill-wrap"><span class="q-badge">36</span><input class="fill-inp" id="q36" placeholder="……" oninput="updAns(36,this.value)"></span></div>
-          <div class="notes-row"><span class="lbl">celebrates Australia's cultural</span><span class="fill-wrap"><span class="q-badge">37</span><input class="fill-inp" id="q37" placeholder="……" oninput="updAns(37,this.value)"></span></div>
-          <div class="notes-section-lbl">Concert 3 — Australian composer: Carl Vine</div>
-          <div class="notes-row"><span class="lbl">studied</span><span class="fill-wrap"><span class="q-badge">38</span><input class="fill-inp" id="q38" placeholder="……" oninput="updAns(38,this.value)"></span><span class="lbl">before studying music</span></div>
-          <div class="notes-row"><span class="lbl">became well known as composer of music for</span><span class="fill-wrap"><span class="q-badge">39</span><input class="fill-inp" id="q39" placeholder="……" oninput="updAns(39,this.value)"></span></div>
-          <div class="notes-row"><span class="lbl">festival will include his music for the 1996</span><span class="fill-wrap"><span class="q-badge">40</span><input class="fill-inp" id="q40" placeholder="……" oninput="updAns(40,this.value)"></span></div>
+          <div class="nsec">Concert 1 — Australian composer: Liza Lim</div>
+          <div class="nrow"><span class="lbl">studied piano and</span><span class="fw"><span class="qb">31</span><input class="fi" id="q31" placeholder="……" oninput="upd(31,this.value)"></span><span class="lbl">before turning to composition</span></div>
+          <div class="nrow"><span class="lbl">compositions show a great deal of</span><span class="fw"><span class="qb">32</span><input class="fi" id="q32" placeholder="……" oninput="upd(32,this.value)"></span><span class="lbl">and are drawn from various cultural sources</span></div>
+          <div class="nrow"><span class="lbl">her music is very expressive and also</span><span class="fw"><span class="qb">33</span><input class="fi" id="q33" placeholder="……" oninput="upd(33,this.value)"></span></div>
+          <div class="nrow"><span class="lbl">festival will include her</span><span class="fw"><span class="qb">34</span><input class="fi" id="q34" placeholder="……" oninput="upd(34,this.value)"></span><span class="lbl">called <em>The Oresteia</em></span></div>
+          <div class="nrow"><span class="lbl">Lim described the sounds in <em>The Oresteia</em> as</span><span class="fw"><span class="qb">35</span><input class="fi" id="q35" placeholder="……" oninput="upd(35,this.value)"></span></div>
+          <div class="nsec">Concert 2 — Australian composer: Ross Edwards</div>
+          <div class="nrow"><span class="lbl"><em>The Tower of Remoteness</em> is performed by piano and</span><span class="fw"><span class="qb">36</span><input class="fi" id="q36" placeholder="……" oninput="upd(36,this.value)"></span></div>
+          <div class="nrow"><span class="lbl">celebrates Australia's cultural</span><span class="fw"><span class="qb">37</span><input class="fi" id="q37" placeholder="……" oninput="upd(37,this.value)"></span></div>
+          <div class="nsec">Concert 3 — Australian composer: Carl Vine</div>
+          <div class="nrow"><span class="lbl">studied</span><span class="fw"><span class="qb">38</span><input class="fi" id="q38" placeholder="……" oninput="upd(38,this.value)"></span><span class="lbl">before studying music</span></div>
+          <div class="nrow"><span class="lbl">became well known as composer of music for</span><span class="fw"><span class="qb">39</span><input class="fi" id="q39" placeholder="……" oninput="upd(39,this.value)"></span></div>
+          <div class="nrow"><span class="lbl">festival will include his music for the 1996</span><span class="fw"><span class="qb">40</span><input class="fi" id="q40" placeholder="……" oninput="upd(40,this.value)"></span></div>
         </div>
       </div>
     </div>
   </div>
-  <button id="submit-btn" onclick="confirmSubmit()">Submit Answers</button>
+  <button id="sub-btn" onclick="confirmSub()">Submit Answers</button>
 </div>
 <script>
-const SUPABASE_URL='https://evhceswvapszaghnvmxl.supabase.co';
-const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGNlc3d2YXBzemFnaG52bXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3OTQwNzMsImV4cCI6MjA5MzM3MDA3M30.yV7tavgR7JKc45uSGtS8Lf6m1ZMuuvQ23hmAb8n6k3A';
-const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-const TEST_ID='cambridge-14-test3-part4';
-const TOTAL=10;
+const sb=window.supabase.createClient('https://evhceswvapszaghnvmxl.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGNlc3d2YXBzemFnaG52bXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3OTQwNzMsImV4cCI6MjA5MzM3MDA3M30.yV7tavgR7JKc45uSGtS8Lf6m1ZMuuvQ23hmAb8n6k3A');
+const TID='cambridge-14-test3-part4',TOTAL=10;
 const ANS={31:'cello',32:'originality',33:'accessible',34:'opera',35:'ancient',36:'orchestra',37:'identity',38:'physics',39:'films',40:'Olympics'};
-const EXP={31:'Liza Lim studied piano and cello before turning to composition.',32:'Her compositions show a great deal of originality.',33:'Her music is very expressive and also accessible.',34:'The festival will include her opera called The Oresteia.',35:'Lim described the sounds in The Oresteia as ancient.',36:'The Tower of Remoteness is performed by piano and orchestra.',37:'The concert celebrates Australia\'s cultural identity.',38:'Carl Vine studied physics before studying music.',39:'He became well known as composer of music for films.',40:'The festival will include his music for the 1996 Olympics.'};
-const QT={31:'Studied piano and ___ before composition',32:'Compositions show a great deal of ___',33:'Music is expressive and also ___',34:'Festival includes her ___ called The Oresteia',35:'Sounds in The Oresteia described as ___',36:'Tower of Remoteness performed by piano and ___',37:"Celebrates Australia's cultural ___",38:'Studied ___ before music',39:'Known as composer for ___',40:'Music for the 1996 ___'};
-let user=null,secs=1800,timerInt=null,playing=false,elapsed=0,elapsedInt=null,answers={};
+const EXP={31:'Liza Lim studied piano and cello before turning to composition.',32:'Her compositions show a great deal of originality.',33:'Her music is very expressive and also accessible.',34:'The festival includes her opera called The Oresteia.',35:'Lim described the sounds in The Oresteia as ancient.',36:'The Tower of Remoteness is performed by piano and orchestra.',37:'The concert celebrates Australia\'s cultural identity.',38:'Carl Vine studied physics before studying music.',39:'He became well known as composer of music for films.',40:'The festival includes his music for the 1996 Olympics.'};
+const QT={31:'Studied piano and ___',32:'Compositions show a great deal of ___',33:'Music is expressive and also ___',34:'Festival includes her ___',35:'Sounds described as ___',36:'Piano and ___',37:"Australia's cultural ___",38:'Studied ___ before music',39:'Known for ___',40:'Music for the 1996 ___'};
+let user=null,secs=1800,tInt=null,playing=false,elapsed=0,eInt=null,ans={};
 async function init(){const{data:{session}}=await sb.auth.getSession();if(session?.user){user=session.user;showApp(session.user);}}
 function showApp(u){document.getElementById('auth-overlay').style.display='none';const n=u.user_metadata?.name?.split(' ')[0]||u.email.split('@')[0];document.getElementById('user-pill').textContent=n;startTimer();}
-async function signIn(){const em=document.getElementById('aem').value.trim();const pw=document.getElementById('apw').value;const er=document.getElementById('auth-err');er.style.display='none';document.getElementById('auth-btn').textContent='Signing in…';const{data,error}=await sb.auth.signInWithPassword({email:em,password:pw});document.getElementById('auth-btn').textContent='Sign In';if(error){er.textContent=error.message;er.style.display='block';return;}user=data.user;showApp(data.user);}
+async function signIn(){const em=document.getElementById('aem').value.trim(),pw=document.getElementById('apw').value,er=document.getElementById('auth-err');er.style.display='none';document.getElementById('auth-btn').textContent='Signing in…';const{data,error}=await sb.auth.signInWithPassword({email:em,password:pw});document.getElementById('auth-btn').textContent='Sign In';if(error){er.textContent=error.message;er.style.display='block';return;}user=data.user;showApp(data.user);}
 async function signOut(){await sb.auth.signOut();location.reload();}
-function startTimer(){timerInt=setInterval(()=>{secs--;const m=String(Math.floor(secs/60)).padStart(2,'0');const s=String(secs%60).padStart(2,'0');const el=document.getElementById('timer');el.textContent=m+':'+s;if(secs<=300)el.style.color='#ff8c42';if(secs<=60)el.style.color='#ff4444';if(secs<=0){clearInterval(timerInt);doSubmit();}},1000);}
-function togglePlay(){const audio=document.getElementById('audio-el');if(playing){audio.pause();playing=false;clearInterval(elapsedInt);document.getElementById('play-icon').setAttribute('d','M8 5v14l11-7z');document.getElementById('play-hint').textContent='⏸ Paused';}else{audio.play();playing=true;document.getElementById('play-icon').setAttribute('d','M6 19h4V5H6v14zm8-14v14h4V5h-4z');document.getElementById('play-hint').textContent='▶ Playing…';elapsedInt=setInterval(updateProgress,1000);}}
-function updateProgress(){elapsed++;const m=String(Math.floor(elapsed/60)).padStart(2,'0');const s=String(elapsed%60).padStart(2,'0');document.getElementById('elapsed').textContent=m+':'+s;const dur=document.getElementById('audio-el').duration||1;document.getElementById('progress-fill').style.width=Math.min(100,(elapsed/dur*100))+'%';}
-function updAns(n,v){answers[n]=v.trim();document.getElementById('q'+n).classList.toggle('has-val',v.trim().length>0);updProg();}
-function updProg(){let c=0;for(let i=31;i<=40;i++)if(answers[i])c++;document.getElementById('prog-label').textContent=c+' / '+TOTAL+' answered';document.getElementById('prog-bar').style.width=(c/TOTAL*100)+'%';}
-function confirmSubmit(){document.getElementById('conf-overlay').style.display='flex';}
-function getBand(c){if(c===10)return 9.0;if(c===9)return 8.0;if(c===8)return 7.0;if(c===7)return 6.5;if(c===6)return 6.0;if(c===5)return 5.5;if(c===4)return 5.0;if(c===3)return 4.0;if(c===2)return 3.5;return 3.0;}
-async function doSubmit(){
-  clearInterval(timerInt);clearInterval(elapsedInt);
-  document.getElementById('conf-overlay').style.display='none';
-  if(playing){document.getElementById('audio-el').pause();playing=false;}
-  let correct=0;const results=[];
-  for(let i=31;i<=40;i++){const ua=(answers[i]||'').toLowerCase().trim();const ca=ANS[i].toLowerCase();const ok=ua===ca;if(ok)correct++;results.push({num:i,ua:answers[i]||'(blank)',ca:ANS[i],ok,exp:EXP[i],qt:QT[i]});}
-  const band=getBand(correct);
-  if(user){await sb.from('listening_scores').upsert({user_id:user.id,test_id:TEST_ID,band_score:band,score_raw:correct,total:TOTAL,completed_at:new Date().toISOString()},{onConflict:'user_id,test_id'});}
-  document.getElementById('res-band').textContent=band.toFixed(1);
-  document.getElementById('res-score').textContent=correct+' / '+TOTAL+' correct';
-  document.getElementById('res-list').innerHTML=results.map(r=>`<div class="q-review ${r.ok?'ok':'wrong'}"><div class="q-review-top"><span class="q-badge2 ${r.ok?'ok':'wrong'}">${r.ok?'✓':'✗'} Q${r.num}</span><span class="q-text">${r.qt}</span></div><div class="q-ans ${r.ok?'ok':'wrong'}">Your answer: ${r.ua}</div>${!r.ok?`<div class="q-correct">✓ Correct: ${r.ca}</div>`:''}<div class="q-exp">${r.exp}</div></div>`).join('');
-  document.getElementById('results-screen').style.display='block';
-}
+function startTimer(){tInt=setInterval(()=>{secs--;const m=String(Math.floor(secs/60)).padStart(2,'0'),s=String(secs%60).padStart(2,'0'),el=document.getElementById('timer');el.textContent=m+':'+s;if(secs<=300)el.style.color='#ff8c42';if(secs<=60)el.style.color='#ff4444';if(secs<=0){clearInterval(tInt);doSubmit();}},1000);}
+function togglePlay(){const a=document.getElementById('audio-el');if(playing){a.pause();playing=false;clearInterval(eInt);document.getElementById('play-icon').setAttribute('d','M8 5v14l11-7z');document.getElementById('play-hint').textContent='⏸ Paused';}else{a.play();playing=true;document.getElementById('play-icon').setAttribute('d','M6 19h4V5H6v14zm8-14v14h4V5h-4z');document.getElementById('play-hint').textContent='▶ Playing…';eInt=setInterval(()=>{elapsed++;const m=String(Math.floor(elapsed/60)).padStart(2,'0'),s=String(elapsed%60).padStart(2,'0');document.getElementById('elapsed').textContent=m+':'+s;const d=document.getElementById('audio-el').duration||1;document.getElementById('prog-fill').style.width=Math.min(100,elapsed/d*100)+'%';},1000);}}
+function upd(n,v){ans[n]=v.trim();document.getElementById('q'+n).classList.toggle('has-val',v.trim().length>0);updBar();}
+function updBar(){let c=0;for(let i=31;i<=40;i++)if(ans[i])c++;document.getElementById('ans-label').textContent=c+' / '+TOTAL+' answered';document.getElementById('ans-bar').style.width=(c/TOTAL*100)+'%';}
+function confirmSub(){document.getElementById('conf-ov').style.display='flex';}
+function getBand(c){return[3.0,3.0,3.5,4.0,5.0,5.5,6.0,6.5,7.0,8.0,9.0][c];}
+async function doSubmit(){clearInterval(tInt);clearInterval(eInt);document.getElementById('conf-ov').style.display='none';if(playing){document.getElementById('audio-el').pause();playing=false;}let correct=0;const results=[];for(let i=31;i<=40;i++){const ua=(ans[i]||'').toLowerCase().trim(),ca=ANS[i].toLowerCase(),ok=ua===ca;if(ok)correct++;results.push({num:i,ua:ans[i]||'(blank)',ca:ANS[i],ok,exp:EXP[i],qt:QT[i]});}const band=getBand(correct);if(user){await sb.from('listening_scores').upsert({user_id:user.id,test_id:TID,band_score:band,score_raw:correct,total:TOTAL,completed_at:new Date().toISOString()},{onConflict:'user_id,test_id'});}document.getElementById('res-band').textContent=band.toFixed(1);document.getElementById('res-score').textContent=correct+' / '+TOTAL+' correct';document.getElementById('res-list').innerHTML=results.map(r=>`<div class="qrev ${r.ok?'ok':'bad'}"><div class="qrev-top"><span class="qb2 ${r.ok?'ok':'bad'}">${r.ok?'✓':'✗'} Q${r.num}</span><span class="qtxt">${r.qt}</span></div><div class="qans ${r.ok?'ok':'bad'}">Your answer: ${r.ua}</div>${!r.ok?`<div class="qcor">✓ Correct: ${r.ca}</div>`:''}<div class="qexp">${r.exp}</div></div>`).join('');document.getElementById('res-screen').style.display='block';}
 init();
 </script>
 </body>
