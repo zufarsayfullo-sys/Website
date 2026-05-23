@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assessing the Threat of Marine Debris – English Flow</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--navy:#1a2744;--navy-mid:#243358;--sky:#2e6fad;--sky-light:#e8f2fc;--gold:#c9922a;--gold-light:#fdf3e3;--cream:#f9f7f4;--surface:#fff;--text:#1a2744;--text-muted:#5a6a8a;--border:rgba(26,39,68,0.1);--green:#1e6e4e;--green-light:#e8f5ee;--radius:16px;--radius-lg:24px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;font-family:'DM Sans',sans-serif;color:var(--text);background:var(--cream);}
+#auth-overlay{position:fixed;inset:0;background:rgba(26,39,68,0.85);z-index:1000;display:flex;align-items:center;justify-content:center;}
+#auth-box{background:var(--surface);border-radius:var(--radius-lg);padding:2.5rem;width:min(420px,92vw);box-shadow:0 24px 60px rgba(26,39,68,0.25);}
+#auth-box h2{font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--navy);margin-bottom:.5rem;}
+#auth-box p{color:var(--text-muted);font-size:.9rem;margin-bottom:1.5rem;}
+.af{display:flex;flex-direction:column;gap:.4rem;margin-bottom:1rem;}
+.af label{font-size:.85rem;font-weight:600;color:var(--navy);}
+.af input{padding:.7rem 1rem;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.95rem;outline:none;}
+.af input:focus{border-color:var(--sky);}
+#auth-btn{width:100%;padding:.85rem;background:var(--navy);color:#fff;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:600;cursor:pointer;margin-top:.5rem;}
+#auth-error{color:#c0392b;font-size:.85rem;margin-top:.75rem;display:none;}
+#topbar{background:linear-gradient(135deg,var(--navy),var(--navy-mid));padding:.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;flex-shrink:0;}
+.logo{font-family:'DM Serif Display',serif;font-size:1.35rem;color:#fff;}
+.logo span{color:var(--gold);}
+#timer{font-size:1.2rem;font-weight:700;color:var(--gold);letter-spacing:.05em;}
+#timer.urgent{color:#ff6b6b;animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+.tbr{display:flex;align-items:center;gap:.75rem;}
+#user-pill{background:rgba(255,255,255,0.15);color:#fff;padding:.35rem .9rem;border-radius:999px;font-size:.85rem;font-weight:500;}
+#signout-btn{background:transparent;border:1.5px solid rgba(255,255,255,0.35);color:rgba(255,255,255,0.8);padding:.35rem .85rem;border-radius:8px;font-size:.82rem;cursor:pointer;font-family:'DM Sans',sans-serif;}
+#ql{background:var(--surface);border-bottom:1px solid var(--border);padding:.5rem 1.5rem;display:flex;align-items:center;gap:.75rem;flex-shrink:0;}
+.qla{color:var(--sky);font-size:.85rem;text-decoration:none;font-weight:500;}
+.qls{color:var(--border);}
+.qlp{background:var(--navy);color:#fff;padding:.25rem .85rem;border-radius:999px;font-size:.82rem;font-weight:600;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+#app{display:none;flex-direction:column;height:100vh;}
+#split{display:flex;flex:1;overflow:hidden;}
+#pc{width:55%;background:var(--cream);overflow-y:auto;border-right:1px solid var(--border);display:flex;flex-direction:column;}
+#hlt{position:sticky;top:0;background:var(--surface);border-bottom:1px solid var(--border);padding:.6rem 1.5rem;display:flex;align-items:center;gap:.75rem;z-index:10;}
+.hll{font-size:.8rem;font-weight:600;color:var(--text-muted);}
+.hlb{width:26px;height:26px;border-radius:50%;border:2px solid rgba(0,0,0,0.1);cursor:pointer;}
+#hly{background:#fff176;}#hlg{background:#c8e6c9;}#hlp{background:#f8bbd0;}
+#hlc{background:none;border:1.5px solid var(--border);color:var(--text-muted);padding:.25rem .75rem;border-radius:8px;font-size:.8rem;cursor:pointer;font-family:'DM Sans',sans-serif;}
+#pcon{padding:1.5rem 2rem 2rem;}
+.ptit{font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--navy);margin-bottom:.75rem;}
+.dbd{display:inline-block;padding:.25rem .75rem;border-radius:999px;font-size:.78rem;font-weight:700;text-transform:uppercase;background:var(--gold-light);color:var(--gold);margin-bottom:1rem;}
+.ptxt{font-size:1rem;line-height:1.8;color:var(--text);}
+.ptxt p{margin-bottom:1rem;}
+#qc{width:45%;background:var(--cream);overflow-y:auto;display:flex;flex-direction:column;}
+#prw{padding:1rem 1.5rem .75rem;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10;}
+.prl{font-size:.82rem;color:var(--text-muted);margin-bottom:.4rem;}
+.prb{background:var(--border);border-radius:999px;height:8px;overflow:hidden;}
+.prf{background:var(--sky);height:100%;border-radius:999px;transition:width .4s;}
+#ql2{padding:1rem 1.5rem 1.5rem;display:flex;flex-direction:column;gap:.75rem;}
+.qcard{background:var(--surface);border-radius:var(--radius);padding:1rem 1.25rem;border:2px solid transparent;transition:border-color .2s;}
+.qcard.flagged{border-color:var(--gold);}
+.qh{display:flex;align-items:flex-start;justify-content:space-between;gap:.5rem;margin-bottom:.6rem;}
+.qn{font-weight:700;color:var(--sky);font-size:.9rem;flex-shrink:0;margin-top:2px;}
+.qt{font-size:.93rem;line-height:1.55;color:var(--text);flex:1;}
+.fb{background:none;border:none;cursor:pointer;font-size:1rem;opacity:.4;flex-shrink:0;}
+.fb.active{opacity:1;}
+.qopts{display:flex;flex-direction:column;gap:.45rem;margin-top:.5rem;}
+.qopt{display:flex;align-items:center;gap:.6rem;padding:.5rem .75rem;border-radius:8px;cursor:pointer;font-size:.9rem;}
+.qopt:hover{background:var(--sky-light);}
+.qopt input{accent-color:var(--sky);width:15px;height:15px;flex-shrink:0;cursor:pointer;}
+.qinp{width:100%;padding:.55rem .85rem;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.9rem;outline:none;margin-top:.5rem;}
+.qinp:focus{border-color:var(--sky);}
+.sh{background:var(--navy);color:#fff;border-radius:var(--radius);padding:.75rem 1.25rem;font-size:.85rem;font-weight:600;margin-top:.5rem;}
+.sh p{font-size:.82rem;font-weight:400;opacity:.8;margin-top:.2rem;}
+#subbtn{margin:0 1.5rem 1.5rem;padding:1rem;background:var(--navy);color:#fff;border:none;border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;}
+#conf{position:fixed;inset:0;background:rgba(26,39,68,0.7);z-index:200;display:none;align-items:center;justify-content:center;}
+#confb{background:var(--surface);border-radius:var(--radius-lg);padding:2rem;width:min(380px,90vw);text-align:center;}
+#confb h3{font-family:'DM Serif Display',serif;font-size:1.3rem;margin-bottom:.75rem;}
+#confb p{color:var(--text-muted);font-size:.9rem;margin-bottom:1.5rem;}
+.cbtns{display:flex;gap:.75rem;}
+.cbtns button{flex:1;padding:.75rem;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.95rem;font-weight:600;cursor:pointer;border:none;}
+#cy{background:var(--navy);color:#fff;}
+#cn{background:var(--cream);color:var(--text);border:1.5px solid var(--border);}
+#rs{display:none;min-height:100vh;background:var(--cream);padding:2rem 1rem 4rem;}
+.rh{text-align:center;margin-bottom:2.5rem;}
+.bc{width:120px;height:120px;border-radius:50%;background:var(--gold);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 1rem;box-shadow:0 8px 30px rgba(201,146,42,0.35);}
+.bl{font-size:.7rem;color:rgba(255,255,255,0.8);font-weight:700;text-transform:uppercase;letter-spacing:.08em;}
+.bv{font-size:2.5rem;font-weight:700;color:#fff;line-height:1;font-family:'DM Serif Display',serif;}
+.rh h2{font-family:'DM Serif Display',serif;font-size:2rem;color:var(--navy);margin-bottom:.25rem;}
+.rh p{color:var(--text-muted);}
+.rl{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:1rem;}
+.rc{background:var(--surface);border-radius:var(--radius);padding:1.25rem 1.5rem;border-left:4px solid var(--border);}
+.rc.correct{border-left-color:var(--green);}
+.rc.incorrect{border-left-color:#e74c3c;}
+.rq{font-size:.88rem;color:var(--text-muted);margin-bottom:.4rem;}
+.ra{font-size:.93rem;margin-bottom:.3rem;}
+.ra.ok{color:var(--green);font-weight:600;}
+.ra.bad{color:#e74c3c;font-weight:600;text-decoration:line-through;}
+.rcc{font-size:.88rem;color:var(--green);margin-bottom:.4rem;}
+.re{font-size:.85rem;color:var(--text-muted);background:var(--cream);padding:.6rem .85rem;border-radius:8px;line-height:1.5;}
+#backbtn{display:block;margin:2rem auto 0;padding:.85rem 2rem;background:var(--navy);color:#fff;border:none;border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:.95rem;font-weight:600;cursor:pointer;width:fit-content;}
+@media(max-width:768px){#split{flex-direction:column;overflow:visible;}#pc,#qc{width:100%;overflow-y:visible;border-right:none;border-bottom:1px solid var(--border);}#app{height:auto;}#hlt{position:relative;}}
+</style>
+</head>
+<body>
+<div id="auth-overlay">
+  <div id="auth-box">
+    <h2>Sign in to continue</h2>
+    <p>Sign in to access this reading passage and track your scores.</p>
+    <div class="af"><label>Email</label><input type="email" id="aem" placeholder="you@example.com"></div>
+    <div class="af"><label>Password</label><input type="password" id="apw" placeholder="••••••••"></div>
+    <button id="auth-btn" onclick="signIn()">Sign In</button>
+    <div id="auth-error"></div>
+  </div>
+</div>
+<div id="conf">
+  <div id="confb">
+    <h3>Submit Answers?</h3>
+    <p>Are you sure? You cannot change your answers after submitting.</p>
+    <div class="cbtns"><button id="cy" onclick="doSubmit()">Yes, Submit</button><button id="cn" onclick="document.getElementById('conf').style.display='none'">Cancel</button></div>
+  </div>
+</div>
+<div id="app">
+  <div id="topbar">
+    <div class="logo">English Fl<span>o</span>w</div>
+    <div id="timer">20:00</div>
+    <div class="tbr"><div id="user-pill"></div><button id="signout-btn" onclick="signOut()">Sign out</button></div>
+  </div>
+  <div id="ql">
+    <a href="../index.html" class="qla">Home</a><span class="qls">|</span>
+    <a href="../free-reading/index.html" class="qla">Reading</a><span class="qls">|</span>
+    <div class="qlp">Assessing the Threat of Marine Debris</div>
+  </div>
+  <div id="split">
+    <div id="pc">
+      <div id="hlt">
+        <span class="hll">Highlight:</span>
+        <div class="hlb" id="hly" onclick="setHL('#fff176')"></div>
+        <div class="hlb" id="hlg" onclick="setHL('#c8e6c9')"></div>
+        <div class="hlb" id="hlp" onclick="setHL('#f8bbd0')"></div>
+        <button id="hlc" onclick="clearHL()">Clear</button>
+      </div>
+      <div id="pcon">
+        <div class="ptit">Assessing the threat of marine debris</div>
+        <div class="dbd">Medium</div>
+        <div class="ptxt" id="ptxt">
+          <p>Chelsea Rochman, an ecologist at the University of California, Davis, has been trying to answer a dismal question: Is everything terrible, or are things just very, very bad?</p>
+          <p>Rochman is a member of the National Center for Ecological Analysis and Synthesis's marine-debris working group, a collection of scientists who study, among other things, the growing problem of marine debris, also known as ocean trash. Plenty of studies have sounded alarm bells about the state of marine debris; in a recent paper published in the journal <em>Ecology</em>, Rochman and her colleagues set out to determine how many of those perceived risks are real.</p>
+          <p>Often, Rochman says, scientists will end a paper by speculating about the broader impacts of what they've found. For example, a study could show that certain seabirds eat plastic bags, and go on to warn that whole bird populations are at risk of dying out. 'But the truth was that nobody had yet tested those perceived threats,' Rochman says. 'There wasn't a lot of information.'</p>
+          <p>Rochman and her colleagues examined more than a hundred papers on the impacts of marine debris that were published through 2013. Within each paper, they asked what threats scientists had studied — 366 perceived threats in all — and what they'd actually found.</p>
+          <p>In 83 percent of cases, the perceived dangers of ocean trash were proven true. In the remaining cases, the working group found the studies had weaknesses in design and content which affected the validity of their conclusions — they lacked a control group, for example, or used faulty statistics.</p>
+          <p>Strikingly, Rochman says, only one well-designed study failed to find the effect it was looking for, an investigation of mussels ingesting microscopic plastic bits. The plastic moved from the mussels' stomachs to their bloodstreams, scientists found, and stayed there for weeks — but didn't seem to stress out the shellfish.</p>
+          <p>While mussels may be fine eating trash, though, the analysis also gave a clearer picture of the many ways that ocean debris <em>is</em> bothersome.</p>
+          <p>Within the studies they looked at, most of the proven threats came from plastic debris, rather than other materials like metal or wood. Most of the dangers also involved large pieces of debris — animals getting entangled in trash, for example, or eating it and severely injuring themselves.</p>
+          <p>But a lot of ocean debris is 'microplastic', or pieces smaller than five millimeters. These may be ingredients used in cosmetics and toiletries, fibers shed by synthetic clothing in the wash, or eroded remnants of larger debris. Compared to the number of studies investigating large-scale debris, Rochman's group found little research on the effects of these tiny bits. 'There are a lot of open questions still for microplastic,' Rochman says, though she notes that more papers on the subject have been published since 2013, the cutoff point for the group's analysis.</p>
+          <p>There are also, she adds, a lot of open questions about the ways that ocean debris can lead to sea-creature death. Many studies have looked at how plastic affects an individual animal, or that animal's tissues or cells, rather than whole populations. And in the lab, scientists often use higher concentrations of plastic than what's really in the ocean. None of that tells us how many birds or fish or sea turtles could die from plastic pollution — or how deaths in one species could affect that animal's predators, or the rest of the ecosystem.</p>
+          <p>'We need to be asking more ecologically relevant questions,' Rochman says. Usually, scientists don't know exactly how disasters such as a tanker accidentally spilling its whole cargo of oil and polluting huge areas of the ocean will affect the environment until after they've happened. 'We don't ask the right questions early enough,' she says. But if ecologists can understand how the slow-moving effect of ocean trash is damaging ecosystems, they might be able to prevent things from getting worse.</p>
+          <p>Asking the right questions can help policy makers, and the public, figure out where to focus their attention. The problems that look or sound most dramatic may not be the best places to start. For example, the name of the 'Great Pacific Garbage Patch' — a collection of marine debris in the northern Pacific Ocean — might conjure up a vast, floating trash island. In reality though, much of the debris is tiny or below the surface; a person could sail through the area without seeing any trash at all. A Dutch group called 'The Ocean Cleanup' is currently working on plans to put mechanical devices in the Pacific Garbage Patch and similar areas to suck up plastic. But a recent paper used simulations to show that strategically positioning the cleanup devices closer to shore would more effectively reduce pollution over the long term.</p>
+          <p>'I think clearing up some of these misperceptions is really important,' Rochman says. Among scientists as well as in the media, she says, 'A lot of the images about strandings and entanglement and all of that cause the perception that plastic debris is killing everything in the ocean.' Interrogating the existing scientific literature can help ecologists figure out which problems really need addressing, and which ones they'd be better off — like the mussels — absorbing and ignoring.</p>
+        </div>
+      </div>
+    </div>
+    <div id="qc">
+      <div id="prw">
+        <div class="prl" id="prlbl">0 / 14 answered</div>
+        <div class="prb"><div class="prf" id="prbar" style="width:0%"></div></div>
+      </div>
+      <div id="ql2">
+        <div class="sh">Questions 27–33
+          <p>Do the following statements agree with the information? TRUE / FALSE / NOT GIVEN</p>
+        </div>
+        <div class="qcard" id="qc27"><div class="qh"><span class="qn">Q27</span><span class="qt">Rochman and her colleagues were the first people to research the problem of marine debris.</span><button class="fb" onclick="tF(27)">🚩</button></div>
+        <div class="qopts"><label class="qopt"><input type="radio" name="q27" value="TRUE" onchange="updP()"> TRUE</label><label class="qopt"><input type="radio" name="q27" value="FALSE" onchange="updP()"> FALSE</label><label class="qopt"><input type="radio" name="q27" value="NOT GIVEN" onchange="updP()"> NOT GIVEN</label></div></div>
+        <div class="qcard" id="qc28"><div class="qh"><span class="qn">Q28</span><span class="qt">The creatures most in danger from ocean trash are certain seabirds.</span><button class="fb" onclick="tF(28)">🚩</button></div>
+        <div class="qopts"><label class="qopt"><input type="radio" name="q28" value="TRUE" onchange="updP()"> TRUE</label><label class="qopt"><input type="radio" name="q28" value="FALSE" onchange="updP()"> FALSE</label><label class="qopt"><input type="radio" name="q28" value="NOT GIVEN" onchange="updP()"> NOT GIVEN</label></div></div>
+        <div class="qcard" id="qc29"><div class="qh"><span class="qn">Q29</span><span class="qt">The studies Rochman has reviewed have already proved that populations of some birds will soon become extinct.</span><button class="fb" onclick="tF(29)">🚩</button></div>
+        <div class="qopts"><label class="qopt"><input type="radio" name="q29" value="TRUE" onchange="updP()"> TRUE</label><label class="qopt"><input type="radio" name="q29" value="FALSE" onchange="updP()"> FALSE</label><label class="qopt"><input type="radio" name="q29" value="NOT GIVEN" onchange="updP()"> NOT GIVEN</label></div></div>
+        <div class="qcard" id="qc30"><div class="qh"><span class="qn">Q30</span><span class="qt">Rochman analysed papers on the different kinds of danger caused by ocean trash.</span><button class="fb" onclick="tF(30)">🚩</button></div>
+        <div class="qopts"><label class="qopt"><input type="radio" name="q30" value="TRUE" onchange="updP()"> TRUE</label><label class="qopt"><input type="radio" name="q30" value="FALSE" onchange="updP()"> FALSE</label><label class="qopt"><input type="radio" name="q30" value="NOT GIVEN" onchange="updP()"> NOT GIVEN</label></div></div>
+        <div class="qcard" id="qc31"><div class="qh"><span class="qn">Q31</span><span class="qt">Most of the research analysed by Rochman and her colleagues was badly designed.</span><button class="fb" onclick="tF(31)">🚩</button></div>
+        <div class="qopts"><label class="qopt"><input type="radio" name="q31" value="TRUE" onchange="updP()"> TRUE</label><label class="qopt"><input type="radio" name="q31" value="FALSE" onchange="updP()"> FALSE</label><label class="qopt"><input type="radio" name="q31" value="NOT GIVEN" onchange="updP()"> NOT GIVEN</label></div></div>
+        <div class="qcard" id="qc32"><div class="qh"><span class="qn">Q32</span><span class="qt">One study examined by Rochman was expecting to find that mussels were harmed by eating plastic.</span><button class="fb" onclick="tF(32)">🚩</button></div>
+        <div class="qopts"><label class="qopt"><input type="radio" name="q32" value="TRUE" onchange="updP()"> TRUE</label><label class="qopt"><input type="radio" name="q32" value="FALSE" onchange="updP()"> FALSE</label><label class="qopt"><input type="radio" name="q32" value="NOT GIVEN" onchange="updP()"> NOT GIVEN</label></div></div>
+        <div class="qcard" id="qc33"><div class="qh"><span class="qn">Q33</span><span class="qt">Some mussels choose to eat plastic in preference to their natural diet.</span><button class="fb" onclick="tF(33)">🚩</button></div>
+        <div class="qopts"><label class="qopt"><input type="radio" name="q33" value="TRUE" onchange="updP()"> TRUE</label><label class="qopt"><input type="radio" name="q33" value="FALSE" onchange="updP()"> FALSE</label><label class="qopt"><input type="radio" name="q33" value="NOT GIVEN" onchange="updP()"> NOT GIVEN</label></div></div>
+        <div class="sh">Questions 34–39
+          <p>Complete the notes. Choose ONE WORD ONLY from the passage.</p>
+          <p style="margin-top:.4rem;font-weight:700;">Findings related to marine debris</p>
+        </div>
+        <div class="qcard" id="qc34"><div class="qh"><span class="qn">Q34</span><span class="qt">Studies found biggest threats: bits of debris that were ___ (harmful to animals)</span><button class="fb" onclick="tF(34)">🚩</button></div>
+        <input class="qinp" type="text" id="q34" placeholder="One word only…" oninput="updP()"></div>
+        <div class="qcard" id="qc35"><div class="qh"><span class="qn">Q35</span><span class="qt">There was little research into ___ e.g. from synthetic fibres.</span><button class="fb" onclick="tF(35)">🚩</button></div>
+        <input class="qinp" type="text" id="q35" placeholder="One word only…" oninput="updP()"></div>
+        <div class="qcard" id="qc36"><div class="qh"><span class="qn">Q36</span><span class="qt">Drawbacks: most studies focused on individual animals, not entire ___</span><button class="fb" onclick="tF(36)">🚩</button></div>
+        <input class="qinp" type="text" id="q36" placeholder="One word only…" oninput="updP()"></div>
+        <div class="qcard" id="qc37"><div class="qh"><span class="qn">Q37</span><span class="qt">The ___ of plastic used in the lab did not always reflect those in the ocean</span><button class="fb" onclick="tF(37)">🚩</button></div>
+        <input class="qinp" type="text" id="q37" placeholder="One word only…" oninput="updP()"></div>
+        <div class="qcard" id="qc38"><div class="qh"><span class="qn">Q38</span><span class="qt">Insufficient info on impact of a reduction in numbers on the ___ of that species</span><button class="fb" onclick="tF(38)">🚩</button></div>
+        <input class="qinp" type="text" id="q38" placeholder="One word only…" oninput="updP()"></div>
+        <div class="qcard" id="qc39"><div class="qh"><span class="qn">Q39</span><span class="qt">More information needed on possible impact of future ___ (e.g. involving oil)</span><button class="fb" onclick="tF(39)">🚩</button></div>
+        <input class="qinp" type="text" id="q39" placeholder="One word only…" oninput="updP()"></div>
+        <div class="sh">Question 40
+          <p>Choose the correct letter A, B, C or D.</p>
+        </div>
+        <div class="qcard" id="qc40"><div class="qh"><span class="qn">Q40</span><span class="qt">What would be the best title for this passage?</span><button class="fb" onclick="tF(40)">🚩</button></div>
+        <div class="qopts">
+          <label class="qopt"><input type="radio" name="q40" value="A" onchange="updP()"> A — Assessing the threat of marine debris</label>
+          <label class="qopt"><input type="radio" name="q40" value="B" onchange="updP()"> B — Marine debris: who is to blame?</label>
+          <label class="qopt"><input type="radio" name="q40" value="C" onchange="updP()"> C — A new solution to the problem of marine debris</label>
+          <label class="qopt"><input type="radio" name="q40" value="D" onchange="updP()"> D — Marine debris: the need for international action</label>
+        </div></div>
+      </div>
+      <button id="subbtn" onclick="confirmSub()">Submit Answers</button>
+    </div>
+  </div>
+</div>
+<div id="rs"></div>
+<script>
+const SUPABASE_URL='https://evhceswvapszaghnvmxl.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGNlc3d2YXBzemFnaG52bXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3OTQwNzMsImV4cCI6MjA5MzM3MDA3M30.yV7tavgR7JKc45uSGtS8Lf6m1ZMuuvQ23hmAb8n6k3A';
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const PASSAGE_ID='marine-debris';
+const TOTAL=14;
+const ANS={q27:'FALSE',q28:'NOT GIVEN',q29:'FALSE',q30:'TRUE',q31:'FALSE',q32:'TRUE',q33:'NOT GIVEN',q34:'large',q35:'microplastic',q36:'populations',q37:'concentrations',q38:'predators',q39:'disasters',q40:'A'};
+const EXP={
+  q27:'FALSE — Plenty of studies had already sounded alarm bells about marine debris before Rochman.',
+  q28:'NOT GIVEN — Seabirds are mentioned as an example but no claim is made they are most at risk.',
+  q29:'FALSE — The passage says nobody had yet tested those perceived threats; no proof of extinction has been found.',
+  q30:'TRUE — They examined over a hundred papers covering 366 perceived threats from ocean trash.',
+  q31:'FALSE — In 83% of cases the dangers were proven true; only the remaining cases had design weaknesses.',
+  q32:'TRUE — The study was investigating mussels ingesting plastic, expecting to find harm.',
+  q33:'NOT GIVEN — The passage says mussels ingest plastic but does not say they prefer it to their natural diet.',
+  q34:'The passage says most dangers involved large pieces of debris.',
+  q35:'The passage refers to microplastic — pieces smaller than five millimeters — as having little research.',
+  q36:'The passage says studies focused on individual animals not entire populations.',
+  q37:'Scientists often use higher concentrations of plastic in the lab than what is really in the ocean.',
+  q38:'Deaths in one species could affect that animal\'s predators.',
+  q39:'Rochman mentions disasters such as a tanker spilling its cargo of oil as needing more study.',
+  q40:'A — The passage is about reviewing studies to assess how real the threats of marine debris actually are.'
+};
+const QT={27:'Rochman and colleagues were the first to research marine debris.',28:'The creatures most in danger from ocean trash are certain seabirds.',29:'Studies proved bird populations will soon become extinct.',30:'Rochman analysed papers on different kinds of danger from ocean trash.',31:'Most of the research analysed was badly designed.',32:'One study expected to find that mussels were harmed by eating plastic.',33:'Some mussels choose to eat plastic in preference to their natural diet.',34:'Bits of debris that were ___ (harmful to animals)',35:'Little research into ___ e.g. from synthetic fibres',36:'Focused on individual animals not entire ___',37:'The ___ of plastic used in lab did not reflect those in ocean',38:'Impact of reduction in numbers on the ___ of that species',39:'More info needed on possible impact of future ___',40:'Best title for this passage?'};
+let user=null,secs=1200,timerInt=null,hlc='#fff176';
+async function init(){const{data:{session}}=await sb.auth.getSession();if(session?.user){user=session.user;showApp(session.user);}}
+function showApp(u){document.getElementById('auth-overlay').style.display='none';document.getElementById('app').style.display='flex';const n=u.user_metadata?.name?.split(' ')[0]||u.email.split('@')[0];document.getElementById('user-pill').textContent=n;startTimer();}
+async function signIn(){const em=document.getElementById('aem').value.trim();const pw=document.getElementById('apw').value;const er=document.getElementById('auth-error');er.style.display='none';document.getElementById('auth-btn').textContent='Signing in…';const{data,error}=await sb.auth.signInWithPassword({email:em,password:pw});document.getElementById('auth-btn').textContent='Sign In';if(error){er.textContent=error.message;er.style.display='block';return;}user=data.user;showApp(data.user);}
+async function signOut(){await sb.auth.signOut();location.reload();}
+function startTimer(){timerInt=setInterval(()=>{secs--;const m=String(Math.floor(secs/60)).padStart(2,'0');const s=String(secs%60).padStart(2,'0');document.getElementById('timer').textContent=m+':'+s;if(secs<=60)document.getElementById('timer').classList.add('urgent');if(secs<=0){clearInterval(timerInt);doSubmit();}},1000);}
+function updP(){let a=0;for(let i=27;i<=33;i++){if(document.querySelector('input[name="q'+i+'"]:checked'))a++;}for(let i=34;i<=39;i++){if(document.getElementById('q'+i)?.value.trim())a++;}if(document.querySelector('input[name="q40"]:checked'))a++;document.getElementById('prlbl').textContent=a+' / '+TOTAL+' answered';document.getElementById('prbar').style.width=(a/TOTAL*100)+'%';}
+function tF(n){const c=document.getElementById('qc'+n);const b=c.querySelector('.fb');c.classList.toggle('flagged');b.classList.toggle('active');}
+function setHL(c){hlc=c;}
+document.addEventListener('mouseup',()=>{const sel=window.getSelection();if(!sel||sel.isCollapsed)return;const range=sel.getRangeAt(0);const pt=document.getElementById('ptxt');if(!pt||!pt.contains(range.commonAncestorContainer))return;const sp=document.createElement('span');sp.style.backgroundColor=hlc;sp.style.borderRadius='3px';try{range.surroundContents(sp);}catch(e){}sel.removeAllRanges();});
+function clearHL(){document.querySelectorAll('#ptxt span[style*="background"]').forEach(s=>{const p=s.parentNode;while(s.firstChild)p.insertBefore(s.firstChild,s);p.removeChild(s);});}
+function confirmSub(){document.getElementById('conf').style.display='flex';}
+function getAns(i){const el=document.getElementById('q'+i);if(el)return el.value.trim();const ch=document.querySelector('input[name="q'+i+'"]:checked');return ch?ch.value:'';}
+function getBand(c,t){const sc=Math.round(c/t*40);if(sc>=39)return 9.0;if(sc>=37)return 8.5;if(sc>=35)return 8.0;if(sc>=33)return 7.5;if(sc>=30)return 7.0;if(sc>=27)return 6.5;if(sc>=23)return 6.0;if(sc>=19)return 5.5;if(sc>=15)return 5.0;if(sc>=13)return 4.5;if(sc>=10)return 4.0;return 3.5;}
+async function doSubmit(){clearInterval(timerInt);document.getElementById('conf').style.display='none';let correct=0;const results=[];for(let i=27;i<=40;i++){const key='q'+i;const ua=getAns(i);const ca=ANS[key];const ok=ua.toLowerCase()===ca.toLowerCase();if(ok)correct++;results.push({num:i,ua:ua||'(blank)',ca,ok,exp:EXP[key],qt:QT[i]});}const band=getBand(correct,TOTAL);if(user){await sb.from('reading_scores').upsert({user_id:user.id,passage_id:PASSAGE_ID,band_score:band,score_raw:correct,total:TOTAL,completed_at:new Date().toISOString()},{onConflict:'user_id,passage_id'});}document.getElementById('app').style.display='none';const rs=document.getElementById('rs');rs.style.display='block';rs.innerHTML=`<div class="rh"><div class="bc"><div class="bl">Band</div><div class="bv">${band}</div></div><h2>${correct} / ${TOTAL} Correct</h2><p>IELTS Band Score: ${band}</p></div><div class="rl">${results.map(r=>`<div class="rc ${r.ok?'correct':'incorrect'}"><div class="rq"><strong>Q${r.num}:</strong> ${r.qt}</div><div class="ra ${r.ok?'ok':'bad'}">Your answer: ${r.ua}</div>${!r.ok?`<div class="rcc">Correct: ${r.ca}</div>`:''}<div class="re">${r.exp}</div></div>`).join('')}</div><button id="backbtn" onclick="window.location.href='../free-reading/index.html'">Back to Reading</button>`;}
+init();
+</script>
+</body>
+</html>
