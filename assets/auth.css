@@ -1,0 +1,288 @@
+/* ========================================
+   ENGLISH FLOW — AUTHENTICATION DESIGN
+======================================== */
+
+.ef-auth-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(6px);
+    overflow-y: auto;
+}
+
+.ef-auth-overlay[hidden] {
+    display: none !important;
+}
+
+.ef-auth-modal,
+.ef-auth-modal * {
+    box-sizing: border-box;
+}
+
+.ef-auth-modal {
+    position: relative;
+    width: 100%;
+    max-width: 440px;
+    max-height: calc(100dvh - 40px);
+    overflow-y: auto;
+    padding: 36px;
+    border-radius: 22px;
+    background: #ffffff;
+    color: #192641;
+    font-family: inherit;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.18);
+    animation: efAuthEnter 0.25s ease;
+}
+
+@keyframes efAuthEnter {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.ef-auth-close {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 50%;
+    background: #f1f5f9;
+    color: #64748b;
+    font-size: 23px;
+    cursor: pointer;
+}
+
+.ef-auth-brand {
+    margin-bottom: 24px;
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    text-align: center;
+    color: #192641;
+}
+
+.ef-auth-brand span {
+    color: #b88b36;
+}
+
+.ef-auth-title {
+    margin: 0 0 8px;
+    font-size: 27px;
+    font-weight: 750;
+    line-height: 1.2;
+    text-align: center;
+    color: #192641;
+}
+
+.ef-auth-subtitle {
+    margin: 0 0 26px;
+    color: #64748b;
+    font-size: 14px;
+    line-height: 1.6;
+    text-align: center;
+}
+
+.ef-auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.ef-auth-field {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.ef-auth-field label {
+    color: #192641;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.ef-auth-field input {
+    width: 100%;
+    min-height: 48px;
+    padding: 13px 15px;
+    border: 1px solid #dce2ea;
+    border-radius: 10px;
+    outline: none;
+    background: #ffffff;
+    color: #192641;
+    font-family: inherit;
+    font-size: 16px;
+    transition: border-color 0.2s,
+                box-shadow 0.2s;
+}
+
+.ef-auth-field input:focus {
+    border-color: #b88b36;
+    box-shadow: 0 0 0 3px rgba(184, 139, 54, 0.12);
+}
+
+.ef-auth-field input::placeholder {
+    color: #94a3b8;
+}
+
+.ef-auth-submit {
+    width: 100%;
+    min-height: 48px;
+    padding: 14px 18px;
+    border: none;
+    border-radius: 10px;
+    background: #192641;
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 650;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.ef-auth-submit:hover {
+    background: #2d3d5e;
+}
+
+.ef-auth-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.ef-auth-link {
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: #98702e;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 650;
+    cursor: pointer;
+}
+
+.ef-auth-link:hover {
+    text-decoration: underline;
+}
+
+.ef-auth-forgot {
+    text-align: right;
+}
+
+.ef-auth-switch {
+    margin-top: 22px;
+    color: #64748b;
+    font-size: 13px;
+    line-height: 1.7;
+    text-align: center;
+}
+
+.ef-auth-message {
+    padding: 12px 14px;
+    border-radius: 9px;
+    font-size: 13px;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+
+.ef-auth-message:empty,
+.ef-auth-message[hidden] {
+    display: none;
+}
+
+.ef-auth-message.error {
+    border: 1px solid #fecaca;
+    background: #fef2f2;
+    color: #b91c1c;
+}
+
+.ef-auth-message.success {
+    border: 1px solid #bbf7d0;
+    background: #f0fdf4;
+    color: #166534;
+}
+
+.ef-auth-message.info {
+    border: 1px solid #bfdbfe;
+    background: #eff6ff;
+    color: #1e40af;
+}
+
+.ef-auth-user {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    color: #192641;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.ef-auth-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: #192641;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.ef-auth-logout {
+    padding: 9px 15px;
+    border: 1px solid #dce2ea;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #192641;
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.ef-auth-logout:hover {
+    background: #f1f5f9;
+}
+
+.ef-auth-modal button:focus-visible {
+    outline: 2px solid #b88b36;
+    outline-offset: 3px;
+}
+
+@media (max-width: 480px) {
+    .ef-auth-overlay {
+        padding: 14px;
+    }
+
+    .ef-auth-modal {
+        padding: 28px 22px;
+        max-height: calc(100dvh - 28px);
+        border-radius: 18px;
+    }
+
+    .ef-auth-title {
+        font-size: 24px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ef-auth-modal {
+        animation: none;
+    }
+
+    .ef-auth-modal * {
+        transition: none;
+    }
+}
