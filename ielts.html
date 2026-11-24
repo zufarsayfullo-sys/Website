@@ -93,10 +93,6 @@
   .form-label { display: block; font-size: 0.78rem; font-weight: 500; color: var(--text-muted); margin-bottom: 0.35rem; text-transform: uppercase; letter-spacing: 0.04em; }
   .form-input { width: 100%; padding: 0.7rem 1rem; border-radius: 12px; border: 1.5px solid var(--border); font-size: 0.92rem; font-family: 'DM Sans', sans-serif; color: var(--text); background: var(--cream); transition: border-color 0.2s; outline: none; }
   .form-input:focus { border-color: var(--sky); background: white; }
-  .phone-row { display: flex; align-items: center; gap: 0; border: 1.5px solid var(--border); border-radius: 12px; background: var(--cream); overflow: hidden; transition: border-color 0.2s; }
-  .phone-row:focus-within { border-color: var(--sky); background: white; }
-  .phone-prefix { padding: 0.7rem 0.75rem; font-size: 0.88rem; color: var(--text-muted); background: transparent; white-space: nowrap; border-right: 1.5px solid var(--border); user-select: none; }
-  .phone-input { flex: 1; padding: 0.7rem 0.8rem; border: none; background: transparent; font-size: 0.92rem; font-family: 'DM Sans', sans-serif; color: var(--text); outline: none; }
   .form-actions { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1.25rem; }
   .btn-form { width: 100%; padding: 0.75rem; border-radius: 12px; border: none; font-size: 0.92rem; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
   .btn-form-primary { background: var(--navy); color: white; }
@@ -146,6 +142,7 @@
   .toast.error { background: #b91c1c; }
   .toast.success { background: var(--green); }
   .upsell-note { display: flex; align-items: center; gap: 0.5rem; background: var(--gold-light); border: 1px solid rgba(201,146,42,0.2); border-radius: 12px; padding: 0.65rem 1rem; font-size: 0.8rem; color: #7a5a14; margin-bottom: 0.5rem; }
+  .modal { max-height: 90vh; overflow-y: auto; }
 </style>
 </head>
 <body>
@@ -293,7 +290,7 @@
       <button class="btn-form btn-form-primary" id="doSignin">Sign in</button>
       <button class="btn-form btn-form-ghost" id="closeSignin">Cancel</button>
     </div>
-    <div class="form-msg" id="siMsg"></div>
+    <div class="form-msg" id="siMsg" role="status"></div><div class="modal-switch"><a href="#" id="forgot">Forgot password?</a> · <a href="#" id="resendFromSignin">Resend verification</a></div>
     <div class="modal-switch">No account? <a id="switchToSignup">Create one free →</a></div>
   </div>
 </div>
@@ -303,12 +300,9 @@
   <div class="modal">
     <div class="modal-header"><div class="modal-icon">🎓</div><div class="modal-title">Join English Flow</div><div class="modal-sub">Free to join — track your IELTS journey</div></div>
     <div class="form-group"><label class="form-label">Full name</label><input type="text" id="suName" class="form-input" placeholder="Your name"></div>
-    <div class="form-group">
-      <label class="form-label">Phone (Uzbekistan)</label>
-      <div class="phone-row"><span class="phone-prefix">🇺🇿 +998</span><input type="tel" id="suPhone" class="phone-input" placeholder="90 123 45 67"></div>
-    </div>
     <div class="form-group"><label class="form-label">Email</label><input type="email" id="suEmail" class="form-input" placeholder="you@example.com"></div>
-    <div class="form-group"><label class="form-label">Password</label><input type="password" id="suPass" class="form-input" placeholder="At least 6 characters"></div>
+    <div class="form-group"><label class="form-label">Password</label><input type="password" id="suPass" class="form-input" placeholder="At least 8 characters"></div>
+    <div class="form-group"><label class="form-label" for="suConfirm">Confirm password</label><input type="password" id="suConfirm" class="form-input" autocomplete="new-password" placeholder="Repeat password"></div>
     <div class="form-actions">
       <button class="btn-form btn-form-primary" id="doSignup">Create account</button>
       <button class="btn-form btn-form-ghost" id="closeSignup">Maybe later</button>
@@ -318,11 +312,18 @@
   </div>
 </div>
 
+
+<div class="modal-overlay" id="verifyModal"><div class="modal">
+<div class="modal-header"><div class="modal-icon">✉️</div><div class="modal-title">Verify your email</div><div class="modal-sub">Check your inbox and spam folder for the verification link.</div></div>
+<p id="verifyEmail" style="overflow-wrap:anywhere;text-align:center"></p>
+<div class="form-actions"><button class="btn-form btn-form-primary" id="resend">Resend verification email</button><button class="btn-form btn-form-ghost" id="verifyBack">Back to sign in</button></div><div class="form-msg" id="verifyMsg" role="status"></div></div></div>
+<div class="modal-overlay" id="resetModal"><div class="modal"><div class="modal-header"><div class="modal-title">Reset your password</div><div class="modal-sub">Enter your email to receive a reset link.</div></div><div class="form-group"><label class="form-label" for="resetEmail">Email</label><input class="form-input" type="email" id="resetEmail"></div><div class="form-actions"><button class="btn-form btn-form-primary" id="sendReset">Send reset link</button><button class="btn-form btn-form-ghost" id="resetBack">Back to sign in</button></div><div class="form-msg" id="resetMsg" role="status"></div></div></div>
+<div class="modal-overlay" id="newPassModal"><div class="modal"><div class="modal-header"><div class="modal-title">Choose a new password</div></div><div class="form-group"><label class="form-label" for="newPass">New password</label><input class="form-input" type="password" id="newPass" autocomplete="new-password"></div><div class="form-group"><label class="form-label" for="newConfirm">Confirm password</label><input class="form-input" type="password" id="newConfirm" autocomplete="new-password"></div><div class="form-actions"><button class="btn-form btn-form-primary" id="savePass">Update password</button></div><div class="form-msg" id="newMsg" role="status"></div></div></div>
+
 <script>
 (function() {
-  const SUPABASE_URL = 'https://evhceswvapszaghnvmxl.supabase.co';
-  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGNlc3d2YXBzemFnaG52bXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3OTQwNzMsImV4cCI6MjA5MzM3MDA3M30.yV7tavgR7JKc45uSGtS8Lf6m1ZMuuvQ23hmAb8n6k3A';
-  const SHEET_URL = 'https://script.google.com/macros/s/AKfycbyBX_AA-2zXJpxwibag6qzaOJMlDrB3yKRIgNsLYvKEV2IcBz5X6i-NW9B0ZnEo9giM/exec';
+  const SUPABASE_URL = 'https://dfepopppcggzecdxexeh.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_rRy6HQBsLmQokJ6j1c-THg_8f16xaxF';
   const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
   function toast(msg, type = 'default') {
@@ -361,58 +362,75 @@
     const btn = document.getElementById('doSignin');
     btn.disabled = true; btn.textContent = 'Signing in…';
     try {
-      const { error } = await sb.auth.signInWithPassword({ email, password: pass });
+      const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
       if (error) throw error;
+      if (!data.user?.email_confirmed_at) { await sb.auth.signOut(); throw new Error('Verify your email first.'); }
       showMsg('siMsg', '✓ Signed in!', false);
       setTimeout(() => { closeModal('signinModal'); location.reload(); }, 800);
     } catch (e) { showMsg('siMsg', e.message || 'Something went wrong.', true); }
     finally { signinBusy = false; btn.disabled = false; btn.textContent = 'Sign in'; }
   };
 
-  let signupCooldown = false, signupBusy = false;
-  document.getElementById('doSignup').onclick = async () => {
-    if (signupBusy || signupCooldown) { if (signupCooldown) showMsg('suMsg', 'Please wait 30 seconds before trying again.', true); return; }
-    const name = document.getElementById('suName').value.trim();
-    const phone = document.getElementById('suPhone').value.trim();
-    const email = document.getElementById('suEmail').value.trim();
-    const pass = document.getElementById('suPass').value;
-    if (!name || !phone || !email || !pass) { showMsg('suMsg', 'Please fill in all fields.', true); return; }
-    if (pass.length < 6) { showMsg('suMsg', 'Password must be at least 6 characters.', true); return; }
-    signupBusy = true; signupCooldown = true;
-    const btn = document.getElementById('doSignup');
-    btn.disabled = true; btn.textContent = 'Creating…';
-    setTimeout(() => { signupCooldown = false; }, 30000);
-    try {
-      const { error } = await sb.auth.signUp({ email, password: pass, options: { data: { name } } });
-      if (error) {
-        if (error.status === 429 || (error.message && error.message.toLowerCase().includes('rate limit'))) throw new Error('Too many attempts. Please wait a minute then try again.');
-        if (error.message && error.message.toLowerCase().includes('already registered')) throw new Error('This email is already registered. Please sign in instead.');
-        throw error;
-      }
-      try {
-        await fetch(SHEET_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ name, phone: '+998' + phone.replace(/\D/g,''), email, timestamp: new Date().toISOString() }) });
-      } catch (_) {}
-      showMsg('suMsg', '✓ Account created! Welcome to English Flow.', false);
-      setTimeout(() => { closeModal('signupModal'); location.reload(); }, 1000);
-    } catch (e) {
-      showMsg('suMsg', e.message || 'Could not create account. Try again.', true);
-      if (!e.message || !e.message.includes('Too many')) signupCooldown = false;
-    } finally { signupBusy = false; btn.disabled = false; btn.textContent = 'Create account'; }
-  };
-
-  async function checkSession() {
-    try {
-      const { data: { session } } = await sb.auth.getSession();
-      if (session && session.user) {
-        const name = session.user.user_metadata?.name || session.user.email;
-        const short = name.split(' ')[0];
-        const zone = document.getElementById('authZone');
-        zone.innerHTML = `<span class="user-badge" style="display:inline-flex;">👋 ${short}</span><button class="btn-auth btn-signout" id="signoutBtn">Sign out</button>`;
-        document.getElementById('signoutBtn').onclick = async () => { await sb.auth.signOut(); location.reload(); };
-      }
-    } catch (e) {}
+  const $ = id => document.getElementById(id);
+  const redirect = location.origin + location.pathname;
+  let pendingEmail = '';
+  let recovering = false;
+  function showVerify(email) {
+    pendingEmail = email; $('verifyEmail').textContent = email;
+    closeModal('signupModal'); closeModal('signinModal'); openModal('verifyModal');
   }
-  checkSession();
+  function validEmail(email) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); }
+  function action(id, msg, fn) {
+    $(id).onclick = async () => {
+      const btn = $(id); if (btn.disabled) return;
+      btn.disabled = true;
+      try { await fn(); } catch(e) { showMsg(msg, e.message || 'Please try again.', true); }
+      finally { btn.disabled = false; }
+    };
+  }
+  action('doSignup','suMsg',async () => {
+    const name = $('suName').value.trim(), email = $('suEmail').value.trim(), password = $('suPass').value;
+    if (!name || !validEmail(email)) throw new Error('Enter your name and a valid email.');
+    if (password.length < 8) throw new Error('Use at least 8 characters.');
+    if (password !== $('suConfirm').value) throw new Error('Passwords do not match.');
+    const {data,error} = await sb.auth.signUp({email,password,options:{data:{name},emailRedirectTo:redirect}});
+    if(error) throw error;
+    $('suPass').value = ''; $('suConfirm').value = '';
+    if(data.session) { await sb.auth.signOut(); throw new Error('Email confirmation is not enforced. Please contact support.'); }
+    showVerify(email);
+  });
+  $('verifyBack').onclick = () => { closeModal('verifyModal'); $('siEmail').value = pendingEmail; openModal('signinModal'); };
+  $('resendFromSignin').onclick = e => { e.preventDefault(); const email = $('siEmail').value.trim(); if(!validEmail(email)) return showMsg('siMsg','Enter your email first.',true); showVerify(email); };
+  action('resend','verifyMsg',async () => {
+    const {error} = await sb.auth.resend({type:'signup',email:pendingEmail,options:{emailRedirectTo:redirect}});
+    if(error) throw error; showMsg('verifyMsg','If eligible, a new verification link has been sent.',false);
+  });
+  $('forgot').onclick = e => { e.preventDefault(); $('resetEmail').value = $('siEmail').value; closeModal('signinModal'); openModal('resetModal'); };
+  $('resetBack').onclick = () => { closeModal('resetModal'); openModal('signinModal'); };
+  action('sendReset','resetMsg',async () => {
+    const email = $('resetEmail').value.trim(); if(!validEmail(email)) throw new Error('Enter a valid email.');
+    const {error} = await sb.auth.resetPasswordForEmail(email,{redirectTo:redirect});
+    if(error) throw error; showMsg('resetMsg','If an account exists, check your inbox for a reset link.',false);
+  });
+  action('savePass','newMsg',async () => {
+    if(!recovering) throw new Error('Open a valid password reset link first.');
+    const password = $('newPass').value;
+    if(password.length < 8 || password !== $('newConfirm').value) throw new Error('Use matching passwords of at least 8 characters.');
+    const {error} = await sb.auth.updateUser({password}); if(error) throw error;
+    const result = await sb.auth.signOut(); if(result.error) throw result.error;
+    recovering = false; location.replace(redirect);
+  });
+  function renderSession(session) {
+    if(!session?.user?.email_confirmed_at || recovering) return;
+    const zone = $('authZone');
+    zone.innerHTML = '<span class="user-badge" style="display:inline-flex;"></span><button class="btn-auth btn-signout" id="signoutBtn">Sign out</button>';
+    zone.querySelector('.user-badge').textContent = '👋 ' + (session.user.user_metadata?.name || session.user.email || 'Student').split(' ')[0];
+    $('signoutBtn').onclick = async () => { const {error} = await sb.auth.signOut(); if(error) toast(error.message,'error'); else location.replace(redirect); };
+  }
+  sb.auth.onAuthStateChange((event,session) => {
+    if(event === 'PASSWORD_RECOVERY') { recovering = true; openModal('newPassModal'); }
+    else if(event === 'INITIAL_SESSION' || event === 'SIGNED_IN') renderSession(session);
+  });
 
   let allComments = [], visibleCount = 0;
   function renderComments() {
@@ -425,7 +443,8 @@
     const current = sorted[visibleCount] || sorted[0];
     const div = document.createElement('div');
     div.className = 'comment-item';
-    div.innerHTML = `<div class="comment-meta">${new Date(current.created_at).toLocaleString()}</div><div class="comment-text">${current.text}</div>`;
+    div.innerHTML = `<div class="comment-meta">${new Date(current.created_at).toLocaleString()}</div><div class="comment-text"></div>`;
+    div.querySelector('.comment-text').textContent = current.text;
     display.appendChild(div);
     if (allComments.length > 1) {
       const nav = document.createElement('div');
@@ -455,7 +474,6 @@
     try {
       const { error } = await sb.from('comments').insert([{ text }]);
       if (error) throw error;
-      try { const fd = new URLSearchParams(); fd.append('comment',text); fd.append('timestamp',new Date().toISOString()); fd.append('page','IELTS'); await fetch(SHEET_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body: fd }); } catch (_) {}
       ta.value = '';
       toast('Thank you for your feedback! ✨', 'success');
       await loadComments();
