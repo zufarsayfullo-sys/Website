@@ -1,29 +1,694 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="English Flow — dedicated IELTS Academic preparation.">
-<title>English Flow | IELTS Academic</title>
-<style>
-:root{--navy:#192641;--gold:#b88b36;--muted:#657084;--line:#e2e5eb;--bg:#f7f8fb}*{box-sizing:border-box}body{margin:0;font:16px/1.6 system-ui,sans-serif;color:var(--navy);background:var(--bg)}a{color:inherit;text-decoration:none}button{font:inherit;cursor:pointer}a:focus-visible,button:focus-visible{outline:3px solid #b88b36;outline-offset:4px}.wrap{width:min(1120px,92%);margin:auto}header{background:white;border-bottom:1px solid var(--line)}.nav{min-height:82px;display:flex;align-items:center;justify-content:space-between;gap:16px}.logo{font-size:28px;font-weight:800;line-height:1.1;letter-spacing:-1px}.logo span{color:var(--gold)}.logo small{display:block;font-size:10px;letter-spacing:2px;margin-top:7px;color:var(--muted)}.actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.btn{border:1px solid var(--navy);border-radius:9px;padding:10px 18px;background:transparent;color:var(--navy);font-weight:600}.primary{background:var(--navy);color:white}.hero{background:var(--navy);color:white;padding:70px 0}.eyebrow{color:#e2bc72;font-size:12px;font-weight:700;letter-spacing:3px}h1{font-size:clamp(32px,5vw,54px);line-height:1.15;max-width:780px;margin:16px 0}.hero p{color:#c5cfe0;max-width:650px;margin:0;font-size:18px}main{padding:38px 0 60px}h2{font-size:24px;margin:0 0 18px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}.tile{background:white;border:1px solid var(--line);border-radius:16px;padding:25px;display:flex;flex-direction:column;gap:12px;transition:transform .2s,border-color .2s}.tile:hover{transform:translateY(-3px);border-color:var(--gold)}.symbol{width:48px;height:48px;display:grid;place-items:center;border-radius:12px;background:#edf0f6;color:var(--navy);font-size:25px}.tile h3{font-size:23px;margin:0}.tile p{color:var(--muted);margin:0;flex:1}.start{border-top:1px solid var(--line);padding-top:12px;font-weight:600;color:#79591f;display:flex;justify-content:space-between}.more{margin-top:36px}.resources{grid-template-columns:repeat(4,minmax(0,1fr))}.resource{padding:20px;gap:8px}.resource h3{font-size:16px}.resource .symbol{background:#faf3e4;color:#79591f}.soon{font-size:12px;color:var(--muted)}footer{background:var(--navy);color:#c5cfe0;padding:30px 0}footer .logo{color:white;font-size:22px}footer p{font-size:13px}dialog{border:1px solid var(--line);border-radius:16px;padding:25px;width:min(440px,90%);color:var(--navy)}dialog::backdrop{background:#19264199}dialog .btn{width:100%;margin-top:10px}#notice{color:var(--muted);font-size:13px;margin:0} @media(max-width:650px){.nav{min-height:72px}.logo{font-size:22px}.btn{padding:8px 11px;font-size:13px}.hero{padding:42px 0}.grid{gap:12px}.tile{padding:16px}.tile h3{font-size:19px}.tile p,.start{font-size:14px}.resources{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:360px){.grid{grid-template-columns:1fr}.nav{flex-wrap:wrap;padding:12px 0}}@media(prefers-reduced-motion:reduce){.tile{transition:none}}
-</style>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+
+    <meta name="description"
+          content="English Flow — dedicated IELTS Academic preparation.">
+
+    <title>English Flow | IELTS Academic</title>
+
+    <link rel="stylesheet" href="/assets/auth.css">
+
+    <style>
+
+        :root {
+            --navy: #192641;
+            --gold: #b88b36;
+            --muted: #657084;
+            --line: #e2e5eb;
+            --bg: #f7f8fb;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font: 16px/1.6 system-ui, sans-serif;
+            color: var(--navy);
+            background: var(--bg);
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button {
+            font: inherit;
+            cursor: pointer;
+        }
+
+        a:focus-visible,
+        button:focus-visible {
+            outline: 3px solid var(--gold);
+            outline-offset: 4px;
+        }
+
+        .wrap {
+            width: min(1120px, 92%);
+            margin: auto;
+        }
+
+        /* HEADER */
+
+        header {
+            background: white;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .nav {
+            min-height: 82px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -1px;
+        }
+
+        .logo span {
+            color: var(--gold);
+        }
+
+        .logo small {
+            display: block;
+            font-size: 10px;
+            letter-spacing: 2px;
+            margin-top: 7px;
+            color: var(--muted);
+        }
+
+        .actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            border: 1px solid var(--navy);
+            border-radius: 9px;
+            padding: 10px 18px;
+            background: transparent;
+            color: var(--navy);
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background: #edf0f6;
+        }
+
+        .primary {
+            background: var(--navy);
+            color: white;
+        }
+
+        .primary:hover {
+            background: #2d3d5e;
+        }
+
+        /* HERO SECTION */
+
+        .hero {
+            background: var(--navy);
+            color: white;
+            padding: 70px 0;
+        }
+
+        .eyebrow {
+            color: #e2bc72;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 3px;
+        }
+
+        h1 {
+            font-size: clamp(32px, 5vw, 54px);
+            line-height: 1.15;
+            max-width: 780px;
+            margin: 16px 0;
+        }
+
+        .hero p {
+            color: #c5cfe0;
+            max-width: 650px;
+            margin: 0;
+            font-size: 18px;
+        }
+
+        /* MAIN CONTENT */
+
+        main {
+            padding: 38px 0 60px;
+        }
+
+        h2 {
+            font-size: 24px;
+            margin: 0 0 18px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .tile {
+            background: white;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: transform 0.2s,
+                        border-color 0.2s;
+        }
+
+        .tile:hover {
+            transform: translateY(-3px);
+            border-color: var(--gold);
+        }
+
+        .symbol {
+            width: 48px;
+            height: 48px;
+            display: grid;
+            place-items: center;
+            border-radius: 12px;
+            background: #edf0f6;
+            color: var(--navy);
+            font-size: 25px;
+        }
+
+        .tile h3 {
+            font-size: 23px;
+            margin: 0;
+        }
+
+        .tile p {
+            color: var(--muted);
+            margin: 0;
+            flex: 1;
+        }
+
+        .start {
+            border-top: 1px solid var(--line);
+            padding-top: 12px;
+            font-weight: 600;
+            color: #79591f;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* ADDITIONAL RESOURCES */
+
+        .more {
+            margin-top: 36px;
+        }
+
+        .resources {
+            grid-template-columns:
+                repeat(4, minmax(0, 1fr));
+        }
+
+        .resource {
+            padding: 20px;
+            gap: 8px;
+        }
+
+        .resource h3 {
+            font-size: 16px;
+        }
+
+        .resource .symbol {
+            background: #faf3e4;
+            color: #79591f;
+        }
+
+        .soon {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        /* FOOTER */
+
+        footer {
+            background: var(--navy);
+            color: #c5cfe0;
+            padding: 30px 0;
+        }
+
+        footer .logo {
+            color: white;
+            font-size: 22px;
+        }
+
+        footer p {
+            font-size: 13px;
+        }
+
+        /* NOTIFICATION WINDOW */
+
+        dialog {
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 25px;
+            width: min(440px, 90%);
+            color: var(--navy);
+        }
+
+        dialog::backdrop {
+            background: #19264199;
+        }
+
+        dialog .btn {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        /* MOBILE DESIGN */
+
+        @media (max-width: 650px) {
+
+            .nav {
+                min-height: 72px;
+            }
+
+            .logo {
+                font-size: 22px;
+            }
+
+            .btn {
+                padding: 8px 11px;
+                font-size: 13px;
+            }
+
+            .hero {
+                padding: 42px 0;
+            }
+
+            .grid {
+                gap: 12px;
+            }
+
+            .tile {
+                padding: 16px;
+            }
+
+            .tile h3 {
+                font-size: 19px;
+            }
+
+            .tile p,
+            .start {
+                font-size: 14px;
+            }
+
+            .resources {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+
+            .ef-user-name {
+                max-width: 90px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+        }
+
+        @media (max-width: 360px) {
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav {
+                flex-wrap: wrap;
+                padding: 12px 0;
+            }
+
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+
+            .tile {
+                transition: none;
+            }
+
+        }
+
+    </style>
+
 </head>
+
 <body>
-<header><nav class="wrap nav" aria-label="Main navigation"><a class="logo" href="/">English<span>Flow</span><small>IELTS ACADEMIC</small></a><div class="actions" id="auth-actions"><button class="btn" id="sign-in" type="button">Sign in</button><button class="btn primary" id="sign-up" type="button">Sign up</button></div></nav></header>
-<section class="hero"><div class="wrap"><div class="eyebrow">IELTS ACADEMIC PREPARATION</div><h1>Your ambition. Your preparation. Your success.</h1><p>Master the four skills and work towards your target IELTS band.</p></div></section>
-<main class="wrap"><h2>Practice zone</h2><div class="grid" id="skills"></div><section class="more"><h2>More resources</h2><div class="grid resources" id="resources"></div></section></main>
-<footer><div class="wrap"><a class="logo" href="/">English<span>Flow</span></a><p>Dedicated to IELTS Academic excellence.</p><p>© 2026 English Flow. All rights reserved.</p></div></footer>
-<dialog id="message"><h2 id="message-title">Coming soon</h2><p id="message-text"></p><form method="dialog"><button class="btn primary">Close</button></form></dialog>
-<script>
-const skills=[['Reading','▤','Academic reading passages'],['Listening','♫','Exam-style listening tests'],['Writing','✎','Academic Task 1 & Task 2'],['Speaking','♩','Part 1, Part 2 & Part 3']];
-const resources=[['Mock Exams','☷'],['Vocabulary','▣'],['Leaderboard','☆'],['My Progress','↗']];
-function message(title,body){document.getElementById('message-title').textContent=title;document.getElementById('message-text').textContent=body;document.getElementById('message').showModal()}
-function tile(item,resource=false){const a=document.createElement('a');a.href='#';a.className='tile'+(resource?' resource':'');const icon=document.createElement('span');icon.className='symbol';icon.setAttribute('aria-hidden','true');icon.textContent=item[1];const h=document.createElement('h3');h.textContent=item[0];a.append(icon,h);if(!resource){const p=document.createElement('p');p.textContent=item[2];a.append(p)}const status=document.createElement('span');status.className=resource?'soon':'start';status.textContent='Coming soon';a.append(status);a.addEventListener('click',e=>{e.preventDefault();message(item[0], 'This section is currently under development.')});return a}
-skills.forEach(item=>document.getElementById('skills').append(tile(item)));resources.forEach(item=>document.getElementById('resources').append(tile(item,true)));
-function openAuth(mode){if(typeof window.EnglishFlowAuth?.open==='function'){window.EnglishFlowAuth.open(mode)}else{message('Authentication','The shared authentication module has not been connected yet.')}}
-document.getElementById('sign-in').addEventListener('click',()=>openAuth('signin'));document.getElementById('sign-up').addEventListener('click',()=>openAuth('signup'));
-</script>
-<!-- Shared authentication integration: add assets/auth.css and assets/auth.js once created. The module should expose window.EnglishFlowAuth.open(mode) and update #auth-actions on session changes. -->
+
+    <!-- HEADER -->
+
+    <header>
+
+        <nav class="wrap nav"
+             aria-label="Main navigation">
+
+            <a class="logo" href="/">
+                English<span>Flow</span>
+                <small>IELTS ACADEMIC</small>
+            </a>
+
+            <div class="actions" id="auth-actions">
+
+                <button class="btn"
+                        id="sign-in"
+                        type="button">
+                    Sign in
+                </button>
+
+                <button class="btn primary"
+                        id="sign-up"
+                        type="button">
+                    Sign up
+                </button>
+
+            </div>
+
+        </nav>
+
+    </header>
+
+
+    <!-- HERO SECTION -->
+
+    <section class="hero">
+
+        <div class="wrap">
+
+            <div class="eyebrow">
+                IELTS ACADEMIC PREPARATION
+            </div>
+
+            <h1>
+                Your ambition.
+                Your preparation.
+                Your success.
+            </h1>
+
+            <p>
+                Master the four skills and work
+                towards your target IELTS band.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- MAIN MENU -->
+
+    <main class="wrap">
+
+        <h2>Practice zone</h2>
+
+        <div class="grid" id="skills"></div>
+
+        <section class="more">
+
+            <h2>More resources</h2>
+
+            <div class="grid resources"
+                 id="resources">
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <div class="wrap">
+
+            <a class="logo" href="/">
+                English<span>Flow</span>
+            </a>
+
+            <p>
+                Dedicated to IELTS Academic excellence.
+            </p>
+
+            <p>
+                © 2026 English Flow.
+                All rights reserved.
+            </p>
+
+        </div>
+
+    </footer>
+
+
+    <!-- NOTIFICATION WINDOW -->
+
+    <dialog id="message">
+
+        <h2 id="message-title">
+            Coming soon
+        </h2>
+
+        <p id="message-text"></p>
+
+        <form method="dialog">
+
+            <button class="btn primary">
+                Close
+            </button>
+
+        </form>
+
+    </dialog>
+
+
+    <!-- MAIN MENU JAVASCRIPT -->
+
+    <script>
+
+        const skills = [
+
+            [
+                "Reading",
+                "▤",
+                "Academic reading passages"
+            ],
+
+            [
+                "Listening",
+                "♫",
+                "Exam-style listening tests"
+            ],
+
+            [
+                "Writing",
+                "✎",
+                "Academic Task 1 & Task 2"
+            ],
+
+            [
+                "Speaking",
+                "♩",
+                "Part 1, Part 2 & Part 3"
+            ]
+
+        ];
+
+        const resources = [
+
+            ["Mock Exams", "☷"],
+
+            ["Vocabulary", "▣"],
+
+            ["Leaderboard", "☆"],
+
+            ["My Progress", "↗"]
+
+        ];
+
+
+        // DISPLAY NOTIFICATION
+
+        function message(title, body) {
+
+            document.getElementById(
+                "message-title"
+            ).textContent = title;
+
+            document.getElementById(
+                "message-text"
+            ).textContent = body;
+
+            document.getElementById(
+                "message"
+            ).showModal();
+
+        }
+
+
+        // CREATE MENU CARDS
+
+        function tile(item, resource = false) {
+
+            const a = document.createElement("a");
+
+            a.href = "#";
+
+            a.className =
+                "tile" + (resource ? " resource" : "");
+
+            const icon = document.createElement("span");
+
+            icon.className = "symbol";
+
+            icon.setAttribute("aria-hidden", "true");
+
+            icon.textContent = item[1];
+
+            const h = document.createElement("h3");
+
+            h.textContent = item[0];
+
+            a.append(icon, h);
+
+            if (!resource) {
+
+                const p = document.createElement("p");
+
+                p.textContent = item[2];
+
+                a.append(p);
+
+            }
+
+            const status = document.createElement("span");
+
+            status.className =
+                resource ? "soon" : "start";
+
+            status.textContent = "Coming soon";
+
+            a.append(status);
+
+            a.addEventListener("click", function (event) {
+
+                event.preventDefault();
+
+                message(
+                    item[0],
+                    "This section is currently under development."
+                );
+
+            });
+
+            return a;
+
+        }
+
+
+        // DISPLAY FOUR IELTS SKILLS
+
+        skills.forEach(function (item) {
+
+            document.getElementById("skills")
+                .append(tile(item));
+
+        });
+
+
+        // DISPLAY ADDITIONAL RESOURCES
+
+        resources.forEach(function (item) {
+
+            document.getElementById("resources")
+                .append(tile(item, true));
+
+        });
+
+
+        // OPEN AUTHENTICATION WINDOW
+
+        function openAuth(mode) {
+
+            if (
+                typeof window.EnglishFlowAuth?.open
+                === "function"
+            ) {
+
+                window.EnglishFlowAuth.open(mode);
+
+            } else {
+
+                message(
+                    "Authentication unavailable",
+                    "Please refresh the page and try again."
+                );
+
+            }
+
+        }
+
+
+        // INITIAL AUTHENTICATION BUTTONS
+
+        document.getElementById("sign-in")
+            .addEventListener("click", function () {
+
+                openAuth("signin");
+
+            });
+
+        document.getElementById("sign-up")
+            .addEventListener("click", function () {
+
+                openAuth("signup");
+
+            });
+
+    </script>
+
+
+    <!-- SUPABASE LIBRARY -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+    <!-- SHARED SUPABASE CONNECTION -->
+
+    <script src="/assets/supabase.js"></script>
+
+
+    <!-- SHARED AUTHENTICATION LOGIC -->
+
+    <script src="/assets/auth.js"></script>
+
+
+    <!-- SHARED AUTHENTICATION INTERFACE -->
+
+    <script src="/assets/auth-ui.js"></script>
+
 </body>
 </html>
