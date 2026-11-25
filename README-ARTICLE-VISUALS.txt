@@ -1,0 +1,1 @@
+Merge reading into your repository. No SQL needed. Photos cropped from supplied New Scientist pages; obtain permission before public use or replace with licensed covers. Existing article text and logic retained.
