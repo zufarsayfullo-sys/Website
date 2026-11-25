@@ -1,0 +1,1 @@
+Merge assets into Website repository, replace three JS files, commit and push. No SQL changes. Sign in and refresh homepage and progress page. If still zero, check authenticated SELECT grant and whether activity belongs to current user. No live browser or database test performed.
