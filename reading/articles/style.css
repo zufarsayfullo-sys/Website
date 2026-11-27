@@ -1,3 +1,24 @@
 *{box-sizing:border-box}[hidden]{display:none!important}body{margin:0;background:#edf3fa;color:#142642;font:16px/1.6 system-ui,sans-serif}header{background:#142642;color:white;padding:18px max(5%,calc((100% - 1100px)/2));display:flex;justify-content:space-between;align-items:center}header>a{color:white;font-size:24px;font-weight:800;text-decoration:none}header b{color:#e5b64f}main{max-width:1100px;margin:auto;padding:24px}nav,#filters,.tools{display:flex;gap:12px;flex-wrap:wrap;align-items:center}nav a:first-child{margin-right:auto}a{color:inherit}button{border:0;border-radius:8px;background:#142642;color:white;padding:10px 16px;cursor:pointer;font:inherit}button:disabled{opacity:.5;cursor:default}input,textarea{font:inherit;border:1px solid #ccd7e5;border-radius:8px;padding:10px;width:100%;background:white;color:#142642}#filters{margin:16px 0}#filters button{background:white;color:#142642}#filters button.active{background:#142642;color:white}#cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.card{background:white;border-radius:14px;overflow:hidden;border:1px solid #dce5ef}.card img{width:100%;height:150px;object-fit:cover}.card div{padding:16px}.card h2{font-size:20px;line-height:1.3;margin:8px 0}.card button{margin:4px}small{color:#92702f;font-weight:700}#reader{max-width:790px;margin:24px auto;background:white;padding:clamp(18px,4vw,48px);border-radius:14px}#reader h1{font:700 clamp(28px,5vw,44px)/1.15 Georgia,serif}#reader .cover{width:100%;max-height:300px;object-fit:cover;border-radius:10px}#text{font:19px/1.85 Georgia,serif}#text span{cursor:pointer}#text span:hover{background:#fce7a3;color:#142642}.tip{background:#edf3fa;color:#142642;padding:12px;border-radius:8px}.question{border:1px solid #dce5ef;border-radius:8px;padding:14px;margin:12px 0}.question label{display:block;margin:8px 0}.question input{width:auto}dialog{border:0;border-radius:18px;padding:24px;width:min(540px,92vw);color:#142642;max-height:90vh;overflow:auto}dialog::backdrop{background:#14264299}dialog img{width:140px;float:left;margin-right:16px}dialog .close{float:right}dialog label{display:block;margin:12px 0}#reader.dark{background:#182332;color:#f0f4fa}#progress{width:100%;accent-color:#b88b36}#status{white-space:pre-wrap} @media(max-width:850px){#cards{grid-template-columns:repeat(2,1fr)}}@media(max-width:520px){#cards{grid-template-columns:1fr}main{padding:14px}dialog img{width:95px}}
 
 .card{display:flex;flex-direction:column;cursor:pointer;transition:box-shadow .2s,transform .2s}.card:hover{box-shadow:0 8px 24px #14264215;transform:translateY(-2px)}.card img{height:auto;aspect-ratio:16/9;display:block;object-fit:cover}.card>div{display:flex;flex-direction:column;flex:1;gap:6px}.card .card-actions{display:flex;flex-direction:row;justify-content:space-between;align-items:center;margin-top:auto;padding:12px 0 0}.card .read-link,.card .bookmark-icon{background:transparent;color:#142642;padding:8px 0;margin:0;font-weight:650}.card .bookmark-icon{font-size:25px;color:#92702f;padding:0 8px}.card .completed{color:#18734c}.card button:focus-visible{outline:2px solid #b88b36;outline-offset:3px}.card img[src="control.jpg"],#reader .cover[src="control.jpg"]{object-position:center 32%}
+
+/* Reader appearance and distraction-free mode */
+#reader .tools{position:sticky;top:0;z-index:5;background:#fff;padding:10px 0;margin-bottom:18px;border-bottom:1px solid #dce5ef;gap:8px}
+#reader .tools button{font-size:14px;padding:8px 12px;min-height:40px}
+#reader .tools button:focus-visible{outline:2px solid #b88b36;outline-offset:2px}
+body.article-night{background:#101722;color:#e5eaf2;color-scheme:dark}
+body.article-night #reader{background:#182332;color:#e5eaf2}
+body.article-night #reader .tools{background:#182332;border-color:#38475a}
+body.article-night #reader button,body.article-night #dict button{background:#33465e;color:#fff}
+body.article-night #reader small{color:#e5c68a}
+body.article-night #reader .tip{background:#243449;color:#e5eaf2}
+body.article-night #reader .question{border-color:#46566b}
+body.article-night #dict{background:#182332;color:#e5eaf2}
+body.article-night #dict input,body.article-night #dict textarea{background:#101722;color:#e5eaf2;border-color:#526176}
+body.article-focus>header,body.article-focus #app>nav{display:none!important}
+body.article-focus main{max-width:none;padding:0 16px}
+body.article-focus #reader{max-width:850px;margin:0 auto;min-height:100vh;border-radius:0}
+body.article-focus:not(.article-night){background:#fff}
+body.article-focus #status{max-width:850px;margin:12px auto}
+html:fullscreen{overflow:auto}
+@media(max-width:520px){#reader .tools{gap:5px;padding:8px 0}#reader .tools button{font-size:12px;padding:7px 9px;min-height:38px}body.article-focus main{padding:0}body.article-focus #reader{padding:16px}}
